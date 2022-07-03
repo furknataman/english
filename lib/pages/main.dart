@@ -59,7 +59,7 @@ class _MainPageState extends State<MainPage> {
                         colors: <Color>[
                           Color(0xff7D20A6),
                           Color(0xff481183),
-                        ], // Gradient from https://learnui.design/tools/gradient-generator.html
+                        ],
                         tileMode: TileMode.mirror,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(8))),
