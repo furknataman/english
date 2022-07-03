@@ -1,3 +1,4 @@
+import 'package:english/pages/main.dart';
 import 'package:flutter/material.dart';
 
 class TemproryPage extends StatefulWidget {
@@ -8,6 +9,16 @@ class TemproryPage extends StatefulWidget {
 }
 
 class _TemproryPageState extends State<TemproryPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => MainPage()));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
