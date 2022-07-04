@@ -78,6 +78,12 @@ flutter:
     - family: Luck
       fonts:
         - asset: assets/fonts/luck.ttf
+    - family: RobotoMedium
+      fonts:
+        - asset: assets/fonts/robotomedium.ttf
+    - family: RobotoRegular
+      fonts:
+        - asset: assets/fonts/robotoregular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

@@ -1,3 +1,4 @@
+import 'package:english/pages/list.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -64,25 +65,31 @@ class _MainPageState extends State<MainPage> {
                 SizedBox(
                   height: 25,
                 ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  alignment: Alignment.center,
-                  height: 55,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: <Color>[
-                          Color(0xff7D20A6),
-                          Color(0xff481183),
-                        ],
-                        tileMode: TileMode.mirror,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                  child: Text("LİSTERİM",
-                      style: TextStyle(
-                          fontSize: 28, fontFamily: "Carter", color: Colors.white)),
+                InkWell(
+                  onTap: (() {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const ListPage()));
+                  }),
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    alignment: Alignment.center,
+                    height: 55,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                            Color(0xff7D20A6),
+                            Color(0xff481183),
+                          ],
+                          tileMode: TileMode.mirror,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    child: Text("LİSTERİM",
+                        style: TextStyle(
+                            fontSize: 28, fontFamily: "Carter", color: Colors.white)),
+                  ),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8,
@@ -152,10 +159,10 @@ class _MainPageState extends State<MainPage> {
         contentPadding: EdgeInsets.all(0),
         title: Text(
           text!,
-          style: TextStyle(fontFamily: "Carter", fontSize: 15),
+          style: TextStyle(fontFamily: "Carter", fontSize: 19),
         ),
         leading: Radio<Lang>(
-            value: Lang.tr,
+            value: value!,
             groupValue: _chooeseLang,
             onChanged: (Lang? value) {
               setState(() {
