@@ -1,3 +1,4 @@
+import 'package:english/pages/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,9 @@ class _ListPageState extends State<ListPage> {
             alignment: Alignment.centerLeft,
             width: MediaQuery.of(context).size.width * 0.2,
             child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
                 child: Icon(
                   Icons.arrow_back_ios,
                   color: Colors.black,
