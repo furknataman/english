@@ -1,3 +1,4 @@
+import 'package:english/pages/addlist.dart';
 import 'package:english/pages/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,9 @@ class _ListPageState extends State<ListPage> {
         ]),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: ((context) => const AddList())));
+        },
         child: const Icon(Icons.add),
         backgroundColor: Colors.purple.withOpacity(0.5),
       ),
