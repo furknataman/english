@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class AddList extends StatefulWidget {
   const AddList({Key? key}) : super(key: key);
@@ -97,11 +98,80 @@ class _AddListState extends State<AddList> {
                   child: Column(
                 children: wordListField,
               )),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                actionsbutons(addRow, Icons.add),
+                actionsbutons(save, Icons.save),
+                actionsbutons(deleteRow, Icons.remove)
+              ],
             )
           ]),
         ),
       ),
     );
+  }
+
+  InkWell actionsbutons(Function() click, IconData icon) {
+    return InkWell(
+      onTap: () => click(),
+      child: Container(
+        height: 40,
+        width: 40,
+        margin: EdgeInsets.only(bottom: 15),
+        child: Icon(
+          icon,
+          size: 28,
+        ),
+        decoration: BoxDecoration(color: Color(0xffDCD2FF), shape: BoxShape.circle),
+      ),
+    );
+  }
+
+  void addRow() {
+    wordTextEditingList.add(TextEditingController());
+    wordTextEditingList.add(TextEditingController());
+
+    wordListField.add(Row(
+      children: [
+        Expanded(
+            child: textFieldBuilder(
+                textEditingController:
+                    wordTextEditingList[wordTextEditingList.length - 2])),
+        Expanded(
+            child: textFieldBuilder(
+                textEditingController:
+                    wordTextEditingList[wordTextEditingList.length - 1])),
+      ],
+    ));
+    setState((() => wordListField));
+  }
+
+  void save() {
+    for (int i = 0; i < wordTextEditingList.length / 2; i++) {
+      String eng = wordTextEditingList[2 * i].text;
+      String tr = wordTextEditingList[2 * i + 1].text;
+
+      if (!eng.isEmpty || !tr.isEmpty) {
+        debugPrint(eng + "<<<<<<<" + tr);
+      } else {
+        debugPrint("Boş bırakılan alan");
+      }
+    }
+  }
+
+  void deleteRow() {
+    if (wordListField.length != 1) {
+      wordTextEditingList.removeAt(wordTextEditingList.length - 1);
+      wordTextEditingList.removeAt(wordTextEditingList.length - 1);
+
+      wordListField.removeAt(wordListField.length - 1);
+
+      setState(() => wordListField);
+    } else {
+      debugPrint("Son Eleman");
+    }
   }
 
   Column textFieldBuilder(
