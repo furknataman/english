@@ -1,3 +1,4 @@
+import 'package:english/global_widget/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -33,37 +34,20 @@ class _AddListState extends State<AddList> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            width: MediaQuery.of(context).size.width * 0.2,
-            child: InkWell(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.black,
-                  size: 22,
-                )),
-          ),
-          Container(
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: Image.asset("assets/images/logo_text.png")),
-          Container(
-            alignment: Alignment.centerRight,
-            width: MediaQuery.of(context).size.width * 0.2,
-            child: Image.asset(
-              "assets/images/logo.png",
-              height: 45,
-              width: 45,
-            ),
-          )
-        ]),
+      appBar: appbar(
+        context,
+        left: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.black,
+          size: 22,
+        ),
+        center: Image.asset("assets/images/logo_text.png"),
+        right: Image.asset(
+          "assets/images/logo.png",
+          height: 45,
+          width: 45,
+        ),
+        leftWidgetOnClik: () => {Navigator.pop(context)},
       ),
       body: SafeArea(
         child: Container(

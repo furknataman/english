@@ -1,6 +1,8 @@
+import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/list.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -14,44 +16,87 @@ enum Lang { eng, tr }
 class _MainPageState extends State<MainPage> {
   Lang? _chooeseLang = Lang.eng;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PackageInfo? packageInfo;
+  String version = "";
+  void packageInfoInit() async {
+    packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      version = packageInfo!.version;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    packageInfoInit();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: Container(
-        width: MediaQuery.of(context).size.width * 0.45,
-        color: Colors.white,
-      ),
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50),
-        child: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.2,
-              child: InkWell(
-                onTap: () {
-                  _scaffoldKey.currentState!.openDrawer();
-                },
-                child: FaIcon(
-                  FontAwesomeIcons.bars,
-                  color: Colors.black,
-                  size: 24,
+      drawer: SafeArea(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.45,
+          color: Colors.white,
+          child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Column(
+              children: [
+                Image.asset(
+                  "assets/images/logo.png",
+                  height: 80,
                 ),
-              ),
+                Text(
+                  "QUEZY",
+                  style: TextStyle(fontFamily: "RobotoLight", fontSize: 26),
+                ),
+                Text(
+                  "İstediğini Öğren",
+                  style: TextStyle(fontFamily: "RobotoLight", fontSize: 16),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.35,
+                  child: Divider(
+                    color: Colors.black,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 50, right: 8, left: 8),
+                  child: Text(
+                    "Bu uygulama 2022 yılında Furkan ATAMAN tarafından Flutter geliştirmeyi öğrenmek için tasarlandı",
+                    style: TextStyle(fontFamily: "RobotoLight", fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: Text(
+                    "Tıkla",
+                    style: TextStyle(
+                        fontFamily: "RobotoLight", fontSize: 16, color: Color(0xff0A588D)),
+                  ),
+                )
+              ],
             ),
-            Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: Image.asset("assets/images/logo_text.png")),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.2,
-            )
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("v" + version + "\nfurknataman@gmail.com",
+                  style: TextStyle(
+                      fontFamily: "RobotoLight", fontSize: 12, color: Color(0xff0A588D)),
+                  textAlign: TextAlign.center),
+            ),
           ]),
         ),
       ),
+      appBar: appbar(context,
+          left: const FaIcon(
+            FontAwesomeIcons.bars,
+            color: Colors.black,
+            size: 24,
+          ),
+          center: Image.asset("assets/images/logo_text.png"),
+          leftWidgetOnClik: () => {_scaffoldKey.currentState!.openDrawer()}),
       body: SafeArea(
         child: Container(
             color: Colors.white,
