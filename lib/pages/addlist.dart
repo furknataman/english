@@ -1,6 +1,12 @@
+import 'package:english/db/models/lists.dart';
 import 'package:english/global_widget/app_bar.dart';
+import 'package:english/global_widget/toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../db/db/db.dart';
+import '../db/models/words.dart';
 
 class AddList extends StatefulWidget {
   const AddList({Key? key}) : super(key: key);
@@ -10,7 +16,7 @@ class AddList extends StatefulWidget {
 }
 
 class _AddListState extends State<AddList> {
-  final _litName = TextEditingController();
+  final _listName = TextEditingController();
   List<TextEditingController> wordTextEditingList = [];
   List<Row> wordListField = [];
 
@@ -59,7 +65,7 @@ class _AddListState extends State<AddList> {
                   size: 18,
                 ),
                 hindText: "Liste Adı",
-                textEditingController: _litName,
+                textEditingController: _listName,
                 textAlign: TextAlign.left),
             Container(
               margin: EdgeInsets.only(top: 20, bottom: 10),
@@ -132,21 +138,52 @@ class _AddListState extends State<AddList> {
     setState((() => wordListField));
   }
 
-  void save() {
-    for (int i = 0; i < wordTextEditingList.length / 2; i++) {
-      String eng = wordTextEditingList[2 * i].text;
-      String tr = wordTextEditingList[2 * i + 1].text;
+  void save() async {
+    if (!_listName.text.isEmpty) {
+      int counter = 0;
+      bool notEmptyPair = false;
+      for (int i = 0; i < wordTextEditingList.length / 2; i++) {
+        String eng = wordTextEditingList[2 * i].text;
+        String tr = wordTextEditingList[2 * i + 1].text;
 
-      if (!eng.isEmpty || !tr.isEmpty) {
-        debugPrint(eng + "<<<<<<<" + tr);
-      } else {
-        debugPrint("Boş bırakılan alan");
+        if (!eng.isEmpty && !tr.isEmpty) {
+          counter++;
+        } else {
+          notEmptyPair = true;
+        }
       }
+
+      if (counter > 4) {
+        if (!notEmptyPair) {
+          Lists addedList = await DB.instance.insertList(Lists(name: _listName.text));
+
+          for (int i = 0; i < wordTextEditingList.length / 2; i++) {
+            String eng = wordTextEditingList[2 * i].text;
+            String tr = wordTextEditingList[2 * i + 1].text;
+            Word word = await DB.instance.insertWord(
+                Word(list_id: addedList.id, word_eng: eng, word_tr: tr, status: false));
+            debugPrint(
+                "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
+          }
+
+          toastMessage("Liste oluşturuldu");
+          _listName.clear();
+          wordTextEditingList.forEach((element) {
+            element.clear();
+          });
+        } else {
+          toastMessage("Alanlar boş bırakılamaz. Silin veya doldurun.");
+        }
+      } else {
+        toastMessage("En az dört çift dolu olmalıdır.");
+      }
+    } else {
+      toastMessage("Lütfen liste adını girin");
     }
   }
 
   void deleteRow() {
-    if (wordListField.length != 1) {
+    if (wordListField.length != 4) {
       wordTextEditingList.removeAt(wordTextEditingList.length - 1);
       wordTextEditingList.removeAt(wordTextEditingList.length - 1);
 
@@ -154,7 +191,7 @@ class _AddListState extends State<AddList> {
 
       setState(() => wordListField);
     } else {
-      debugPrint("Son Eleman");
+      toastMessage("En az dört çift gereklidir.");
     }
   }
 

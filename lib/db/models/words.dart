@@ -36,10 +36,10 @@ class Word {
         WordTableFields.status: status == true ? 1 : 0,
       };
   static Word fromJson(Map<String, Object?> json) => Word(
-    id: json[WordTableFields.id] as int,
-    list_id: json[WordTableFields.list_id] as int,
-    word_eng: json[WordTableFields.word_eng] as String,
-    word_tr: json[WordTableFields.word_tr] as String,
-    status: json[WordTableFields.status] ==1,
-  );
+        id: json[WordTableFields.id] as int?,
+        list_id: json[WordTableFields.list_id] as int?,
+        word_eng: json[WordTableFields.word_eng] as String?,
+        word_tr: json[WordTableFields.word_tr] as String?,
+        status: json[WordTableFields.status] == 1,
+      );
 }

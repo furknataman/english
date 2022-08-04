@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:english/db/models/lists.dart';
 import 'package:english/db/models/words.dart';
 import 'package:sqflite/sqflite.dart';
@@ -20,27 +22,100 @@ class DB {
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
-  Future _createDB(Database db, int versiom) async {
-    final idType = 'INTEGER PRIMARY KEY AUTOINTCREMENT';
+  Future _createDB(Database db, int version) async {
+    final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     final boolType = 'BOOLEAN NOT NULL';
     final integerType = 'INTEGER NOT NULL';
     final textType = 'TEXT NOT NULL';
 
     await db.execute('''
-CREATE TABLE  IF NOT EXISTS $tableNameLists(
-  ${ListsTableFields.id} $idType,
-  ${ListsTableFields.name} $textType,
-)
-''');
+    CREATE TABLE  IF NOT EXISTS $tableNameLists(
+    ${ListsTableFields.id} $idType,
+    ${ListsTableFields.name} $textType
+    )
+    ''');
 
     await db.execute('''
-CREATE TABLE IF NOT EXISTS $tableNameWord (
-${WordTableFields.id} $idType,
-${WordTableFields.list_id} $integerType,
-${WordTableFields.word_eng} $textType,
-${WordTableFields.word_tr} $textType,
-${WordTableFields.status} $boolType,
-FOREIGN KEY(${WordTableFields.list_id} REFERENCES $tableNameLists (${ListsTableFields.id}))
-''');
+      CREATE TABLE IF NOT EXISTS $tableNameWord (
+      ${WordTableFields.id} $idType,
+      ${WordTableFields.list_id} $integerType,
+      ${WordTableFields.word_eng} $textType,
+      ${WordTableFields.word_tr} $textType,
+      ${WordTableFields.status} $boolType,
+      FOREIGN KEY(${WordTableFields.list_id}) REFERENCES $tableNameLists (${ListsTableFields.id}))
+      ''');
+  }
+
+  Future<Lists> insertList(Lists lists) async {
+    final db = await instance.database;
+    final id = await db.insert(tableNameLists, lists.toJson());
+
+    return lists.copy(id: id);
+  }
+
+  Future<Word> insertWord(Word word) async {
+    final db = await instance.database;
+    final id = await db.insert(tableNameWord, word.toJson());
+    return word.copy(id: id);
+  }
+
+  Future<List<Word>> readWordByList(int? listID) async {
+    final db = await instance.database;
+    final orderBy = '${WordTableFields.id} ASC';
+    final result = await db.query(tableNameWord,
+        orderBy: orderBy, where: '${WordTableFields.list_id}=?', whereArgs: [listID]);
+
+    return result.map((json) => Word.fromJson(json)).toList();
+  }
+
+  Future<List<Map<String,Object?>>> readListAll() async {
+    final db = await instance.database;
+    List<Map<String, Object?>> res = [];
+    List<Map<String, Object?>> lists = await db.rawQuery("SELECT id,name FROM lists");
+
+    await Future.forEach(lists, (element) async {
+      element = element as Map;
+      var wordInfoByList = await db.rawQuery(
+          "SELECT(SELECT COUNT(*) FROM words where list_id=${element['id']}) as sum_word,"
+          "(SELECT COUNT(*) FROM words where status=0 and list_id=${element['id']}) as sum_unlearned");
+      Map<String, Object?> temp = Map.of(wordInfoByList[0]);
+      temp["name"] = element["name"];
+      temp["list_id"] = element["id"];
+      res.add(temp);
+    });
+    return res;
+  }
+
+  Future<int> updateWord(Word word) async {
+    final db = await instance.database;
+    return db.update(tableNameWord, word.toJson(),
+        where: '${WordTableFields.id}=?', whereArgs: [word.id]);
+  }
+
+  Future<int> updateList(Lists lists) async {
+    final db = await instance.database;
+    return db.update(tableNameLists, lists.toJson(),
+        where: '${ListsTableFields.id}=?', whereArgs: [lists.id]);
+  }
+
+  Future<int> deleteWord(int id) async {
+    final db = await instance.database;
+    return db.delete(tableNameWord, where: '${WordTableFields.id}=?', whereArgs: [id]);
+  }
+
+  Future<int> deleteListsAndWordByList(int id) async {
+    final db = await instance.database;
+    int result = await db
+        .delete(tableNameLists, where: '${ListsTableFields.id}=?', whereArgs: [id]);
+    if (result == 1) {
+      await db
+          .delete(tableNameWord, where: '${WordTableFields.list_id}=?', whereArgs: [id]);
+    }
+    return result;
+  }
+
+  Future close() async {
+    final db = await instance.database;
+    db.close();
   }
 }
