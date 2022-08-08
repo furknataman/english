@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
+import '../db/db/db.dart';
+
 class ListPage extends StatefulWidget {
   const ListPage({Key? key}) : super(key: key);
 
@@ -12,7 +14,23 @@ class ListPage extends StatefulWidget {
   State<ListPage> createState() => _ListPageState();
 }
 
+
 class _ListPageState extends State<ListPage> {
+  List<Map<String, Object?>> _lists = [];
+@override
+  void initState() {
+    // TOO:implement initSatate
+    super.initState();
+    getLists();
+  }
+
+  void getLists() async {
+    _lists = await DB.instance.readListAll();
+    setState(() {
+      _lists;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,67 +52,76 @@ class _ListPageState extends State<ListPage> {
         child: const Icon(Icons.add),
       ),
       body: SafeArea(
-        child: Column(children: [
-          Center(
-            child: Container(
-              width: double.infinity,
-              child: Card(
-                color: Color(0xffDCD2FF),
-                elevation: 8,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-                margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 15, top: 5),
-                      child: Text(
-                        "Liste Adı",
-                        style: TextStyle(
-                            color: Colors.black, fontSize: 16, fontFamily: "RobotoMedium"),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        left: 30,
-                      ),
-                      child: Text(
-                        "305 Terim",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: "RobotoRegular"),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        left: 30,
-                      ),
-                      child: Text(
-                        "5 Öğrenildi",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: "RobotoRegular"),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 30, bottom: 5),
-                      child: Text(
-                        "3 Öğrenilmedi",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: "RobotoRegular"),
-                      ),
-                    )
-                  ],
+          child: ListView.builder(
+        itemBuilder: (context, index) {
+          return listItem(_lists[index]['list_id'] as int,
+              listname: _lists[index]['name'].toString(),
+              sumWords: _lists[index]['sum_word'].toString(),
+              sumUnloearned: _lists[index]['sum_unlearned'].toString());
+        },
+        itemCount: _lists.length,
+      )),
+    );
+  }
+
+  InkWell listItem(int id,
+      {@required String? listname,
+      @required String? sumWords,
+      @required String? sumUnloearned}) {
+    return InkWell(
+      onTap: () {
+        debugPrint(id.toString());
+      },
+      child: Container(
+        width: double.infinity,
+        child: Card(
+          color: Color(0xffDCD2FF),
+          elevation: 8,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+          margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 15, top: 5),
+                child: Text(
+                 listname!,
+                  style: TextStyle(
+                      color: Colors.black, fontSize: 16, fontFamily: "RobotoMedium"),
                 ),
               ),
-            ),
-          )
-        ]),
+              Container(
+                margin: EdgeInsets.only(
+                  left: 30,
+                ),
+                child: Text(
+                  sumWords!+" terim",
+                  style: TextStyle(
+                      color: Colors.black, fontSize: 14, fontFamily: "RobotoRegular"),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                  left: 30,
+                ),
+                child: Text(
+                  (int.parse(sumWords)-int.parse(sumUnloearned!)).toString()+ " öğrenildi",
+                  style: TextStyle(
+                      color: Colors.black, fontSize: 14, fontFamily: "RobotoRegular"),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 30, bottom: 5),
+                child: Text(
+                  sumUnloearned +" öğrenilmedi",
+                  style: TextStyle(
+                      color: Colors.black, fontSize: 14, fontFamily: "RobotoRegular"),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

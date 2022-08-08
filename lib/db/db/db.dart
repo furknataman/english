@@ -68,7 +68,7 @@ class DB {
     return result.map((json) => Word.fromJson(json)).toList();
   }
 
-  Future<List<Map<String,Object?>>> readListAll() async {
+  Future<List<Map<String, Object?>>> readListAll() async {
     final db = await instance.database;
     List<Map<String, Object?>> res = [];
     List<Map<String, Object?>> lists = await db.rawQuery("SELECT id,name FROM lists");
