@@ -1,32 +1,37 @@
-import 'package:english/db/models/lists.dart';
-import 'package:english/global_widget/app_bar.dart';
-import 'package:english/global_widget/toast_message.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 import '../db/db/db.dart';
 import '../db/models/words.dart';
+import '../global_widget/app_bar.dart';
 import '../global_widget/text_filed.dart';
+import '../global_widget/toast_message.dart';
 
-class AddList extends StatefulWidget {
-  const AddList({Key? key}) : super(key: key);
+class addWordPage extends StatefulWidget {
+  final int? listID;
+  final String? ListName;
+  const addWordPage(this.listID, this.ListName, {Key? key}) : super(key: key);
 
   @override
-  State<AddList> createState() => _AddListState();
+  State<addWordPage> createState() =>
+      _addWordPageState(ListID: listID, ListName: ListName);
 }
 
-class _AddListState extends State<AddList> {
-  final _listName = TextEditingController();
+class _addWordPageState extends State<addWordPage> {
+  int? ListID;
+  String? ListName;
+  _addWordPageState({@required this.ListID, @required this.ListName});
+
   List<TextEditingController> wordTextEditingList = [];
   List<Row> wordListField = [];
 
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < 10; ++i) wordTextEditingList.add(TextEditingController());
+    for (int i = 0; i < 6; ++i) wordTextEditingList.add(TextEditingController());
 
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 3; ++i) {
       wordListField.add(Row(
         children: [
           Expanded(
@@ -39,37 +44,24 @@ class _AddListState extends State<AddList> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appbar(
-        context,
-        left: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
-          size: 22,
-        ),
-        center: Image.asset("assets/images/logo_text.png"),
-        right: Image.asset(
-          "assets/images/logo.png",
-          height: 45,
-          width: 45,
-        ),
-        leftWidgetOnClik: () => {Navigator.pop(context)},
-      ),
+      appBar: appbar(context,
+          left: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 22),
+          center: Text(
+            ListName!,
+            style:
+                const TextStyle(fontFamily: "carter", fontSize: 22, color: Colors.black),
+          ),
+          right: const Icon(Icons.add, color: Colors.black, size: 22),
+          leftWidgetOnClik: () => Navigator.pop(context)),
       body: SafeArea(
         child: Container(
           color: Colors.white,
           child: Column(children: [
-            textFieldBuilder(
-                icon: Icon(
-                  Icons.list,
-                  size: 18,
-                ),
-                hindText: "Liste Adı",
-                textEditingController: _listName,
-                textAlign: TextAlign.left),
             Container(
-              margin: EdgeInsets.only(top: 20, bottom: 10),
+              margin: EdgeInsets.only(top: 10, bottom: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -103,7 +95,6 @@ class _AddListState extends State<AddList> {
       ),
     );
   }
-
   InkWell actionsbutons(Function() click, IconData icon) {
     return InkWell(
       onTap: () => click(),
@@ -119,7 +110,6 @@ class _AddListState extends State<AddList> {
       ),
     );
   }
-
   void addRow() {
     wordTextEditingList.add(TextEditingController());
     wordTextEditingList.add(TextEditingController());
@@ -140,7 +130,7 @@ class _AddListState extends State<AddList> {
   }
 
   void save() async {
-    if (!_listName.text.isEmpty) {
+    
       int counter = 0;
       bool notEmptyPair = false;
       for (int i = 0; i < wordTextEditingList.length / 2; i++) {
@@ -154,21 +144,20 @@ class _AddListState extends State<AddList> {
         }
       }
 
-      if (counter > 4) {
+      if (counter > 1) {
         if (!notEmptyPair) {
-          Lists addedList = await DB.instance.insertList(Lists(name: _listName.text));
+          
 
           for (int i = 0; i < wordTextEditingList.length / 2; i++) {
             String eng = wordTextEditingList[2 * i].text;
             String tr = wordTextEditingList[2 * i + 1].text;
             Word word = await DB.instance.insertWord(
-                Word(list_id: addedList.id, word_eng: eng, word_tr: tr, status: false));
+                Word(list_id: ListID, word_eng: eng, word_tr: tr, status: false));
             debugPrint(
                 "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
           }
 
-          toastMessage("Liste oluşturuldu");
-          _listName.clear();
+          toastMessage("Kelimeler eklendi");
           wordTextEditingList.forEach((element) {
             element.clear();
           });
@@ -176,15 +165,12 @@ class _AddListState extends State<AddList> {
           toastMessage("Alanlar boş bırakılamaz. Silin veya doldurun.");
         }
       } else {
-        toastMessage("En az dört çift dolu olmalıdır.");
+        toastMessage("En az 1 çift dolu olmalıdır.");
       }
-    } else {
-      toastMessage("Lütfen liste adını girin");
-    }
   }
 
   void deleteRow() {
-    if (wordListField.length != 4) {
+    if (wordListField.length != 1) {
       wordTextEditingList.removeAt(wordTextEditingList.length - 1);
       wordTextEditingList.removeAt(wordTextEditingList.length - 1);
 
@@ -192,8 +178,9 @@ class _AddListState extends State<AddList> {
 
       setState(() => wordListField);
     } else {
-      toastMessage("En az dört çift gereklidir.");
+      toastMessage("En az 1 çift gereklidir.");
     }
   }
 
-}
+
+  }

@@ -1,11 +1,14 @@
+import 'package:english/db/models/lists.dart';
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/addlist.dart';
 import 'package:english/pages/main.dart';
+import 'package:english/pages/words.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 import '../db/db/db.dart';
+import '../global_widget/toast_message.dart';
 
 class ListPage extends StatefulWidget {
   const ListPage({Key? key}) : super(key: key);
@@ -14,18 +17,44 @@ class ListPage extends StatefulWidget {
   State<ListPage> createState() => _ListPageState();
 }
 
+bool pressController = false;
+List<bool> deleteIndexList = [];
 
 class _ListPageState extends State<ListPage> {
   List<Map<String, Object?>> _lists = [];
-@override
+  @override
   void initState() {
     // TOO:implement initSatate
     super.initState();
     getLists();
   }
 
+  void delete() async {
+    List<int> removeIndexList = [];
+
+    for (int i = 0; i < _lists.length; i++) {
+      if (deleteIndexList[i] == true) removeIndexList.add(i);
+    }
+    for (int i = removeIndexList.length - 1; i >= 0; i--) {
+      DB.instance.deleteListsAndWordByList(_lists[removeIndexList[i]]['list_id'] as int);
+      _lists.removeAt(removeIndexList[i]);
+      deleteIndexList.removeAt(removeIndexList[i]);
+    }
+    for (int i = 0; i < deleteIndexList.length; i++) deleteIndexList[i] = false;
+
+    setState(() {
+      _lists;
+      deleteIndexList;
+      pressController = false;
+    });
+    toastMessage("Seçili listeler silindi.");
+  }
+
   void getLists() async {
     _lists = await DB.instance.readListAll();
+    for (int i = 0; i < _lists.length; i++) {
+      deleteIndexList.add(false);
+    }
     setState(() {
       _lists;
     });
@@ -41,7 +70,16 @@ class _ListPageState extends State<ListPage> {
             size: 22,
           ),
           center: Image.asset("assets/images/lists.png"),
-          right: Image.asset("assets/images/lists.png"),
+          right: pressController != true
+              ? Image.asset("assets/images/lists.png")
+              : InkWell(
+                  onTap: delete,
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.deepOrangeAccent,
+                    size: 24,
+                  ),
+                ),
           leftWidgetOnClik: () => {Navigator.pop(context)}),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -54,7 +92,7 @@ class _ListPageState extends State<ListPage> {
       body: SafeArea(
           child: ListView.builder(
         itemBuilder: (context, index) {
-          return listItem(_lists[index]['list_id'] as int,
+          return listItem(_lists[index]['list_id'] as int, index,
               listname: _lists[index]['name'].toString(),
               sumWords: _lists[index]['sum_word'].toString(),
               sumUnloearned: _lists[index]['sum_unlearned'].toString());
@@ -64,13 +102,24 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-  InkWell listItem(int id,
+  InkWell listItem(int id, int index,
       {@required String? listname,
       @required String? sumWords,
       @required String? sumUnloearned}) {
     return InkWell(
       onTap: () {
         debugPrint(id.toString());
+        Navigator.push(
+                context, MaterialPageRoute(builder: (context) => WordsPage(id, listname)))
+            .then((value) {
+          getLists();
+        });
+      },
+      onLongPress: () {
+        setState(() {
+          pressController = true;
+          deleteIndexList[index] = true;
+        });
       },
       child: Container(
         width: double.infinity,
@@ -79,48 +128,79 @@ class _ListPageState extends State<ListPage> {
           elevation: 8,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
           margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: EdgeInsets.only(left: 15, top: 5),
-                child: Text(
-                 listname!,
-                  style: TextStyle(
-                      color: Colors.black, fontSize: 16, fontFamily: "RobotoMedium"),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 15, top: 5),
+                      child: Text(
+                        listname!,
+                        style: TextStyle(
+                            color: Colors.black, fontSize: 16, fontFamily: "RobotoMedium"),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        left: 30,
+                      ),
+                      child: Text(
+                        sumWords! + " terim",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: "RobotoRegular"),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        left: 30,
+                      ),
+                      child: Text(
+                        (int.parse(sumWords) - int.parse(sumUnloearned!)).toString() +
+                            " öğrenildi",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: "RobotoRegular"),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 30, bottom: 5),
+                      child: Text(
+                        sumUnloearned + " öğrenilmedi",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: "RobotoRegular"),
+                      ),
+                    )
+                  ],
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 30,
-                ),
-                child: Text(
-                  sumWords!+" terim",
-                  style: TextStyle(
-                      color: Colors.black, fontSize: 14, fontFamily: "RobotoRegular"),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 30,
-                ),
-                child: Text(
-                  (int.parse(sumWords)-int.parse(sumUnloearned!)).toString()+ " öğrenildi",
-                  style: TextStyle(
-                      color: Colors.black, fontSize: 14, fontFamily: "RobotoRegular"),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 30, bottom: 5),
-                child: Text(
-                  sumUnloearned +" öğrenilmedi",
-                  style: TextStyle(
-                      color: Colors.black, fontSize: 14, fontFamily: "RobotoRegular"),
-                ),
-              )
-            ],
-          ),
+                pressController == true
+                    ? Checkbox(
+                        checkColor: Colors.white,
+                        activeColor: Colors.deepPurpleAccent,
+                        hoverColor: Colors.blueAccent,
+                        value: deleteIndexList[index],
+                        onChanged: (bool? value) {
+                          setState(() {
+                            deleteIndexList[index] = value!;
+
+                            bool deleteProcessController = false;
+                            deleteIndexList.forEach((element) {
+                              if (element == true) deleteProcessController = true;
+                            });
+                            if (!deleteProcessController) pressController = false;
+                          });
+                        },
+                      )
+                    : Container()
+              ]),
         ),
       ),
     );

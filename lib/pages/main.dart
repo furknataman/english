@@ -1,8 +1,10 @@
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/list.dart';
+import 'package:english/pages/words_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -141,16 +143,26 @@ class _MainPageState extends State<MainPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const WordCardspage()));
+                        },
+                        child: card(
+                          context,
+                          title: "Kelime Kartlarım",
+                          startColor: 0xff01dacc9,
+                          endColor: 0xff0c33b2,
+                        ),
+                      ),
                       card(
                         context,
-                        title: "Kelime Kartlarım",
-                        startColor: 0xff01dacc9,
-                        endColor: 0xff0c33b2,
+                        startColor: 0xffff3384,
+                        endColor: 0xffb029b9,
+                        title: "Çoktan\n Seçmeli",
                       ),
-                      card(context,
-                          title: "Çoktan\n Seçmeli",
-                          startColor: 0xffff3384,
-                          endColor: 0xffb029b9)
                     ],
                   ),
                 )
