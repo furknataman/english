@@ -122,7 +122,7 @@ class _MainPageState extends State<MainPage> {
                     alignment: Alignment.center,
                     height: 55,
                     width: MediaQuery.of(context).size.width * 0.8,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -133,7 +133,7 @@ class _MainPageState extends State<MainPage> {
                           tileMode: TileMode.mirror,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(8))),
-                    child: Text("LİSTERİM",
+                    child: const Text("LİSTERİM",
                         style: TextStyle(
                             fontSize: 28, fontFamily: "Carter", color: Colors.white)),
                   ),
@@ -194,10 +194,10 @@ class _MainPageState extends State<MainPage> {
         children: [
           Text(
             title!,
-            style: TextStyle(fontSize: 28, fontFamily: "Carter", color: Colors.white),
+            style: const TextStyle(fontSize: 28, fontFamily: "Carter", color: Colors.white),
             textAlign: TextAlign.center,
           ),
-          Icon(
+          const Icon(
             Icons.check_circle_outline,
             size: 32,
             color: Colors.white,

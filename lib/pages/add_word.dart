@@ -95,6 +95,7 @@ class _addWordPageState extends State<addWordPage> {
       ),
     );
   }
+
   InkWell actionsbutons(Function() click, IconData icon) {
     return InkWell(
       onTap: () => click(),
@@ -110,6 +111,7 @@ class _addWordPageState extends State<addWordPage> {
       ),
     );
   }
+
   void addRow() {
     wordTextEditingList.add(TextEditingController());
     wordTextEditingList.add(TextEditingController());
@@ -130,43 +132,40 @@ class _addWordPageState extends State<addWordPage> {
   }
 
   void save() async {
-    
-      int counter = 0;
-      bool notEmptyPair = false;
-      for (int i = 0; i < wordTextEditingList.length / 2; i++) {
-        String eng = wordTextEditingList[2 * i].text;
-        String tr = wordTextEditingList[2 * i + 1].text;
+    int counter = 0;
+    bool notEmptyPair = false;
+    for (int i = 0; i < wordTextEditingList.length / 2; i++) {
+      String eng = wordTextEditingList[2 * i].text;
+      String tr = wordTextEditingList[2 * i + 1].text;
 
-        if (!eng.isEmpty && !tr.isEmpty) {
-          counter++;
-        } else {
-          notEmptyPair = true;
-        }
-      }
-
-      if (counter > 1) {
-        if (!notEmptyPair) {
-          
-
-          for (int i = 0; i < wordTextEditingList.length / 2; i++) {
-            String eng = wordTextEditingList[2 * i].text;
-            String tr = wordTextEditingList[2 * i + 1].text;
-            Word word = await DB.instance.insertWord(
-                Word(list_id: ListID, word_eng: eng, word_tr: tr, status: false));
-            debugPrint(
-                "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
-          }
-
-          toastMessage("Kelimeler eklendi");
-          wordTextEditingList.forEach((element) {
-            element.clear();
-          });
-        } else {
-          toastMessage("Alanlar boş bırakılamaz. Silin veya doldurun.");
-        }
+      if (!eng.isEmpty && !tr.isEmpty) {
+        counter++;
       } else {
-        toastMessage("En az 1 çift dolu olmalıdır.");
+        notEmptyPair = true;
       }
+    }
+
+    if (counter > 1) {
+      if (!notEmptyPair) {
+        for (int i = 0; i < wordTextEditingList.length / 2; i++) {
+          String eng = wordTextEditingList[2 * i].text;
+          String tr = wordTextEditingList[2 * i + 1].text;
+          Word word = await DB.instance.insertWord(
+              Word(list_id: ListID, word_eng: eng, word_tr: tr, status: false));
+          debugPrint(
+              "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
+        }
+
+        toastMessage("Kelimeler eklendi");
+        wordTextEditingList.forEach((element) {
+          element.clear();
+        });
+      } else {
+        toastMessage("Alanlar boş bırakılamaz. Silin veya doldurun.");
+      }
+    } else {
+      toastMessage("En az 1 çift dolu olmalıdır.");
+    }
   }
 
   void deleteRow() {
@@ -181,6 +180,4 @@ class _addWordPageState extends State<addWordPage> {
       toastMessage("En az 1 çift gereklidir.");
     }
   }
-
-
-  }
+}
