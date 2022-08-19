@@ -1,10 +1,13 @@
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/list.dart';
+import 'package:english/pages/multiple_choice.dart';
 import 'package:english/pages/words_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../global_variable.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -13,10 +16,10 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-enum Lang { eng, tr }
+
 
 class _MainPageState extends State<MainPage> {
-  Lang? _chooeseLang = Lang.eng;
+  
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   PackageInfo? packageInfo;
   String version = "";
@@ -49,23 +52,23 @@ class _MainPageState extends State<MainPage> {
                   "assets/images/logo.png",
                   height: 80,
                 ),
-                Text(
+                const Text(
                   "QUEZY",
                   style: TextStyle(fontFamily: "RobotoLight", fontSize: 26),
                 ),
-                Text(
+                const Text(
                   "İstediğini Öğren",
                   style: TextStyle(fontFamily: "RobotoLight", fontSize: 16),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.35,
-                  child: Divider(
+                  child: const Divider(
                     color: Colors.black,
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 50, right: 8, left: 8),
-                  child: Text(
+                  margin: const EdgeInsets.only(top: 50, right: 8, left: 8),
+                  child: const Text(
                     "Bu uygulama 2022 yılında Furkan ATAMAN tarafından Flutter geliştirmeyi öğrenmek için tasarlandı",
                     style: TextStyle(fontFamily: "RobotoLight", fontSize: 14),
                     textAlign: TextAlign.center,
@@ -73,7 +76,7 @@ class _MainPageState extends State<MainPage> {
                 ),
                 InkWell(
                   onTap: () {},
-                  child: Text(
+                  child: const Text(
                     "Tıkla",
                     style: TextStyle(
                         fontFamily: "RobotoLight", fontSize: 16, color: Color(0xff0A588D)),
@@ -83,8 +86,8 @@ class _MainPageState extends State<MainPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("v" + version + "\nfurknataman@gmail.com",
-                  style: TextStyle(
+              child: Text("v$version\nfurknataman@gmail.com",
+                  style: const TextStyle(
                       fontFamily: "RobotoLight", fontSize: 12, color: Color(0xff0A588D)),
                   textAlign: TextAlign.center),
             ),
@@ -106,10 +109,10 @@ class _MainPageState extends State<MainPage> {
                 child: Column(
               children: [
                 langRadioButton(
-                    text: "İngilizce-Türkçe", group: _chooeseLang, value: Lang.tr),
+                    text: "İngilizce-Türkçe", group: chooeseLang, value: Lang.eng),
                 langRadioButton(
-                    text: "Türkçe-İngilizce", group: _chooeseLang, value: Lang.eng),
-                SizedBox(
+                    text: "Türkçe-İngilizce", group: chooeseLang, value: Lang.tr),
+                const SizedBox(
                   height: 25,
                 ),
                 InkWell(
@@ -118,7 +121,7 @@ class _MainPageState extends State<MainPage> {
                         MaterialPageRoute(builder: (context) => const ListPage()));
                   }),
                   child: Container(
-                    margin: EdgeInsets.only(bottom: 20),
+                    margin: const EdgeInsets.only(bottom: 20),
                     alignment: Alignment.center,
                     height: 55,
                     width: MediaQuery.of(context).size.width * 0.8,
@@ -157,11 +160,19 @@ class _MainPageState extends State<MainPage> {
                           endColor: 0xff0c33b2,
                         ),
                       ),
-                      card(
-                        context,
-                        startColor: 0xffff3384,
-                        endColor: 0xffb029b9,
-                        title: "Çoktan\n Seçmeli",
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MultipleChoicePage()));
+                        },
+                        child: card(
+                          context,
+                          startColor: 0xffff3384,
+                          endColor: 0xffb029b9,
+                          title: "Çoktan\n Seçmeli",
+                        ),
                       ),
                     ],
                   ),
@@ -188,13 +199,14 @@ class _MainPageState extends State<MainPage> {
             ], // Gradient from https://learnui.design/tools/gradient-generator.html
             tileMode: TileMode.mirror,
           ),
-          borderRadius: BorderRadius.all(Radius.circular(8))),
+          borderRadius: const BorderRadius.all(Radius.circular(8))),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(
             title!,
-            style: const TextStyle(fontSize: 28, fontFamily: "Carter", color: Colors.white),
+            style:
+                const TextStyle(fontSize: 28, fontFamily: "Carter", color: Colors.white),
             textAlign: TextAlign.center,
           ),
           const Icon(
@@ -213,17 +225,17 @@ class _MainPageState extends State<MainPage> {
       width: 250,
       height: 30,
       child: ListTile(
-        contentPadding: EdgeInsets.all(0),
+        contentPadding: const EdgeInsets.all(0),
         title: Text(
           text!,
-          style: TextStyle(fontFamily: "Carter", fontSize: 19),
+          style: const TextStyle(fontFamily: "Carter", fontSize: 19),
         ),
         leading: Radio<Lang>(
             value: value!,
-            groupValue: _chooeseLang,
+            groupValue: chooeseLang,
             onChanged: (Lang? value) {
               setState(() {
-                _chooeseLang = value;
+                chooeseLang = value;
               });
             }),
       ),

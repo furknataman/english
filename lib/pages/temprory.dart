@@ -13,7 +13,7 @@ class _TemproryPageState extends State<TemproryPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => MainPage()));
     });
@@ -32,8 +32,8 @@ class _TemproryPageState extends State<TemproryPage> {
               Column(
                 children: [
                   Image.asset("assets/images/logo.png"),
-                  Padding(
-                    padding: const EdgeInsets.all(15),
+                 const Padding(
+                    padding:  EdgeInsets.all(15),
                     child: Text(
                       "Learn",
                       style: TextStyle(
@@ -44,8 +44,8 @@ class _TemproryPageState extends State<TemproryPage> {
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(15),
+             const Padding(
+                padding:  EdgeInsets.all(15),
                 child: Text(
                   "Learn What You Want",
                   style: TextStyle(

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:english/db/models/words.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/global_widget/app_bar.dart';
@@ -9,18 +11,18 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import '../db/db/db.dart';
 
-class WordCardspage extends StatefulWidget {
-  const WordCardspage({Key? key}) : super(key: key);
+class MultipleChoicePage extends StatefulWidget {
+  const MultipleChoicePage({Key? key}) : super(key: key);
 
   @override
-  State<WordCardspage> createState() => _WordCardspageState();
+  State<MultipleChoicePage> createState() => _MultipleChoicePage();
 }
 
 enum Which { learned, unlearned, all }
 
 enum forWhat { fortList, fortListMixed }
 
-class _WordCardspageState extends State<WordCardspage> {
+class _MultipleChoicePage extends State<MultipleChoicePage> {
   Which? _chooseQuwstionType = Which.learned;
   bool listMixed = true;
   List<Map<String, Object?>> _lists = [];
@@ -45,7 +47,15 @@ class _WordCardspageState extends State<WordCardspage> {
 
   List<Word> _words = [];
   bool start = false;
-  List<bool> changeLand = [];
+
+  List<List<String>> optionsList = [];
+  List<String> correctAnswers = [];
+
+  List<bool> clickControl = [];
+  List<List<bool>> clickControlList = [];
+
+  int correctCount = 0;
+  int wrongCount = 0;
 
   void getSelectedWordOfLists(List<int> selectedListID) async {
     if (_chooseQuwstionType == Which.learned) {
@@ -58,20 +68,61 @@ class _WordCardspageState extends State<WordCardspage> {
       );
     }
     if (_words.isNotEmpty) {
-      for (int i = 0; i < _words.length; i++) {
-        changeLand.add(true);
+      if (_words.length > 3) {
+        if (listMixed) _words.shuffle();
+
+        Random random = Random();
+        for (int i = 0; i < _words.length; i++) {
+          clickControl.add(false);
+
+          clickControlList.add([false, false, false, false]);
+
+          List<String> tempOptions = [];
+          while (true) {
+            int rand = random.nextInt(_words.length);
+            if (rand != i) {
+              bool isThereSame = false;
+              for (var element in tempOptions) {
+                if (chooeseLang == Lang.eng) {
+                  if (element == _words[rand].word_tr!) {
+                    isThereSame = true;
+                  }
+                }
+                 else {
+                  if (element == _words[rand].word_eng!) {
+                    isThereSame = true;
+                  }
+                }
+              }
+
+              if (!isThereSame) {
+                tempOptions.add(chooeseLang == Lang.eng
+                    ? _words[rand].word_tr!
+                    : _words[rand].word_eng!);
+              }
+            }
+
+            if (tempOptions.length == 3) {
+              break;
+            }
+          }
+          tempOptions.add(chooeseLang == Lang.eng?_words[i].word_tr!:_words[i].word_eng!);
+          tempOptions.shuffle();
+          correctAnswers.add(chooeseLang == Lang.eng?_words[i].word_tr!:_words[i].word_eng!);
+          optionsList.add(tempOptions);
+        }
+
+        start = true;
+        setState(() {
+          start;
+          _words;
+        });
+      } else {
+        toastMessage("En az 4 kelime gereklidir.");
       }
-      if (listMixed) _words.shuffle();
-      start = true;
-      setState(() {
-        start;
-        _words;
-      });
     } else {
       toastMessage("Seçilen şartlar liste boş.");
     }
-
-    print(_words[0].word_eng);
   }
 
   @override
@@ -85,7 +136,7 @@ class _WordCardspageState extends State<WordCardspage> {
           size: 22,
         ),
         center: const Text(
-          "Kelime Kartları",
+          "Çoktan Seçmeli",
           style: TextStyle(fontFamily: 'carter', color: Colors.black, fontSize: 22),
         ),
         leftWidgetOnClik: () => Navigator.pop(context),
@@ -170,32 +221,12 @@ class _WordCardspageState extends State<WordCardspage> {
                   options: CarouselOptions(height: double.infinity),
                   itemCount: _words.length,
                   itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) {
-                    String word = "";
-                    if (chooeseLang == Lang.tr) {
-                      word = changeLand[itemIndex]
-                          ? _words[itemIndex].word_tr!
-                          : _words[itemIndex].word_eng!;
-                    } else {
-                      word = changeLand[itemIndex]
-                          ? _words[itemIndex].word_eng!
-                          : _words[itemIndex].word_tr!;
-                    }
                     return Column(
                       children: [
                         Expanded(
-                          child: Stack(children: [
-                            InkWell(
-                              onTap: () {
-                                if (changeLand[itemIndex] == true) {
-                                  changeLand[itemIndex] = false;
-                                } else {
-                                  changeLand[itemIndex] = true;
-                                }
-                                setState(() {
-                                  changeLand;
-                                });
-                              },
-                              child: Container(
+                          child: Stack(
+                            children: [
+                              Container(
                                 alignment: Alignment.center,
                                 margin: const EdgeInsets.only(
                                     left: 16, right: 16, top: 8, bottom: 16),
@@ -203,29 +234,49 @@ class _WordCardspageState extends State<WordCardspage> {
                                 decoration: const BoxDecoration(
                                     color: Color(0xffDCD2FF),
                                     borderRadius: BorderRadius.all(Radius.circular(8))),
-                                child: Text(
-                                  word,
-                                  style: const TextStyle(
-                                      fontFamily: "RobotoRegular",
-                                      fontSize: 28,
-                                      color: Colors.black),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      chooeseLang==Lang.eng? _words[itemIndex].word_eng!:_words[itemIndex].word_tr!,
+                                      style: const TextStyle(
+                                          fontFamily: "RobotoRegular",
+                                          fontSize: 28,
+                                          color: Colors.black),
+                                    ),
+                                    customRadioButtonList(itemIndex,
+                                        optionsList[itemIndex], correctAnswers[itemIndex])
+                                  ],
                                 ),
                               ),
-                            ),
-                            Positioned(
-                              left: 30,
-                              top: 10,
-                              child: Text(
-                                (itemIndex + 1).toString() +
-                                    "/" +
-                                    (_words.length).toString(),
-                                style: const TextStyle(
-                                    fontFamily: "RobotoRegular",
-                                    fontSize: 16,
-                                    color: Colors.black),
-                              ),
-                            )
-                          ]),
+                              Positioned(
+                                  left: 30,
+                                  top: 10,
+                                  child: Text(
+                                    (itemIndex + 1).toString() +
+                                        "/" +
+                                        (_words.length).toString(),
+                                    style: const TextStyle(
+                                        fontFamily: "RobotoRegular",
+                                        fontSize: 16,
+                                        color: Colors.black),
+                                  )),
+                              Positioned(
+                                  right: 30,
+                                  top: 10,
+                                  child: Text(
+                                    "D:" +
+                                        correctCount.toString() +
+                                        "/" +
+                                        "Y:" +
+                                        wrongCount.toString(),
+                                    style: const TextStyle(
+                                        fontFamily: "RobotoRegular",
+                                        fontSize: 16,
+                                        color: Colors.black),
+                                  )),
+                            ],
+                          ),
                         ),
                         SizedBox(
                           width: 160,
@@ -306,5 +357,76 @@ class _WordCardspageState extends State<WordCardspage> {
         ),
       ),
     );
+  }
+
+  Container customRadioButton(int index, List<String> options, int order) {
+    Icon uncheck = const Icon(Icons.radio_button_off_outlined, size: 16);
+    Icon check = const Icon(Icons.radio_button_checked_outlined, size: 16);
+    return Container(
+      margin: const EdgeInsets.all(4),
+      child: Row(children: [
+        clickControlList[index][order] == false ? uncheck : check,
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          options[order],
+          style: const TextStyle(fontSize: 18),
+        )
+      ]),
+    );
+  }
+
+  Column customRadioButtonList(int index, List<String> options, String correctAnswers) {
+    Divider dV = const Divider(
+      thickness: 1,
+      height: 1,
+    );
+    return Column(
+      children: [
+        dV,
+        InkWell(
+          onTap: () => toastMessage("Seçmej için çift tıklayın"),
+          onDoubleTap: () => checher(index, 0, options, correctAnswers),
+          child: customRadioButton(index, options, 0),
+        ),
+        dV,
+        InkWell(
+          onTap: () => toastMessage("Seçmej için çift tıklayın"),
+          onDoubleTap: () => checher(index, 1, options, correctAnswers),
+          child: customRadioButton(index, options, 1),
+        ),
+        dV,
+        InkWell(
+          onTap: () => toastMessage("Seçmej için çift tıklayın"),
+          onDoubleTap: () => checher(index, 2, options, correctAnswers),
+          child: customRadioButton(index, options, 2),
+        ),
+        dV,
+        InkWell(
+          onTap: () => toastMessage("Seçmej için çift tıklayın"),
+          onDoubleTap: () => checher(index, 3, options, correctAnswers),
+          child: customRadioButton(index, options, 3),
+        ),
+      ],
+    );
+  }
+
+  void checher(index, order, options, correctAnswers) {
+    if (clickControl[index] == false) {
+      clickControl[index] = true;
+
+      setState(() {
+        clickControlList[index][order] = true;
+      });
+      if (options[order] == correctAnswers) {
+        correctCount++;
+      } else {
+        wrongCount++;
+      }
+      if ((correctAnswers + wrongCount) == _words.length) {
+        toastMessage("Test Bitti");
+      }
+    }
   }
 }
