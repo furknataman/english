@@ -74,7 +74,7 @@ class _ListPageState extends State<ListPage> {
               ? Image.asset("assets/images/lists.png")
               : InkWell(
                   onTap: delete,
-                  child: Icon(
+                  child: const Icon(
                     Icons.delete,
                     color: Colors.deepOrangeAccent,
                     size: 24,
@@ -84,7 +84,9 @@ class _ListPageState extends State<ListPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: ((context) => const AddList())));
+              context, MaterialPageRoute(builder: ((context) => const AddList()))).then((value) {
+            getLists();
+          });
         },
         backgroundColor: Colors.purple.withOpacity(0.5),
         child: const Icon(Icons.add),
@@ -124,7 +126,7 @@ class _ListPageState extends State<ListPage> {
       child: Container(
         width: double.infinity,
         child: Card(
-          color: Color(0xffDCD2FF),
+          color: const Color(0xffDCD2FF),
           elevation: 8,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
           margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
@@ -137,33 +139,33 @@ class _ListPageState extends State<ListPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(left: 15, top: 5),
+                      margin: const EdgeInsets.only(left: 15, top: 5),
                       child: Text(
                         listname!,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.black, fontSize: 16, fontFamily: "RobotoMedium"),
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(
+                      margin:const EdgeInsets.only(
                         left: 30,
                       ),
                       child: Text(
                         sumWords! + " terim",
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
                             fontFamily: "RobotoRegular"),
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(
+                      margin: const EdgeInsets.only(
                         left: 30,
                       ),
                       child: Text(
                         (int.parse(sumWords) - int.parse(sumUnloearned!)).toString() +
                             " öğrenildi",
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
                             fontFamily: "RobotoRegular"),
@@ -173,7 +175,7 @@ class _ListPageState extends State<ListPage> {
                       margin: EdgeInsets.only(left: 30, bottom: 5),
                       child: Text(
                         sumUnloearned + " öğrenilmedi",
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
                             fontFamily: "RobotoRegular"),

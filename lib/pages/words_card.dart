@@ -4,7 +4,6 @@ import 'package:english/global_widget/app_bar.dart';
 import 'package:english/global_widget/toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../db/db/db.dart';
@@ -70,8 +69,6 @@ class _WordCardspageState extends State<WordCardspage> {
     } else {
       toastMessage("Seçilen şartlar liste boş.");
     }
-
-    print(_words[0].word_eng);
   }
 
   @override
@@ -216,9 +213,7 @@ class _WordCardspageState extends State<WordCardspage> {
                               left: 30,
                               top: 10,
                               child: Text(
-                                (itemIndex + 1).toString() +
-                                    "/" +
-                                    (_words.length).toString(),
+                                "${itemIndex + 1}/${_words.length}",
                                 style: const TextStyle(
                                     fontFamily: "RobotoRegular",
                                     fontSize: 16,

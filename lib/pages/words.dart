@@ -4,11 +4,6 @@ import 'package:english/global_widget/app_bar.dart';
 import 'package:english/global_widget/toast_message.dart';
 import 'package:english/pages/add_word.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
-import 'package:meta/meta.dart';
-
 import '../db/db/db.dart';
 import '../db/models/words.dart';
 
@@ -18,7 +13,7 @@ class WordsPage extends StatefulWidget {
   const WordsPage(this.listID, this.ListName, {Key? key}) : super(key: key);
 
   @override
-  _WordsPageState createState() => _WordsPageState(ListID: listID, ListName: ListName);
+  State<WordsPage> createState() => _WordsPageState(ListID: listID, ListName: ListName);
 }
 
 class _WordsPageState extends State<WordsPage> {
@@ -66,6 +61,7 @@ class _WordsPageState extends State<WordsPage> {
     toastMessage("Seçili kelimeler silindi");
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appbar(context,
@@ -83,7 +79,7 @@ class _WordsPageState extends State<WordsPage> {
                 )
               : InkWell(
                   onTap: delete,
-                  child: Icon(
+                  child: const Icon(
                     Icons.delete,
                     color: Colors.deepPurpleAccent,
                     size: 24,
@@ -126,7 +122,7 @@ class _WordsPageState extends State<WordsPage> {
         child: Container(
           width: double.infinity,
           child: Card(
-            color: pressController != true ? Color(0xffDCD2FF) : Color(0xffE3E7E5),
+            color: pressController != true ? const Color(0xffDCD2FF) : const Color(0xffE3E7E5),
             elevation: 8,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
             margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
@@ -189,9 +185,9 @@ class _WordsPageState extends State<WordsPage> {
                               deleteIndexList[index] = value!;
                               bool deleteProcessController = false;
 
-                              deleteIndexList.forEach((element) {
+                              for (var element in deleteIndexList) {
                                 if (element == true) deleteProcessController = true;
-                              });
+                              }
                               if (!deleteProcessController) pressController = false;
                             });
                           },

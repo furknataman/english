@@ -253,9 +253,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                   left: 30,
                                   top: 10,
                                   child: Text(
-                                    (itemIndex + 1).toString() +
-                                        "/" +
-                                        (_words.length).toString(),
+                                    "${itemIndex + 1}/${_words.length}",
                                     style: const TextStyle(
                                         fontFamily: "RobotoRegular",
                                         fontSize: 16,
@@ -265,11 +263,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                   right: 30,
                                   top: 10,
                                   child: Text(
-                                    "D:" +
-                                        correctCount.toString() +
-                                        "/" +
-                                        "Y:" +
-                                        wrongCount.toString(),
+                                    "D:$correctCount/Y:$wrongCount",
                                     style: const TextStyle(
                                         fontFamily: "RobotoRegular",
                                         fontSize: 16,

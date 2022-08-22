@@ -1,11 +1,9 @@
-import 'dart:convert';
-
-final String tableNameLists = "lists";
+const String tableNameLists = "lists";
 
 class ListsTableFields {
   static final List<String> values = [id, name];
-  static final String id = 'id';
-  static final String name = 'name';
+  static const String id = 'id';
+  static const String name = 'name';
 }
 
 class Lists {

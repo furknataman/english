@@ -10,7 +10,7 @@ Column textFieldBuilder(
       children: [
         Container(
           height: double.parse(height.toString()),
-          padding: EdgeInsets.only(left: 16, right: 16),
+          padding: const EdgeInsets.only(left: 16, right: 16),
           decoration: BoxDecoration(
               color: Colors.grey.withOpacity(0.25),
               borderRadius: BorderRadius.circular(4)),
@@ -20,7 +20,7 @@ Column textFieldBuilder(
             maxLines: 1,
             textAlign: textAlign,
             controller: textEditingController,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.black,
                 fontFamily: "RobotoMedium",
                 decoration: TextDecoration.none,

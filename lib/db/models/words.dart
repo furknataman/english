@@ -1,12 +1,12 @@
-final String tableNameWord = "words";
+const String tableNameWord = "words";
 
 class WordTableFields {
-  static final List<String> values = [id, list_id, word_eng, word_tr, status];
-  static final String id = "id";
-  static final String list_id = "list_id";
-  static final String word_eng = "word_eng";
-  static final String word_tr = "word_tr";
-  static final String status = "status";
+  static const List<String> values = [id, list_id, word_eng, word_tr, status];
+  static const String id = "id";
+  static const String list_id = "list_id";
+  static const String word_eng = "word_eng";
+  static const String word_tr = "word_tr";
+  static const String status = "status";
 }
 
 class Word {

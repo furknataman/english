@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:english/db/models/lists.dart';
 import 'package:english/db/models/words.dart';
 import 'package:sqflite/sqflite.dart';
@@ -23,10 +21,10 @@ class DB {
   }
 
   Future _createDB(Database db, int version) async {
-    final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    final boolType = 'BOOLEAN NOT NULL';
-    final integerType = 'INTEGER NOT NULL';
-    final textType = 'TEXT NOT NULL';
+    const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    const boolType = 'BOOLEAN NOT NULL';
+    const integerType = 'INTEGER NOT NULL';
+    const textType = 'TEXT NOT NULL';
 
     await db.execute('''
     CREATE TABLE  IF NOT EXISTS $tableNameLists(
@@ -94,15 +92,15 @@ class DB {
       if (i == listsID.length - 1) {
         idList += (listsID[i].toString());
       } else {
-        idList += (listsID[i].toString()+",");
+        idList += ("${listsID[i]},");
       }
     }
 
     List<Map<String, Object?>> result;
     if (status != null) {
-      result = await db.rawQuery('SELECT * FROM words WHERE list_id IN('+idList+')and status='+(status?"1":"0")+'');
+      result = await db.rawQuery('SELECT * FROM words WHERE list_id IN($idList)and status=${status?"1":"0"}');
     } else {
-      result = await db.rawQuery('SELECT * FROM words WHERE list_id IN('+idList+')');
+      result = await db.rawQuery('SELECT * FROM words WHERE list_id IN($idList)');
 
     }
 
