@@ -1,4 +1,6 @@
 {
-  "editor.accessibilityPageSize": 12,
-  "notebook.outputLineHeight": 26
+  "editor.accessibilityPageSize": 80,
+  "notebook.outputLineHeight": 26,
+  "editor.cursorBlinking": "blink",
+  "editor.fontSize": 10
 }

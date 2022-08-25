@@ -16,10 +16,7 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-
-
 class _MainPageState extends State<MainPage> {
-  
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   PackageInfo? packageInfo;
   String version = "";

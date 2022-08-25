@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_is_not_empty
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -29,7 +31,10 @@ class _addWordPageState extends State<addWordPage> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < 6; ++i) wordTextEditingList.add(TextEditingController());
+    for (int i = 0; i < 6; ++i) 
+    {
+      wordTextEditingList.add(TextEditingController());
+    }
 
     for (int i = 0; i < 3; ++i) {
       wordListField.add(Row(
@@ -61,15 +66,15 @@ class _addWordPageState extends State<addWordPage> {
           color: Colors.white,
           child: Column(children: [
             Container(
-              margin: EdgeInsets.only(top: 10, bottom: 10),
+              margin:const EdgeInsets.only(top: 10, bottom: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text(
+                   Text(
                     "İngilizce",
                     style: TextStyle(fontSize: 18, fontFamily: "RobotoRegular"),
                   ),
-                  Text(
+                   Text(
                     "Türkçe",
                     style: TextStyle(fontSize: 18, fontFamily: "RobotoRegular"),
                   )
@@ -102,12 +107,12 @@ class _addWordPageState extends State<addWordPage> {
       child: Container(
         height: 40,
         width: 40,
-        margin: EdgeInsets.only(bottom: 15),
+        margin: const EdgeInsets.only(bottom: 15),
+        decoration: const BoxDecoration(color: Color(0xffDCD2FF), shape: BoxShape.circle),
         child: Icon(
           icon,
           size: 28,
         ),
-        decoration: BoxDecoration(color: Color(0xffDCD2FF), shape: BoxShape.circle),
       ),
     );
   }
@@ -157,9 +162,9 @@ class _addWordPageState extends State<addWordPage> {
         }
 
         toastMessage("Kelimeler eklendi");
-        wordTextEditingList.forEach((element) {
+        for (var element in wordTextEditingList) {
           element.clear();
-        });
+        }
       } else {
         toastMessage("Alanlar boş bırakılamaz. Silin veya doldurun.");
       }
