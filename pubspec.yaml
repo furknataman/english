@@ -50,6 +50,8 @@ dev_dependencies:
   sqflite: ^2.0.3
   fluttertoast: ^8.0.9
   carousel_slider: ^4.1.1
+  shared_preferences: ^2.0.15
+  flutter_launcher_icons: ^0.10.0
 
 
 # For information on the generic Dart part of this file, see the

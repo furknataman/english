@@ -69,7 +69,7 @@ class _ListPageState extends State<ListPage> {
             color: Colors.black,
             size: 22,
           ),
-          center: Image.asset("assets/images/lists.png"),
+          center: Image.asset("assets/images/lists.png",height: 40,),
           right: pressController != true
               ? Image.asset("assets/images/lists.png")
               : InkWell(

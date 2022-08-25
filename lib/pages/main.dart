@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../db/db/sharedPreferences.dart';
 import '../global_variable.dart';
 
 class MainPage extends StatefulWidget {
@@ -97,7 +98,7 @@ class _MainPageState extends State<MainPage> {
             color: Colors.black,
             size: 24,
           ),
-          center: Image.asset("assets/images/logo_text.png"),
+          center: Image.asset("assets/images/logo_text.png",height: 40,),
           leftWidgetOnClik: () => {_scaffoldKey.currentState!.openDrawer()}),
       body: SafeArea(
         child: Container(
@@ -234,6 +235,14 @@ class _MainPageState extends State<MainPage> {
               setState(() {
                 chooeseLang = value;
               });
+
+              //True TR to ING
+              //Flase ING to TR
+              if (value == Lang.eng) {
+                SP.write("lang", true);
+              } else {
+                SP.write("lang", false);
+              }
             }),
       ),
     );

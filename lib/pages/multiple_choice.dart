@@ -10,6 +10,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../db/db/db.dart';
+import '../db/db/sharedPreferences.dart';
 
 class MultipleChoicePage extends StatefulWidget {
   const MultipleChoicePage({Key? key}) : super(key: key);
@@ -18,30 +19,35 @@ class MultipleChoicePage extends StatefulWidget {
   State<MultipleChoicePage> createState() => _MultipleChoicePage();
 }
 
-enum Which { learned, unlearned, all }
-
-enum forWhat { fortList, fortListMixed }
 
 class _MultipleChoicePage extends State<MultipleChoicePage> {
-  Which? _chooseQuwstionType = Which.learned;
-  bool listMixed = true;
-  List<Map<String, Object?>> _lists = [];
-  List<bool> selectedListIndex = [];
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getLists();
   }
 
   void getLists() async {
-    _lists = await DB.instance.readListAll();
-    for (int i = 0; i < _lists.length; i++) {
-      selectedListIndex.add(false);
+    Object? value = await SP.read("selected_list");
+
+    lists = await DB.instance.readListAll();
+
+    for (int i = 0; i < lists.length; i++) {
+      bool isThereSame = false;
+      if (value != null) {
+        for (var element in (value as List)) {
+          if (element == lists[i]['list_id'].toString()) {
+            isThereSame = true;
+          }
+        }
+      }
+
+      selectedListIndex.add(isThereSame);
     }
 
     setState(() {
-      _lists;
+      lists;
     });
   }
 
@@ -58,9 +64,11 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
   int wrongCount = 0;
 
   void getSelectedWordOfLists(List<int> selectedListID) async {
-    if (_chooseQuwstionType == Which.learned) {
+    List<String> value = selectedListID.map((e) => e.toString()).toList();
+    SP.write("selected_list", value);
+    if (chooseQuwstionType == Which.learned) {
       _words = await DB.instance.readWordByLists(selectedListID, status: true);
-    } else if (_chooseQuwstionType == Which.unlearned) {
+    } else if (chooseQuwstionType == Which.unlearned) {
       _words = await DB.instance.readWordByLists(selectedListID, status: false);
     } else {
       _words = await DB.instance.readWordByLists(
@@ -87,8 +95,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                   if (element == _words[rand].word_tr!) {
                     isThereSame = true;
                   }
-                }
-                 else {
+                } else {
                   if (element == _words[rand].word_eng!) {
                     isThereSame = true;
                   }
@@ -106,9 +113,11 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
               break;
             }
           }
-          tempOptions.add(chooeseLang == Lang.eng?_words[i].word_tr!:_words[i].word_eng!);
+          tempOptions
+              .add(chooeseLang == Lang.eng ? _words[i].word_tr! : _words[i].word_eng!);
           tempOptions.shuffle();
-          correctAnswers.add(chooeseLang == Lang.eng?_words[i].word_tr!:_words[i].word_eng!);
+          correctAnswers
+              .add(chooeseLang == Lang.eng ? _words[i].word_tr! : _words[i].word_eng!);
           optionsList.add(tempOptions);
         }
 
@@ -178,9 +187,9 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                         child: ListView.builder(
                           itemBuilder: (context, index) {
                             return checkBox(
-                                index: index, text: _lists[index]['name'].toString());
+                                index: index, text: lists[index]['name'].toString());
                           },
-                          itemCount: _lists.length,
+                          itemCount: lists.length,
                         ),
                       ),
                     ),
@@ -198,7 +207,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                           List<int> selectedListIdList = [];
                           for (int i = 0; i < selectedIndexNoOfList.length; i++) {
                             selectedListIdList
-                                .add(_lists[selectedIndexNoOfList[i]]['list_id'] as int);
+                                .add(lists[selectedIndexNoOfList[i]]['list_id'] as int);
                           }
                           if (selectedListIdList.isNotEmpty) {
                             getSelectedWordOfLists(selectedListIdList);
@@ -238,7 +247,9 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      chooeseLang==Lang.eng? _words[itemIndex].word_eng!:_words[itemIndex].word_tr!,
+                                      chooeseLang == Lang.eng
+                                          ? _words[itemIndex].word_eng!
+                                          : _words[itemIndex].word_tr!,
                                       style: const TextStyle(
                                           fontFamily: "RobotoRegular",
                                           fontSize: 28,
@@ -314,11 +325,25 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
         ),
         leading: Radio<Which>(
           value: value!,
-          groupValue: _chooseQuwstionType,
+          groupValue: chooseQuwstionType,
           onChanged: (Which? value) {
             setState(() {
-              _chooseQuwstionType = value;
+              chooseQuwstionType = value;
             });
+
+            switch (value) {
+              case Which.learned:
+                SP.write("which", 0);
+                break;
+              case Which.unlearned:
+                SP.write("which", 1);
+                break;
+              case Which.all:
+                SP.write("which", 2);
+                break;
+              default:
+                break;
+            }
           },
         ),
       ),
@@ -345,6 +370,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                 selectedListIndex[index] = value!;
               } else {
                 listMixed = value!;
+                SP.write("mix", value);
               }
             });
           },

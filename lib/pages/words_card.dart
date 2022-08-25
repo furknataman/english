@@ -7,6 +7,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../db/db/db.dart';
+import '../db/db/sharedPreferences.dart';
 
 class WordCardspage extends StatefulWidget {
   const WordCardspage({Key? key}) : super(key: key);
@@ -15,15 +16,12 @@ class WordCardspage extends StatefulWidget {
   State<WordCardspage> createState() => _WordCardspageState();
 }
 
-enum Which { learned, unlearned, all }
 
-enum forWhat { fortList, fortListMixed }
+
 
 class _WordCardspageState extends State<WordCardspage> {
-  Which? _chooseQuwstionType = Which.learned;
-  bool listMixed = true;
-  List<Map<String, Object?>> _lists = [];
-  List<bool> selectedListIndex = [];
+
+
   @override
   void initState() {
     // TODO: implement initState
@@ -31,14 +29,27 @@ class _WordCardspageState extends State<WordCardspage> {
     getLists();
   }
 
+  
   void getLists() async {
-    _lists = await DB.instance.readListAll();
-    for (int i = 0; i < _lists.length; i++) {
-      selectedListIndex.add(false);
+    Object? value = await SP.read("selected_list");
+
+    lists = await DB.instance.readListAll();
+
+    for (int i = 0; i < lists.length; i++) {
+      bool isThereSame = false;
+      if (value != null) {
+        for (var element in (value as List)) {
+          if (element == lists[i]['list_id'].toString()) {
+            isThereSame = true;
+          }
+        }
+      }
+
+      selectedListIndex.add(isThereSame);
     }
 
     setState(() {
-      _lists;
+      lists;
     });
   }
 
@@ -47,9 +58,11 @@ class _WordCardspageState extends State<WordCardspage> {
   List<bool> changeLand = [];
 
   void getSelectedWordOfLists(List<int> selectedListID) async {
-    if (_chooseQuwstionType == Which.learned) {
+    List<String> value = selectedListID.map((e) => e.toString()).toList();
+    SP.write("selected_list", value);
+    if (chooseQuwstionType == Which.learned) {
       _words = await DB.instance.readWordByLists(selectedListID, status: true);
-    } else if (_chooseQuwstionType == Which.unlearned) {
+    } else if (chooseQuwstionType == Which.unlearned) {
       _words = await DB.instance.readWordByLists(selectedListID, status: false);
     } else {
       _words = await DB.instance.readWordByLists(
@@ -124,9 +137,9 @@ class _WordCardspageState extends State<WordCardspage> {
                         child: ListView.builder(
                           itemBuilder: (context, index) {
                             return checkBox(
-                                index: index, text: _lists[index]['name'].toString());
+                                index: index, text: lists[index]['name'].toString());
                           },
-                          itemCount: _lists.length,
+                          itemCount: lists.length,
                         ),
                       ),
                     ),
@@ -144,7 +157,7 @@ class _WordCardspageState extends State<WordCardspage> {
                           List<int> selectedListIdList = [];
                           for (int i = 0; i < selectedIndexNoOfList.length; i++) {
                             selectedListIdList
-                                .add(_lists[selectedIndexNoOfList[i]]['list_id'] as int);
+                                .add(lists[selectedIndexNoOfList[i]]['list_id'] as int);
                           }
                           if (selectedListIdList.isNotEmpty) {
                             getSelectedWordOfLists(selectedListIdList);
@@ -264,11 +277,25 @@ class _WordCardspageState extends State<WordCardspage> {
         ),
         leading: Radio<Which>(
           value: value!,
-          groupValue: _chooseQuwstionType,
+          groupValue: chooseQuwstionType,
           onChanged: (Which? value) {
             setState(() {
-              _chooseQuwstionType = value;
+              chooseQuwstionType = value;
             });
+
+            switch (value) {
+              case Which.learned:
+                SP.write("which", 0);
+                break;
+              case Which.unlearned:
+                SP.write("which", 1);
+                break;
+              case Which.all:
+                SP.write("which", 2);
+                break;
+              default:
+                break;
+            }
           },
         ),
       ),
@@ -295,6 +322,7 @@ class _WordCardspageState extends State<WordCardspage> {
                 selectedListIndex[index] = value!;
               } else {
                 listMixed = value!;
+                SP.write("mix", value);
               }
             });
           },
