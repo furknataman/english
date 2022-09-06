@@ -19,9 +19,7 @@ class MultipleChoicePage extends StatefulWidget {
   State<MultipleChoicePage> createState() => _MultipleChoicePage();
 }
 
-
 class _MultipleChoicePage extends State<MultipleChoicePage> {
-
   @override
   void initState() {
     super.initState();
@@ -32,6 +30,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
     Object? value = await SP.read("selected_list");
 
     lists = await DB.instance.readListAll();
+    selectedListIndex = [];
 
     for (int i = 0; i < lists.length; i++) {
       bool isThereSame = false;

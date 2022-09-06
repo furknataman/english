@@ -34,6 +34,7 @@ class _WordCardspageState extends State<WordCardspage> {
     Object? value = await SP.read("selected_list");
 
     lists = await DB.instance.readListAll();
+    selectedListIndex = [];
 
     for (int i = 0; i < lists.length; i++) {
       bool isThereSame = false;

@@ -28,11 +28,14 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     packageInfoInit();
+ 
   }
 
   @override
@@ -98,7 +101,10 @@ class _MainPageState extends State<MainPage> {
             color: Colors.black,
             size: 24,
           ),
-          center: Image.asset("assets/images/logo_text.png",height: 40,),
+          center: Image.asset(
+            "assets/images/logo_text.png",
+            height: 40,
+          ),
           leftWidgetOnClik: () => {_scaffoldKey.currentState!.openDrawer()}),
       body: SafeArea(
         child: Container(
@@ -134,7 +140,7 @@ class _MainPageState extends State<MainPage> {
                           tileMode: TileMode.mirror,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(8))),
-                    child: const Text("LİSTERİM",
+                    child: const Text("LİSTELERİM",
                         style: TextStyle(
                             fontSize: 28, fontFamily: "Carter", color: Colors.white)),
                   ),
@@ -174,7 +180,8 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ],
                   ),
-                )
+                ),
+                //adContainer!
               ],
             ))),
       ),

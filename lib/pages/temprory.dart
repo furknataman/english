@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:english/global_variable.dart';
 import 'package:english/pages/main.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '../db/db/sharedPreferences.dart';
 
 class TemproryPage extends StatefulWidget {
@@ -14,7 +16,6 @@ class TemproryPage extends StatefulWidget {
 class _TemproryPageState extends State<TemproryPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
@@ -22,6 +23,25 @@ class _TemproryPageState extends State<TemproryPage> {
     });
 
     SPRead();
+    setFiravase();
+  }
+
+  void setFiravase() async {
+    await Firebase.initializeApp();
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    messaging.subscribeToTopic('water');
+
+    NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true);
+    print('fcmToken ${fcmToken}');
+    print('User granted permission ${settings.authorizationStatus}');
   }
 
   void SPRead() async {
@@ -58,7 +78,11 @@ class _TemproryPageState extends State<TemproryPage> {
             children: [
               Column(
                 children: [
-                  Image.asset("assets/images/logo.png",width: 110,height: 130,),
+                  Image.asset(
+                    "assets/images/logo.png",
+                    width: 110,
+                    height: 130,
+                  ),
                   const Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
