@@ -14,7 +14,7 @@
   </intent>
 </queries>
    <application
-        android:label="english"
+        android:label="Vocapp"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
