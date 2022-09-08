@@ -24,7 +24,6 @@ class _ListPageState extends State<ListPage> {
   List<Map<String, Object?>> _lists = [];
   @override
   void initState() {
-    // TOO:implement initSatate
     super.initState();
     getLists();
   }

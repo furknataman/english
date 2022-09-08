@@ -145,7 +145,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
         ),
         center: const Text(
           "Çoktan Seçmeli",
-          style: TextStyle(fontFamily: 'carter', color: Colors.black, fontSize: 22),
+          style: TextStyle(fontFamily: 'WanderlustShine', color: Colors.black, fontSize: 22),
         ),
         leftWidgetOnClik: () => Navigator.pop(context),
       ),

@@ -78,10 +78,12 @@ class _TemproryPageState extends State<TemproryPage> {
             children: [
               Column(
                 children: [
-                  Image.asset(
-                    "assets/images/logo.png",
-                    width: 110,
-                    height: 130,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 60),
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                      width: 140,
+                    ),
                   ),
                   const Padding(
                     padding: EdgeInsets.all(15),
@@ -96,12 +98,12 @@ class _TemproryPageState extends State<TemproryPage> {
                 ],
               ),
               const Padding(
-                padding: EdgeInsets.all(15),
+                padding: EdgeInsets.only(bottom:50,left: 15,right: 15),
                 child: Text(
-                  "Learn What You Want",
+                  " What You Want",
                   style: TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
-                      fontFamily: "Carter",
+                      fontFamily: "Luck",
                       fontSize: 25),
                 ),
               )
