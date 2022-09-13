@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "english",
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"notebook.outputLineHeight": 26
+	}
+}

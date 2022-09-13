@@ -30,8 +30,8 @@ class _TemproryPageState extends State<TemproryPage> {
     await Firebase.initializeApp();
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     final fcmToken = await FirebaseMessaging.instance.getToken();
-    messaging.subscribeToTopic('water');
-
+    await FirebaseMessaging.instance.setAutoInitEnabled(true);
+    
     NotificationSettings settings = await messaging.requestPermission(
         alert: true,
         announcement: false,
@@ -41,7 +41,8 @@ class _TemproryPageState extends State<TemproryPage> {
         provisional: false,
         sound: true);
     print('fcmToken ${fcmToken}');
-    print('User granted permission ${settings.authorizationStatus}');
+    //print('User granted permission ${settings.authorizationStatus}');
+    
   }
 
   void SPRead() async {
