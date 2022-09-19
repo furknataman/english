@@ -5,7 +5,7 @@ import 'package:english/pages/words_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 
 import '../db/db/sharedPreferences.dart';
 import '../global_variable.dart';
@@ -32,7 +32,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     packageInfoInit();
  
@@ -52,14 +51,10 @@ class _MainPageState extends State<MainPage> {
                 Image.asset(
                   "assets/images/logo.png",
                   height: 80,
-                ),
-                const Text(
-                  "QUEZY",
-                  style: TextStyle(fontFamily: "RobotoLight", fontSize: 26),
-                ),
+                ),           
                 const Text(
                   "İstediğini Öğren",
-                  style: TextStyle(fontFamily: "RobotoLight", fontSize: 16),
+                  style: TextStyle(fontFamily: "Carter", fontSize: 16),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.35,
@@ -70,19 +65,19 @@ class _MainPageState extends State<MainPage> {
                 Container(
                   margin: const EdgeInsets.only(top: 50, right: 8, left: 8),
                   child: const Text(
-                    "Bu uygulama 2022 yılında Furkan ATAMAN tarafından Flutter geliştirmeyi öğrenmek için tasarlandı",
+                    "Bu uygulama 2022 yılında Furkan ATAMAN tarafından ingilizce kelime öğrenmek isteyenler için geliştirildi.",
                     style: TextStyle(fontFamily: "RobotoLight", fontSize: 14),
                     textAlign: TextAlign.center,
                   ),
                 ),
-                InkWell(
+                /*InkWell(
                   onTap: () {},
                   child: const Text(
                     "Tıkla",
                     style: TextStyle(
                         fontFamily: "RobotoLight", fontSize: 16, color: Color(0xff0A588D)),
                   ),
-                )
+                )*/
               ],
             ),
             Padding(
@@ -101,10 +96,7 @@ class _MainPageState extends State<MainPage> {
             color: Colors.black,
             size: 24,
           ),
-          center: Image.asset(
-            "assets/images/logo_text.png",
-            height: 40,
-          ),
+          center: const Text("VOCAPP", style:TextStyle(fontFamily: "mainn", color: Colors.black, fontSize: 25,fontWeight:FontWeight.w700 ),),
           leftWidgetOnClik: () => {_scaffoldKey.currentState!.openDrawer()}),
       body: SafeArea(
         child: Container(

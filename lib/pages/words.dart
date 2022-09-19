@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/global_widget/toast_message.dart';
 import 'package:english/pages/add_word.dart';
@@ -9,30 +7,29 @@ import '../db/models/words.dart';
 
 class WordsPage extends StatefulWidget {
   final int? listID;
-  final String? ListName;
-  const WordsPage(this.listID, this.ListName, {Key? key}) : super(key: key);
+  final String? listname;
+  const WordsPage(this.listID, this.listname, {Key? key}) : super(key: key);
 
   @override
-  State<WordsPage> createState() => _WordsPageState(ListID: listID, ListName: ListName);
+  State<WordsPage> createState() => WordsPageState(listID: listID, listname: listname);
 }
 
-class _WordsPageState extends State<WordsPage> {
-  int? ListID;
-  String? ListName;
-  _WordsPageState({@required this.ListID, @required this.ListName});
+class WordsPageState extends State<WordsPage> {
+  int? listID;
+  String? listname;
+  WordsPageState({@required this.listID, @required this.listname});
   List<Word> _wordlist = [];
   bool pressController = false;
   List<bool> deleteIndexList = [];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    debugPrint("$ListID ${ListName!}");
+    debugPrint("$listID ${listname!}");
     getWordByList();
   }
 
   void getWordByList() async {
-    _wordlist = await DB.instance.readWordByList(ListID);
+    _wordlist = await DB.instance.readWordByList(listID);
     for (int i = 0; i < _wordlist.length; i++) {
       deleteIndexList.add(false);
     }
@@ -67,15 +64,15 @@ class _WordsPageState extends State<WordsPage> {
       appBar: appbar(context,
           left: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 22),
           center: Text(
-            ListName!,
+            listname!,
             style:
-                const TextStyle(fontFamily: "carter", fontSize: 22, color: Colors.black),
+                const TextStyle(fontFamily: "Carter", fontSize: 22, color: Colors.black),
           ),
           right: pressController != true
               ? Image.asset(
                   "assets/images/logo.png",
-                  height: 35,
-                  width: 35,
+                  height: 60,
+                  width: 60,
                 )
               : InkWell(
                   onTap: delete,
@@ -89,8 +86,8 @@ class _WordsPageState extends State<WordsPage> {
           child: ListView.builder(
         itemBuilder: (context, index) {
           return wordItem(_wordlist[index].id!, index,
-              word_tr: _wordlist[index].word_tr,
-              word_eng: _wordlist[index].word_eng,
+              wotdTr: _wordlist[index].word_tr,
+              wordEng: _wordlist[index].word_eng,
               status: _wordlist[index].status);
         },
         itemCount: _wordlist.length,
@@ -98,7 +95,7 @@ class _WordsPageState extends State<WordsPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-                  MaterialPageRoute(builder: ((context) => addWordPage(ListID, ListName))))
+                  MaterialPageRoute(builder: ((context) => addWordPage(listID, listname))))
               .then((value) {
             getWordByList();
           });
@@ -110,7 +107,7 @@ class _WordsPageState extends State<WordsPage> {
   }
 
   InkWell wordItem(int wordID, int index,
-      {@required String? word_tr, @required String? word_eng, @required bool? status}) {
+      {@required String? wotdTr, @required String? wordEng, @required bool? status}) {
     return InkWell(
       onLongPress: () {
         setState(() {
@@ -119,7 +116,7 @@ class _WordsPageState extends State<WordsPage> {
         });
       },
       child: Center(
-        child: Container(
+        child: SizedBox(
           width: double.infinity,
           child: Card(
             color: pressController != true ? const Color(0xffDCD2FF) : const Color(0xffE3E7E5),
@@ -137,7 +134,7 @@ class _WordsPageState extends State<WordsPage> {
                       Container(
                         margin: const EdgeInsets.only(left: 15, top: 5),
                         child: Text(
-                          word_tr!,
+                          wotdTr!,
                           style: const TextStyle(
                               color: Colors.black,
                               fontSize: 18,
@@ -147,7 +144,7 @@ class _WordsPageState extends State<WordsPage> {
                       Container(
                         margin: const EdgeInsets.only(left: 30, bottom: 10),
                         child: Text(
-                          word_eng!,
+                          wordEng!,
                           style: const TextStyle(
                               color: Colors.black,
                               fontSize: 16,

@@ -43,7 +43,7 @@ class _AddListState extends State<AddList> {
     return Scaffold(
       appBar: appbar(
         context,
-        left: Icon(
+        left: const Icon(
           Icons.arrow_back_ios,
           color: Colors.black,
           size: 22,
@@ -51,8 +51,8 @@ class _AddListState extends State<AddList> {
         center: Image.asset("assets/images/logo_text.png"),
         right: Image.asset(
           "assets/images/logo.png",
-          height: 45,
-          width: 45,
+          height: 60,
+          width: 60,
         ),
         leftWidgetOnClik: () => {Navigator.pop(context)},
       ),
@@ -61,7 +61,7 @@ class _AddListState extends State<AddList> {
           color: Colors.white,
           child: Column(children: [
             textFieldBuilder(
-                icon: Icon(
+                icon: const Icon(
                   Icons.list,
                   size: 18,
                 ),

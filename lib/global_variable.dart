@@ -8,7 +8,7 @@ Lang? chooeseLang = Lang.eng;
 //words_card page and multiple_choice page
 enum Which { learned, unlearned, all }
 
-enum forWhat { fortList, fortListMixed }
+enum ForWhat { fortList, fortListMixed }
 
 Which? chooseQuwstionType = Which.learned;
 bool listMixed = true;

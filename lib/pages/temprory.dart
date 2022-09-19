@@ -19,17 +19,17 @@ class _TemproryPageState extends State<TemproryPage> {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => MainPage()));
+          context, MaterialPageRoute(builder: (context) => const MainPage()));
     });
 
-    SPRead();
+    sPRead();
     setFiravase();
   }
 
   void setFiravase() async {
     await Firebase.initializeApp();
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-    final fcmToken = await FirebaseMessaging.instance.getToken();
+    await FirebaseMessaging.instance.getToken();
     await FirebaseMessaging.instance.setAutoInitEnabled(true);
     
     NotificationSettings settings = await messaging.requestPermission(
@@ -40,12 +40,12 @@ class _TemproryPageState extends State<TemproryPage> {
         criticalAlert: false,
         provisional: false,
         sound: true);
-    print('fcmToken ${fcmToken}');
+    //print('fcmToken ${fcmToken}');
     //print('User granted permission ${settings.authorizationStatus}');
     
   }
 
-  void SPRead() async {
+  void sPRead() async {
     if (await SP.read('lang') == true) {
       chooeseLang = Lang.eng;
     } else {

@@ -1,11 +1,7 @@
-import 'package:english/db/models/lists.dart';
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/addlist.dart';
-import 'package:english/pages/main.dart';
 import 'package:english/pages/words.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 import '../db/db/db.dart';
 import '../global_widget/toast_message.dart';
@@ -39,7 +35,9 @@ class _ListPageState extends State<ListPage> {
       _lists.removeAt(removeIndexList[i]);
       deleteIndexList.removeAt(removeIndexList[i]);
     }
-    for (int i = 0; i < deleteIndexList.length; i++) deleteIndexList[i] = false;
+    for (int i = 0; i < deleteIndexList.length; i++) {
+      deleteIndexList[i] = false;
+    }
 
     setState(() {
       _lists;
@@ -68,17 +66,8 @@ class _ListPageState extends State<ListPage> {
             color: Colors.black,
             size: 22,
           ),
-          center: Image.asset("assets/images/lists.png",height: 40,),
-          right: pressController != true
-              ? Image.asset("assets/images/lists.png")
-              : InkWell(
-                  onTap: delete,
-                  child: const Icon(
-                    Icons.delete,
-                    color: Colors.deepOrangeAccent,
-                    size: 24,
-                  ),
-                ),
+          center: const Text("Listelerim", style:TextStyle(fontFamily: "Carter", color: Colors.black, fontSize: 22,fontWeight:FontWeight.w700 ),),
+      
           leftWidgetOnClik: () => {Navigator.pop(context)}),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -122,7 +111,7 @@ class _ListPageState extends State<ListPage> {
           deleteIndexList[index] = true;
         });
       },
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: Card(
           color: const Color(0xffDCD2FF),
@@ -150,7 +139,7 @@ class _ListPageState extends State<ListPage> {
                         left: 30,
                       ),
                       child: Text(
-                        sumWords! + " terim",
+                        "${sumWords!} terim",
                         style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
@@ -162,8 +151,7 @@ class _ListPageState extends State<ListPage> {
                         left: 30,
                       ),
                       child: Text(
-                        (int.parse(sumWords) - int.parse(sumUnloearned!)).toString() +
-                            " öğrenildi",
+                        "${int.parse(sumWords) - int.parse(sumUnloearned!)} öğrenildi",
                         style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
@@ -171,9 +159,9 @@ class _ListPageState extends State<ListPage> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 30, bottom: 5),
+                      margin: const EdgeInsets.only(left: 30, bottom: 5),
                       child: Text(
-                        sumUnloearned + " öğrenilmedi",
+                        "$sumUnloearned öğrenilmedi",
                         style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
@@ -193,9 +181,9 @@ class _ListPageState extends State<ListPage> {
                             deleteIndexList[index] = value!;
 
                             bool deleteProcessController = false;
-                            deleteIndexList.forEach((element) {
+                            for (var element in deleteIndexList) {
                               if (element == true) deleteProcessController = true;
-                            });
+                            }
                             if (!deleteProcessController) pressController = false;
                           });
                         },

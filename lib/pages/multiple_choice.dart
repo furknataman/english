@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:english/db/models/words.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/global_widget/app_bar.dart';
@@ -143,10 +142,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
           color: Colors.black,
           size: 22,
         ),
-        center: const Text(
-          "Çoktan Seçmeli",
-          style: TextStyle(fontFamily: 'WanderlustShine', color: Colors.black, fontSize: 22),
-        ),
+          center: const Text("Çoktan Seçmeli", style:TextStyle(fontFamily: "Carter", color: Colors.black, fontSize: 22,fontWeight:FontWeight.w700 ),),
         leftWidgetOnClik: () => Navigator.pop(context),
       ),
       body: SafeArea(
@@ -162,7 +158,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                     whichRadioButton(text: "Öğrendinlerimi sor", value: Which.learned),
                     whichRadioButton(text: "Öğrenmediklerimi sor", value: Which.unlearned),
                     whichRadioButton(text: "Hepsini sor", value: Which.all),
-                    checkBox(text: "Listeyi karıştır", fwhat: forWhat.fortListMixed),
+                    checkBox(text: "Listeyi karıştır", fwhat: ForWhat.fortListMixed),
                     const SizedBox(height: 20),
                     const Divider(
                       color: Colors.black,
@@ -349,7 +345,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
     );
   }
 
-  SizedBox checkBox({int index = 0, String? text, forWhat fwhat = forWhat.fortList}) {
+  SizedBox checkBox({int index = 0, String? text, ForWhat fwhat = ForWhat.fortList}) {
     return SizedBox(
       width: 270,
       height: 35,
@@ -362,10 +358,10 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
           checkColor: Colors.white,
           activeColor: Colors.deepPurpleAccent,
           hoverColor: Colors.blueAccent,
-          value: fwhat == forWhat.fortList ? selectedListIndex[index] : listMixed,
+          value: fwhat == ForWhat.fortList ? selectedListIndex[index] : listMixed,
           onChanged: (bool? value) {
             setState(() {
-              if (fwhat == forWhat.fortList) {
+              if (fwhat == ForWhat.fortList) {
                 selectedListIndex[index] = value!;
               } else {
                 listMixed = value!;
