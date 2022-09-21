@@ -24,14 +24,16 @@ class _TemproryPageState extends State<TemproryPage> {
 
     sPRead();
     setFiravase();
+   // setMeesage();
   }
+
 
   void setFiravase() async {
     await Firebase.initializeApp();
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     await FirebaseMessaging.instance.getToken();
     await FirebaseMessaging.instance.setAutoInitEnabled(true);
-    
+
     NotificationSettings settings = await messaging.requestPermission(
         alert: true,
         announcement: false,
@@ -40,9 +42,9 @@ class _TemproryPageState extends State<TemproryPage> {
         criticalAlert: false,
         provisional: false,
         sound: true);
+        
     //print('fcmToken ${fcmToken}');
     //print('User granted permission ${settings.authorizationStatus}');
-    
   }
 
   void sPRead() async {
@@ -99,7 +101,7 @@ class _TemproryPageState extends State<TemproryPage> {
                 ],
               ),
               const Padding(
-                padding: EdgeInsets.only(bottom:50,left: 15,right: 15),
+                padding: EdgeInsets.only(bottom: 50, left: 15, right: 15),
                 child: Text(
                   " What You Want",
                   style: TextStyle(
