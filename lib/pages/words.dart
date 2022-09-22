@@ -24,7 +24,7 @@ class WordsPageState extends State<WordsPage> {
   @override
   void initState() {
     super.initState();
-    debugPrint("$listID ${listname!}");
+   // debugPrint("$listID ${listname!}");f
     getWordByList();
   }
 

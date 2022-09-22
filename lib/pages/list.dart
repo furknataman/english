@@ -2,7 +2,6 @@ import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/addlist.dart';
 import 'package:english/pages/words.dart';
 import 'package:flutter/material.dart';
-
 import '../db/db/db.dart';
 import '../global_widget/toast_message.dart';
 
@@ -66,13 +65,36 @@ class _ListPageState extends State<ListPage> {
             color: Colors.black,
             size: 22,
           ),
-          center: const Text("Listelerim", style:TextStyle(fontFamily: "Carter", color: Colors.black, fontSize: 22,fontWeight:FontWeight.w700 ),),
-      
+          center: const Text(
+            "Listelerim",
+            style: TextStyle(
+                fontFamily: "Carter",
+                color: Colors.black,
+                fontSize: 22,
+                fontWeight: FontWeight.w700),
+          ),
+          right: pressController != true
+              ? Image.asset(
+                  "assets/images/logo.png",
+                  height: 60,
+                  width: 60,
+                )
+              : InkWell(
+                  onTap: (() {
+                    delete();
+                  }),
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.deepPurpleAccent,
+                    size: 24,
+                  ),
+                ),
           leftWidgetOnClik: () => {Navigator.pop(context)}),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: ((context) => const AddList()))).then((value) {
+                  context, MaterialPageRoute(builder: ((context) => const AddList())))
+              .then((value) {
             getLists();
           });
         },
@@ -135,7 +157,7 @@ class _ListPageState extends State<ListPage> {
                       ),
                     ),
                     Container(
-                      margin:const EdgeInsets.only(
+                      margin: const EdgeInsets.only(
                         left: 30,
                       ),
                       child: Text(

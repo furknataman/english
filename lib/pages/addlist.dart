@@ -39,6 +39,7 @@ class _AddListState extends State<AddList> {
     }
   }
 
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appbar(
@@ -48,7 +49,7 @@ class _AddListState extends State<AddList> {
           color: Colors.black,
           size: 22,
         ),
-        center: Image.asset("assets/images/logo_text.png"),
+          center: const Text("Liste Oluştur", style:TextStyle(fontFamily: "Carter", color: Colors.black, fontSize: 22,fontWeight:FontWeight.w700 ),),
         right: Image.asset(
           "assets/images/logo.png",
           height: 60,
@@ -154,7 +155,7 @@ class _AddListState extends State<AddList> {
         }
       }
 
-      if (counter > 4) {
+      if (counter > 3) {
         if (!notEmptyPair) {
           Lists addedList = await DB.instance.insertList(Lists(name: _listName.text));
 
@@ -195,5 +196,4 @@ class _AddListState extends State<AddList> {
       toastMessage("En az dört çift gereklidir.");
     }
   }
-
 }

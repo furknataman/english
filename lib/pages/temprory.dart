@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:english/db/db/defaultWord.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/pages/main.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,9 +25,8 @@ class _TemproryPageState extends State<TemproryPage> {
 
     sPRead();
     setFiravase();
-   // setMeesage();
+    defaultWord();
   }
-
 
   void setFiravase() async {
     await Firebase.initializeApp();
@@ -42,7 +42,7 @@ class _TemproryPageState extends State<TemproryPage> {
         criticalAlert: false,
         provisional: false,
         sound: true);
-        
+
     //print('fcmToken ${fcmToken}');
     //print('User granted permission ${settings.authorizationStatus}');
   }
