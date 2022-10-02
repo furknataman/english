@@ -17,9 +17,18 @@ class DB {
 
   Future<Database> _initDB(String filePath) async {
     final path = join(await getDatabasesPath(), filePath);
+
+    // await addDefaultRecords();
+
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
+  /*Future addDefaultRecords() async {
+    //define word dict
+    //insert dictionary with regular insert function
+    //optional: define bulk insert functionü
+    throw new Exception("not implemented");
+  }*/
   Future _createDB(Database db, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const boolType = 'BOOLEAN NOT NULL';
@@ -59,7 +68,7 @@ class DB {
 
   Future<List<Word>> readWordByList(int? listID) async {
     final db = await instance.database;
-    final orderBy = '${WordTableFields.id} ASC';
+    const orderBy = '${WordTableFields.id} ASC';
     final result = await db.query(tableNameWord,
         orderBy: orderBy, where: '${WordTableFields.list_id}=?', whereArgs: [listID]);
 
@@ -84,8 +93,7 @@ class DB {
     return res;
   }
 
-  Future<List<Word>> readWordByLists(List<int> listsID,
-      {bool? status}) async {
+  Future<List<Word>> readWordByLists(List<int> listsID, {bool? status}) async {
     final db = await instance.database;
     String idList = "";
     for (int i = 0; i < listsID.length; i++) {
@@ -98,10 +106,10 @@ class DB {
 
     List<Map<String, Object?>> result;
     if (status != null) {
-      result = await db.rawQuery('SELECT * FROM words WHERE list_id IN($idList)and status=${status?"1":"0"}');
+      result = await db.rawQuery(
+          'SELECT * FROM words WHERE list_id IN($idList)and status=${status ? "1" : "0"}');
     } else {
       result = await db.rawQuery('SELECT * FROM words WHERE list_id IN($idList)');
-
     }
 
     return result.map((json) => Word.fromJson(json)).toList();
@@ -111,6 +119,20 @@ class DB {
     final db = await instance.database;
     return db.update(tableNameWord, word.toJson(),
         where: '${WordTableFields.id}=?', whereArgs: [word.id]);
+  }
+
+  Future<int> getCount() async {
+    final db = await instance.database;
+    var x = await db.rawQuery('SELECT COUNT (*) from words');
+    int count = Sqflite.firstIntValue(x) ?? 0;
+    return count;
+  }
+
+  Future<int> getLearnCount() async {
+    final db = await instance.database;
+    var x = await db.rawQuery('SELECT COUNT (*) from words where status=1');
+    int learnedCount = Sqflite.firstIntValue(x) ?? 0;
+    return learnedCount;
   }
 
   Future<int> updateList(Lists lists) async {

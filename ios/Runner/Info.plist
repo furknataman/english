@@ -193,6 +193,11 @@
       <string>3qcr597p9d.skadnetwork</string>
     </dict>
   </array>
+  <key>LSApplicationQueriesSchemes</key>
+  <array>
+    <string>sms</string>
+    <string>tel</string>
+  </array>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-8345811531238514~6215642418</string>
 	<key>UILaunchStoryboardName</key>

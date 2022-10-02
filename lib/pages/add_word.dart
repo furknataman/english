@@ -69,7 +69,7 @@ class _addWordPageState extends State<addWordPage> {
               margin:const EdgeInsets.only(top: 10, bottom: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
+                children: const [
                    Text(
                     "İngilizce",
                     style: TextStyle(fontSize: 18, fontFamily: "RobotoRegular"),
@@ -157,8 +157,8 @@ class _addWordPageState extends State<addWordPage> {
           String tr = wordTextEditingList[2 * i + 1].text;
           Word word = await DB.instance.insertWord(
               Word(list_id: ListID, word_eng: eng, word_tr: tr, status: false));
-          debugPrint(
-              "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
+          //debugPrint(
+            //  "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
         }
 
         toastMessage("Kelimeler eklendi");

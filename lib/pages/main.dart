@@ -1,12 +1,15 @@
 import 'package:english/global_widget/app_bar.dart';
+import 'package:english/pages/about.dart';
 import 'package:english/pages/list.dart';
 import 'package:english/pages/multiple_choice.dart';
+import 'package:english/pages/settings.dart';
 import 'package:english/pages/words_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import '../db/db/db.dart';
 import '../db/db/sharedPreferences.dart';
 import '../global_variable.dart';
 
@@ -20,16 +23,17 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   PackageInfo? packageInfo;
-  String version = "";
   void packageInfoInit() async {
     packageInfo = await PackageInfo.fromPlatform();
     setState(() {
       version = packageInfo!.version;
     });
   }
+
+  //example ad mob: ca-app-pub-3940256099942544/6300978111
   //IOS Ad mob : ca-app-pub-8345811531238514/8104574622
   final AdManagerBannerAd myBanner = AdManagerBannerAd(
-    adUnitId: 'ca-app-pub-8345811531238514/8104574622',
+    adUnitId: 'ca-app-pub-3940256099942544/6300978111',
     sizes: [AdSize.banner],
     request: AdManagerAdRequest(),
     listener: AdManagerBannerAdListener(),
@@ -47,9 +51,21 @@ class _MainPageState extends State<MainPage> {
   );
 
   Container? adContainer;
+  int? totalWord;
+  int? learnedWord;
+  void getCount() async {
+    totalWord = await DB.instance.getCount();
+    learnedWord = await DB.instance.getLearnCount();
+    setState(() {
+      totalWord;
+      learnedWord;
+    });
+  }
+
 
   @override
   void initState() {
+    getCount();
     super.initState();
     MobileAds.instance.initialize();
     packageInfoInit();
@@ -70,60 +86,13 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: SafeArea(
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.45,
-          color: Colors.white,
-          child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Column(
-              children: [
-                Image.asset(
-                  "assets/images/logo.png",
-                  height: 80,
-                ),
-                const Text(
-                  "İstediğini Öğren",
-                  style: TextStyle(fontFamily: "Carter", fontSize: 16),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.35,
-                  child: const Divider(
-                    color: Colors.black,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 50, right: 8, left: 8),
-                  child: const Text(
-                    "Bu uygulama 2022 yılında Furkan ATAMAN tarafından ingilizce kelime öğrenmek isteyenler için geliştirildi.",
-                    style: TextStyle(fontFamily: "RobotoLight", fontSize: 14),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                /*InkWell(
-                  onTap: () {},
-                  child: const Text(
-                    "Tıkla",
-                    style: TextStyle(
-                        fontFamily: "RobotoLight", fontSize: 16, color: Color(0xff0A588D)),
-                  ),
-                )*/
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("v$version\nfurknataman@gmail.com",
-                  style: const TextStyle(
-                      fontFamily: "RobotoLight", fontSize: 12, color: Color(0xff0A588D)),
-                  textAlign: TextAlign.center),
-            ),
-          ]),
-        ),
-      ),
       appBar: appbar(context,
-          left: const FaIcon(
-            FontAwesomeIcons.bars,
-            color: Colors.black,
-            size: 24,
+          left:  const InkWell(
+            child: FaIcon(
+              FontAwesomeIcons.circleInfo,
+              color: Colors.black,
+              size: 24,
+            ),
           ),
           center: const Text(
             "VOCAPP",
@@ -133,96 +102,157 @@ class _MainPageState extends State<MainPage> {
                 fontSize: 25,
                 fontWeight: FontWeight.w700),
           ),
-          leftWidgetOnClik: () => {_scaffoldKey.currentState!.openDrawer()}),
+          right: const FaIcon(
+            FontAwesomeIcons.circleHalfStroke,
+            color: Colors.black,
+            size: 24,
+          ),
+          leftWidgetOnClik: (() {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const AbaoutPage()));
+                  }),),
       body: SafeArea(
-        child: Container(
-            color: Colors.white,
-            child: Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
               children: [
-                Column(
-                  children: [
-                    langRadioButton(
-                        text: "İngilizce-Türkçe", group: chooeseLang, value: Lang.eng),
-                    langRadioButton(
-                        text: "Türkçe-İngilizce", group: chooeseLang, value: Lang.tr),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    InkWell(
-                      onTap: (() {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => const ListPage()));
-                      }),
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        alignment: Alignment.center,
-                        height: 55,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: <Color>[
-                                Color(0xff7D20A6),
-                                Color(0xff481183),
-                              ],
-                              tileMode: TileMode.mirror,
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(4))),
-                        child: const Text("LİSTELERİM",
-                            style: TextStyle(
-                                fontSize: 28,
-                                fontFamily: "Arial",
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white)),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const WordCardspage()));
-                            },
-                            child: card(
-                              context,
-                              title: "Kelime Kartlarım",
-                              startColor: 0xff01dacc9,
-                              endColor: 0xff0c33b2,
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MultipleChoicePage()));
-                            },
-                            child: card(
-                              context,
-                              startColor: 0xffff3384,
-                              endColor: 0xffb029b9,
-                              title: "Çoktan\n Seçmeli",
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                /*Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    alignment: Alignment.center,
+                    height: 55,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                            Color(0xff7D20A6),
+                            Color(0xff481183),
+                          ],
+                          tileMode: TileMode.mirror,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(4))),
+                    child: Text(
+                        "Toplam Kelime: $totalWord Öğrenilen Kelime: $learnedWord",
+                        style: const TextStyle(
+                            fontSize: 26,
+                            fontFamily: "Arial",
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
+                  ),
+                ),*/
+                langRadioButton(
+                    text: "İngilizce-Türkçe", group: chooeseLang, value: Lang.eng),
+                langRadioButton(
+                    text: "Türkçe-İngilizce", group: chooeseLang, value: Lang.tr),
+                const SizedBox(
+                  height: 25,
                 ),
-                adContainer!
+                InkWell(
+                  onTap: (() {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const ListPage())).then((value) => { getCount()});
+                  }),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    alignment: Alignment.center,
+                    height: 55,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                            Color(0xff7D20A6),
+                            Color(0xff481183),
+                          ],
+                          tileMode: TileMode.mirror,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(4))),
+                    child: const Text("Kelimelerim",
+                        style: TextStyle(
+                            fontSize: 26,
+                            fontFamily: "Arial",
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const WordCardspage())).then((value) => getCount());
+                        },
+                        child: card(
+                          context,
+                          title: "Kartlarım",
+                          startColor: 0xff01dacc9,
+                          endColor: 0xff0c33b2,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MultipleChoicePage())).then((value) => getCount());
+                        },
+                        child: card(
+                          context,
+                          startColor: 0xffff3384,
+                          endColor: 0xffb029b9,
+                          title: "Test",
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+               /* Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    alignment: Alignment.center,
+                    height: 55,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                            Color(0xff7D20A6),
+                            Color(0xff481183),
+                          ],
+                          tileMode: TileMode.mirror,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(4))),
+                    child: const Text("Ayarlar",
+                        style: TextStyle(
+                            fontSize: 26,
+                            fontFamily: "Arial",
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
+                  ),
+                ),*/
+                
               ],
-            ))),
+            ),
+            adContainer!
+          ],
+        )),
       ),
     );
   }
+
   Container card(BuildContext context,
       {@required int? startColor, @required int? endColor, @required String? title}) {
     return Container(
@@ -246,7 +276,7 @@ class _MainPageState extends State<MainPage> {
           Text(
             title!,
             style: const TextStyle(
-                fontSize: 28,
+                fontSize: 24,
                 fontFamily: "Arial",
                 fontWeight: FontWeight.bold,
                 color: Colors.white),

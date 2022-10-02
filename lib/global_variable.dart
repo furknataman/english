@@ -10,9 +10,14 @@ enum Which { learned, unlearned, all }
 
 enum ForWhat { fortList, fortListMixed }
 
+enum DarkMode{darkModeOn, darkModeOf}
+
 Which? chooseQuwstionType = Which.learned;
 bool listMixed = true;
 
 List<Map<String, Object?>> lists = [];
 List<bool> selectedListIndex = [];
+
+
+String version = "";
 

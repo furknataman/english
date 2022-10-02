@@ -120,7 +120,7 @@ class _ListPageState extends State<ListPage> {
       @required String? sumUnloearned}) {
     return InkWell(
       onTap: () {
-        debugPrint(id.toString());
+        //debugPrint(id.toString());
         Navigator.push(
                 context, MaterialPageRoute(builder: (context) => WordsPage(id, listname)))
             .then((value) {

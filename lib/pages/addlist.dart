@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_is_not_empty
+
 import 'package:english/db/models/lists.dart';
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/global_widget/toast_message.dart';
@@ -24,7 +26,9 @@ class _AddListState extends State<AddList> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < 10; ++i) wordTextEditingList.add(TextEditingController());
+    for (int i = 0; i < 10; ++i) {
+      wordTextEditingList.add(TextEditingController());
+    }
 
     for (int i = 0; i < 5; ++i) {
       wordListField.add(Row(
@@ -40,6 +44,7 @@ class _AddListState extends State<AddList> {
   }
 
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appbar(
@@ -70,10 +75,10 @@ class _AddListState extends State<AddList> {
                 textEditingController: _listName,
                 textAlign: TextAlign.left),
             Container(
-              margin: EdgeInsets.only(top: 20, bottom: 10),
+              margin: const EdgeInsets.only(top: 20, bottom: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
+                children: const [
                   Text(
                     "İngilizce",
                     style: TextStyle(fontSize: 18, fontFamily: "RobotoRegular"),
@@ -111,12 +116,12 @@ class _AddListState extends State<AddList> {
       child: Container(
         height: 40,
         width: 40,
-        margin: EdgeInsets.only(bottom: 15),
+        margin: const EdgeInsets.only(bottom: 15),
+        decoration: const BoxDecoration(color: Color(0xffDCD2FF), shape: BoxShape.circle),
         child: Icon(
           icon,
           size: 28,
         ),
-        decoration: BoxDecoration(color: Color(0xffDCD2FF), shape: BoxShape.circle),
       ),
     );
   }
@@ -141,7 +146,7 @@ class _AddListState extends State<AddList> {
   }
 
   void save() async {
-    if (!_listName.text.isEmpty) {
+    if (_listName.text.isNotEmpty) {
       int counter = 0;
       bool notEmptyPair = false;
       for (int i = 0; i < wordTextEditingList.length / 2; i++) {
@@ -164,15 +169,15 @@ class _AddListState extends State<AddList> {
             String tr = wordTextEditingList[2 * i + 1].text;
             Word word = await DB.instance.insertWord(
                 Word(list_id: addedList.id, word_eng: eng, word_tr: tr, status: false));
-            debugPrint(
-                "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
+            //debugPrint(
+              //  "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
           }
 
           toastMessage("Liste oluşturuldu");
           _listName.clear();
-          wordTextEditingList.forEach((element) {
+          for (var element in wordTextEditingList) {
             element.clear();
-          });
+          }
         } else {
           toastMessage("Alanlar boş bırakılamaz. Silin veya doldurun.");
         }
