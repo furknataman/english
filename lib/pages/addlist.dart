@@ -117,7 +117,7 @@ class _AddListState extends State<AddList> {
         height: 40,
         width: 40,
         margin: const EdgeInsets.only(bottom: 15),
-        decoration: const BoxDecoration(color: Color(0xffDCD2FF), shape: BoxShape.circle),
+        decoration: const BoxDecoration(color:  Color.fromRGBO(157, 192, 198,0.9), shape: BoxShape.circle),
         child: Icon(
           icon,
           size: 28,

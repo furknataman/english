@@ -152,7 +152,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                   margin: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
                   padding: const EdgeInsets.only(left: 4, top: 15, right: 4),
                   decoration: const BoxDecoration(
-                      color: Color(0xffDCD2FF),
+                      color:  Color.fromRGBO(157, 192, 198,0.9),
                       borderRadius: BorderRadius.all(Radius.circular(8))),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     whichRadioButton(text: "Öğrendinlerimi sor", value: Which.learned),
@@ -236,7 +236,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                     left: 16, right: 16, top: 8, bottom: 16),
                                 padding: const EdgeInsets.only(left: 4, top: 15, right: 4),
                                 decoration: const BoxDecoration(
-                                    color: Color(0xffDCD2FF),
+                                    color:  Color.fromRGBO(157, 192, 198,0.9),
                                     borderRadius: BorderRadius.all(Radius.circular(8))),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

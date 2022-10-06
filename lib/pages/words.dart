@@ -78,7 +78,7 @@ class WordsPageState extends State<WordsPage> {
                   onTap: delete,
                   child: const Icon(
                     Icons.delete,
-                    color: Colors.deepPurpleAccent,
+                    color: Color.fromRGBO(157, 192, 198,0.9),
                     size: 24,
                   )),
           leftWidgetOnClik: () => Navigator.pop(context)),
@@ -100,7 +100,7 @@ class WordsPageState extends State<WordsPage> {
             getWordByList();
           });
         },
-        backgroundColor: Colors.purple.withOpacity(0.5),
+        backgroundColor:const Color.fromRGBO(157, 192, 198,0.9),
         child: const Icon(Icons.add),
       ),
     );
@@ -119,7 +119,7 @@ class WordsPageState extends State<WordsPage> {
         child: SizedBox(
           width: double.infinity,
           child: Card(
-            color: pressController != true ? const Color(0xffDCD2FF) : const Color(0xffE3E7E5),
+            color: pressController != true ?  const Color.fromRGBO(157, 192, 198,0.9) : const Color(0xffE3E7E5),
             elevation: 8,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
             margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),

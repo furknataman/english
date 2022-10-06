@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../global_variable.dart';
@@ -49,8 +45,8 @@ class _AbaoutPageState extends State<AbaoutPage> {
           ),
           right: Image.asset(
             "assets/images/logo.png",
-            height: 60,
-            width: 60,
+            height: 50,
+            width: 50,
           ),
           leftWidgetOnClik: () => {Navigator.pop(context)}),
       body: SafeArea(
@@ -61,11 +57,11 @@ class _AbaoutPageState extends State<AbaoutPage> {
               children: [
                 Image.asset(
                   "assets/images/logo.png",
-                  height: 80,
+                  height: 110,
                 ),
                 const Text(
                   "İstediğini Öğren",
-                  style: TextStyle(fontFamily: "Carter", fontSize: 16),
+                  style: TextStyle(fontFamily: "Carter", fontSize: 20),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.35,
@@ -77,7 +73,7 @@ class _AbaoutPageState extends State<AbaoutPage> {
                   margin: const EdgeInsets.only(top: 50, right: 8, left: 8),
                   child: const Text(
                     "Bu uygulama 2022 yılında Furkan ATAMAN tarafından ingilizce kelime öğrenmek isteyenler için geliştirildi.",
-                    style: TextStyle(fontFamily: "RobotoLight", fontSize: 14),
+                    style: TextStyle(fontFamily: "RobotoLight", fontSize: 18),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -98,7 +94,7 @@ class _AbaoutPageState extends State<AbaoutPage> {
                   child: Text("v$version",
                       style: const TextStyle(
                           fontFamily: "RobotoLight",
-                          fontSize: 12,
+                          fontSize: 14,
                           color: Color(0xff0A588D)),
                       textAlign: TextAlign.center),
                 ),
@@ -111,7 +107,7 @@ class _AbaoutPageState extends State<AbaoutPage> {
                     child: const Text("furknataman@gmail.com",
                         style: TextStyle(
                             fontFamily: "RobotoLight",
-                            fontSize: 12,
+                            fontSize: 14,
                             color: Color(0xff0A588D)),
                         textAlign: TextAlign.center),
                   ),

@@ -76,8 +76,8 @@ class _ListPageState extends State<ListPage> {
           right: pressController != true
               ? Image.asset(
                   "assets/images/logo.png",
-                  height: 60,
-                  width: 60,
+                  height: 50,
+                  width: 50,
                 )
               : InkWell(
                   onTap: (() {
@@ -98,7 +98,7 @@ class _ListPageState extends State<ListPage> {
             getLists();
           });
         },
-        backgroundColor: Colors.purple.withOpacity(0.5),
+        backgroundColor:  const Color.fromRGBO(157, 192, 198,0.9),
         child: const Icon(Icons.add),
       ),
       body: SafeArea(
@@ -136,8 +136,8 @@ class _ListPageState extends State<ListPage> {
       child: SizedBox(
         width: double.infinity,
         child: Card(
-          color: const Color(0xffDCD2FF),
-          elevation: 8,
+          color: const Color.fromRGBO(157, 192, 198,0.9),
+          elevation: 5,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
           margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
           child: Row(

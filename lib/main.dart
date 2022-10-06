@@ -28,7 +28,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Learning English Words',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepPurple,
+        
       ),
       darkTheme: ThemeData.dark(),
       home: const TemproryPage(),
