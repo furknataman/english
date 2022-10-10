@@ -62,14 +62,14 @@ class _ListPageState extends State<ListPage> {
       appBar: appbar(context,
           left: const Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: Colors.white,
             size: 22,
           ),
           center: const Text(
             "Listelerim",
             style: TextStyle(
                 fontFamily: "Carter",
-                color: Colors.black,
+                color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700),
           ),
@@ -77,7 +77,7 @@ class _ListPageState extends State<ListPage> {
               ? Image.asset(
                   "assets/images/logo.png",
                   height: 50,
-                  width: 50,
+                  width: 50,color: Colors.white,
                 )
               : InkWell(
                   onTap: (() {
@@ -136,7 +136,7 @@ class _ListPageState extends State<ListPage> {
       child: SizedBox(
         width: double.infinity,
         child: Card(
-          color: const Color.fromRGBO(157, 192, 198,0.9),
+          color: const Color(0xffFF4A4A),
           elevation: 5,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
           margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
