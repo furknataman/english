@@ -3,8 +3,6 @@ import 'package:english/pages/about.dart';
 import 'package:english/pages/addlist.dart';
 import 'package:english/pages/list.dart';
 import 'package:english/pages/multiple_choice.dart';
-import 'package:english/pages/settings.dart';
-import 'package:english/pages/words.dart';
 import 'package:english/pages/words_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,7 +10,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import '../db/db/db.dart';
 import '../db/db/sharedPreferences.dart';
 import '../global_variable.dart';
@@ -39,7 +36,7 @@ class _MainPageState extends State<MainPage> {
   final AdManagerBannerAd myBanner = AdManagerBannerAd(
     adUnitId: 'ca-app-pub-3940256099942544/6300978111',
     sizes: [AdSize.banner],
-    request: AdManagerAdRequest(),
+    request: const AdManagerAdRequest(),
     listener: AdManagerBannerAdListener(),
   );
 
@@ -181,32 +178,24 @@ class _MainPageState extends State<MainPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        card(
-                          context,
-                          text: "Kelimelerim",
-                          icon: FontAwesomeIcons.book,
-                          page: const ListPage(),
-                          iconColor: 0xffFFFFFF,
-                          mainColor: 0xffFFFFFF,
-                          cardColor: 0xff00b2ca,
-                          textColor: 0xff00b2ca,
-                          x: 3,
-                          y: 3,
-                          z: 3,
-                        ),
-                        card(
-                          context,
-                          text: "Kartlarım",
-                          icon: FontAwesomeIcons.creditCard,
-                          page: const WordCardspage(),
-                          iconColor: 0xffFFFFFF,
-                          mainColor: 0xffFFFFFF,
-                          cardColor: 0xff00b2ca,
-                          textColor: 0xff00b2ca,
-                          x: 3,
-                          y: 3,
-                          z: 3,
-                        ),
+                        card(context,
+                            text: "Kelimelerim",
+                            icon: FontAwesomeIcons.book,
+                            page: const ListPage(),
+                            iconColor: 0xffFFFFFF,
+                            mainColor: 0xffFFFFFF,
+                            cardColor: 0xff00b2ca,
+                            textColor: 0xff00b2ca,
+                            cardInfo: false),
+                        card(context,
+                            text: "Kartlarım",
+                            icon: FontAwesomeIcons.creditCard,
+                            page: const WordCardspage(),
+                            iconColor: 0xffFFFFFF,
+                            mainColor: 0xffFFFFFF,
+                            cardColor: 0xff00b2ca,
+                            textColor: 0xff00b2ca,
+                            cardInfo: false),
                         card(
                           context,
                           text: "Test",
@@ -216,9 +205,7 @@ class _MainPageState extends State<MainPage> {
                           mainColor: 0xffFFFFFF,
                           cardColor: 0xff00b2ca,
                           textColor: 0xff00b2ca,
-                          x: 3,
-                          y: 3,
-                          z: 3,
+                          cardInfo: false,
                         )
                       ],
                     ),
@@ -318,9 +305,7 @@ class _MainPageState extends State<MainPage> {
                           mainColor: 0xff00b2ca,
                           cardColor: 0xffFFFFFF,
                           textColor: 0xffFFFFFF,
-                          x: 0,
-                          y: 0,
-                          z: 0,
+                          cardInfo: true,
                         )
                       ],
                     ),
@@ -344,9 +329,7 @@ class _MainPageState extends State<MainPage> {
     @required int? mainColor,
     @required int? cardColor,
     @required int? textColor,
-    @required double? x,
-    @required double? y,
-    @required double? z,
+    @required bool? cardInfo,
   }) {
     return InkWell(
       onTap: () {
@@ -364,13 +347,15 @@ class _MainPageState extends State<MainPage> {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: x!, left: y!, right: z!),
+                  padding: cardInfo == true
+                      ? const EdgeInsets.only(top: 0, left: 0, right: 0)
+                      : const EdgeInsets.only(top: 3, left: 3, right: 3),
                   child: Container(
                     alignment: Alignment.center,
                     height: 90,
                     decoration: BoxDecoration(
                         color: Color(cardColor!),
-                        borderRadius: const BorderRadius.all(Radius.circular(5))),
+                        borderRadius: cardInfo==false? const BorderRadius.all(Radius.circular(5)):const BorderRadius.all(Radius.circular(0))),
                     width: 100,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
