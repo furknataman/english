@@ -87,235 +87,213 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff00b2ca),
       key: _scaffoldKey,
       appBar: appbar(
         context,
-        left: const InkWell(
-          child: FaIcon(
-            FontAwesomeIcons.circleInfo,
-            color: Colors.white,
-            size: 24,
-          ),
-        ),
-        center: const Text(
-          "VOCAPP",
-          style: TextStyle(
-              fontFamily: "mainn",
-              color: Colors.white,
-              fontSize: 25,
-              fontWeight: FontWeight.w700),
-        ),
-        right: const FaIcon(
-          FontAwesomeIcons.circleHalfStroke,
-          color: Colors.white,
-          size: 24,
-        ),
-        leftWidgetOnClik: (() {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const AbaoutPage()));
-        }),
+        left: svgLogoIcon,
+        right: InkWell(
+            onTap: () {
+              Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => const AbaoutPage()))
+                  .then((value) => getCount());
+            },
+            child: const Icon(
+              Icons.info_outline,
+              size: 24,
+              color: Color(0xffF3FBF8),
+            )),
       ),
-      body: Container(
-        color: const Color(0xffF3FBF8),
-        child: SafeArea(
-          child: Center(
+      body: Column(
+        children: [
+          SizedBox(
+            height: 70,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text("Türkçe",
+                      style: TextStyle(
+                          fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold)),
+                ),
+                Switcher(
+                  value: false,
+                  size: SwitcherSize.medium,
+                  switcherButtonRadius: 50,
+                  enabledSwitcherButtonRotate: true,
+                  iconOff: Icons.chevron_left,
+                  iconOn: Icons.chevron_right,
+                  switcherButtonColor: const Color(0xffF3FBF8),
+                  colorOff: const Color.fromARGB(255, 167, 41, 83),
+                  colorOn: const Color.fromARGB(255, 83, 27, 46),
+                  onChanged: (bool state) {
+                    if (state == true) {
+                      chooeseLang = Lang.tr;
+                      SP.write("lang", false);
+                    } else {
+                      chooeseLang = Lang.eng;
+                      SP.write("lang", true);
+                    }
+                  },
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "İngilizce",
+                    style: TextStyle(
+                        fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              decoration: const BoxDecoration(
+                  color: Color(0xffF3FBF8),
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    color: const Color(0xff00b2ca),
-                    height: 70,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text("Türkçe",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            card(context,
+                                text: "Kelimelerim",
+                                icon: FontAwesomeIcons.book,
+                                page: const ListPage(),
+                      
+                                cardInfo: false),
+                            card(context,
+                                text: "Kartlarım",
+                                icon: FontAwesomeIcons.creditCard,
+                                page: const WordCardspage(),
+                       
+                                cardInfo: false),
+                            card(
+                              context,
+                              text: "Test",
+                              icon: FontAwesomeIcons.clockRotateLeft,
+                              page: const MultipleChoicePage(),
+                
+                              cardInfo: false,
+                            )
+                          ],
                         ),
-                        Switcher(
-                          value: false,
-                          size: SwitcherSize.medium,
-                          switcherButtonRadius: 50,
-                          enabledSwitcherButtonRotate: true,
-                          iconOff: Icons.chevron_left,
-                          iconOn: Icons.chevron_right,
-                          switcherButtonColor: const Color(0xffF3FBF8),
-                          colorOff: const Color.fromARGB(255, 167, 41, 83),
-                          colorOn: const Color.fromARGB(255, 83, 27, 46),
-                          onChanged: (bool state) {
-                            if (state == true) {
-                              chooeseLang = Lang.tr;
-                              SP.write("lang", false);
-                            } else {
-                              chooeseLang = Lang.eng;
-                              SP.write("lang", true);
-                            }
-                          },
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            "İngilizce",
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        card(context,
-                            text: "Kelimelerim",
-                            icon: FontAwesomeIcons.book,
-                            page: const ListPage(),
-                            iconColor: 0xffFFFFFF,
-                            mainColor: 0xffFFFFFF,
-                            cardColor: 0xff00b2ca,
-                            textColor: 0xff00b2ca,
-                            cardInfo: false),
-                        card(context,
-                            text: "Kartlarım",
-                            icon: FontAwesomeIcons.creditCard,
-                            page: const WordCardspage(),
-                            iconColor: 0xffFFFFFF,
-                            mainColor: 0xffFFFFFF,
-                            cardColor: 0xff00b2ca,
-                            textColor: 0xff00b2ca,
-                            cardInfo: false),
-                        card(
-                          context,
-                          text: "Test",
-                          icon: FontAwesomeIcons.clockRotateLeft,
-                          page: const MultipleChoicePage(),
-                          iconColor: 0xffFFFFFF,
-                          mainColor: 0xffFFFFFF,
-                          cardColor: 0xff00b2ca,
-                          textColor: 0xff00b2ca,
-                          cardInfo: false,
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 25.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        SizedBox(
-                          height: 120,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                    color: Color(0xffCC3366),
-                                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                                width: 235,
-                                height: 50,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 25.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            SizedBox(
+                              height: 120,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                        color: Color(0xffCC3366),
+                                        borderRadius:
+                                            BorderRadius.all(Radius.circular(10))),
+                                    width: 235,
+                                    height: 50,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                            color: Colors.white,
+                                          ),
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.only(left: 18),
+                                          width: 185,
+                                          height: 50,
+                                          child: const Text(
+                                            "Toplam",
+                                            style: TextStyle(
+                                                color: Color(0xff00b2ca), fontSize: 20),
+                                          ),
                                         ),
-                                        color: Colors.white,
-                                      ),
-                                      alignment: Alignment.centerLeft,
-                                      padding: const EdgeInsets.only(left: 18),
-                                      width: 185,
-                                      height: 50,
-                                      child: const Text(
-                                        "Toplam",
-                                        style: TextStyle(
-                                            color: Color(0xff00b2ca), fontSize: 20),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 12),
-                                      child: Text(
-                                        totalWord.toString(),
-                                        style: const TextStyle(
-                                            color: Colors.white, fontSize: 20),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: Color.fromARGB(255, 83, 27, 46),
-                                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                                ),
-                                width: 235,
-                                height: 50,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 12),
+                                          child: Text(
+                                            totalWord.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.white, fontSize: 20),
+                                          ),
                                         ),
-                                        color: Colors.white,
-                                      ),
-                                      alignment: Alignment.centerLeft,
-                                      padding: const EdgeInsets.only(left: 18),
-                                      width: 185,
-                                      height: 50,
-                                      child: const Text(
-                                        "Öğrenilen",
-                                        style: TextStyle(
-                                            color: Color(0xff00b2ca), fontSize: 20),
-                                      ),
+                                      ],
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 12),
-                                      child: Text(
-                                        learnedWord.toString(),
-                                        style: const TextStyle(
-                                            color: Colors.white, fontSize: 20),
-                                      ),
+                                  ),
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                      color: Color.fromARGB(255, 83, 27, 46),
+                                      borderRadius: BorderRadius.all(Radius.circular(10)),
                                     ),
-                                  ],
-                                ),
+                                    width: 235,
+                                    height: 50,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                            color: Colors.white,
+                                          ),
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.only(left: 18),
+                                          width: 185,
+                                          height: 50,
+                                          child: const Text(
+                                            "Öğrenilen",
+                                            style: TextStyle(
+                                                color: Color(0xff00b2ca), fontSize: 20),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 12),
+                                          child: Text(
+                                            learnedWord.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.white, fontSize: 20),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            card(
+                              context,
+                              text: "Liste Oluştur",
+                              icon: FontAwesomeIcons.add,
+                              page: const AddList(),
+          
+                              cardInfo: true,
+                            )
+                          ],
                         ),
-                        card(
-                          context,
-                          text: "Liste Oluştur",
-                          icon: FontAwesomeIcons.add,
-                          page: const AddList(),
-                          iconColor: 0xff00b2ca,
-                          mainColor: 0xff00b2ca,
-                          cardColor: 0xffFFFFFF,
-                          textColor: 0xffFFFFFF,
-                          cardInfo: true,
-                        )
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                  adContainer!
                 ],
               ),
-              adContainer!
-            ],
-          )),
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -325,10 +303,6 @@ class _MainPageState extends State<MainPage> {
     @required String? text,
     @required IconData? icon,
     @required Widget? page,
-    @required int? iconColor,
-    @required int? mainColor,
-    @required int? cardColor,
-    @required int? textColor,
     @required bool? cardInfo,
   }) {
     return InkWell(
@@ -342,7 +316,7 @@ class _MainPageState extends State<MainPage> {
             width: 100,
             height: 120,
             decoration: BoxDecoration(
-                color: Color(mainColor!),
+                color: cardInfo != true ? const Color(0xffFFFFFF) : const Color(0xff00b2ca),
                 borderRadius: const BorderRadius.all(Radius.circular(8))),
             child: Column(
               children: [
@@ -354,15 +328,17 @@ class _MainPageState extends State<MainPage> {
                     alignment: Alignment.center,
                     height: 90,
                     decoration: BoxDecoration(
-                        color: Color(cardColor!),
-                        borderRadius: cardInfo==false? const BorderRadius.all(Radius.circular(5)):const BorderRadius.all(Radius.circular(0))),
+                        color:cardInfo!=true? const Color(0xff00b2ca):const Color(0xffFFFFFF),
+                        borderRadius: cardInfo == false
+                            ? const BorderRadius.all(Radius.circular(5))
+                            : const BorderRadius.all(Radius.circular(0))),
                     width: 100,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         FaIcon(
                           icon,
-                          color: Color(iconColor!),
+                          color: cardInfo!=true? const Color(0xffFFFFFF):const Color(0xff00b2ca),
                           size: 40,
                         ),
                       ],
@@ -371,7 +347,7 @@ class _MainPageState extends State<MainPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 5),
-                  child: Text(text!, style: TextStyle(color: Color(textColor!))),
+                  child: Text(text!, style: TextStyle(color: cardInfo!=true? const Color(0xff00b2ca):const Color(0xffFFFFFF))),
                 ),
               ],
             ),

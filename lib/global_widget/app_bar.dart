@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 PreferredSize appbar(context,
     {@required Widget? left,
-    @required Widget? center,
+    Widget? center,
     Widget? right,
     Function? leftWidgetOnClik}) {
   return PreferredSize(

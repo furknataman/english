@@ -4,6 +4,7 @@ import 'package:english/pages/words.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import '../db/db/db.dart';
+import '../global_variable.dart';
 import '../global_widget/toast_message.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -14,7 +15,7 @@ class ListPage extends StatefulWidget {
   State<ListPage> createState() => _ListPageState();
 }
 
-bool pressController = false;
+bool editController = false;
 List<bool> deleteIndexList = [];
 
 class _ListPageState extends State<ListPage> {
@@ -43,7 +44,7 @@ class _ListPageState extends State<ListPage> {
     setState(() {
       _lists;
       deleteIndexList;
-      pressController = false;
+      editController = false;
     });
     toastMessage("Seçili listeler silindi.");
   }
@@ -61,81 +62,121 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF3FBF8),
       appBar: appbar(context,
           left: const Icon(
             Icons.arrow_back_ios,
-            color: Colors.white,
+            color: Color(0xffF3FBF8),
             size: 22,
           ),
           center: const Text(
             "Listelerim",
             style: TextStyle(
-                fontFamily: "Carter",
-                color: Colors.white,
+                fontFamily: "Raleway",
+                color: Color(0xffF3FBF8),
                 fontSize: 22,
-                fontWeight: FontWeight.w700),
+                fontWeight: FontWeight.w600),
           ),
-          right: pressController != true
-              ? Image.asset(
-                  "assets/images/logo.png",
-                  height: 50,
-                  width: 50,
-                  color: Colors.white,
-                )
-              : InkWell(
-                  onTap: (() {
-                    delete();
-                  }),
-                  child: const Icon(
-                    Icons.delete,
-                    color: Colors.deepPurpleAccent,
-                    size: 24,
-                  ),
-                ),
+          right: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: svgLogoIcon,
+          ),
           leftWidgetOnClik: () => {Navigator.pop(context)}),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-                  context, MaterialPageRoute(builder: ((context) => const AddList())))
-              .then((value) {
-            getLists();
-          });
-        },
-        backgroundColor: const Color.fromRGBO(157, 192, 198, 0.9),
-        child: const Icon(Icons.add),
+      body: Container(
+        decoration: const BoxDecoration(
+          color: Color(0xff00b2ca),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 70,
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 14),
+                child: editController == false
+                    ? Row(children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: ((context) => const AddList())))
+                                .then((value) {
+                              getLists();
+                            });
+                          },
+                          child: card(
+                              icon: Icons.add_circle_outline,
+                              iconColor: 0xff6FCF97,
+                              cardColor: 0xffF3FBF8),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            editController = true;
+                            setState(() {
+                              editController;
+                            });
+                          },
+                          child: card(
+                              icon: Icons.create_outlined,
+                              iconColor: 0xffF2C94C,
+                              cardColor: 0xffF3FBF8),
+                        ),
+                      ])
+                    : Row(children: [
+                        InkWell(
+                          onTap: () {},
+                          child: card(
+                              icon: Icons.add_circle_outline,
+                              iconColor: 0xff6FCF97,
+                              cardColor: 0xffF3FBF8),
+                        ),
+                        card(
+                            icon: Icons.create_outlined,
+                            iconColor: 0xff828282,
+                            cardColor: 0xffE0E0E0),
+                        InkWell(
+                          onTap: () {
+                            editController = false;
+                            setState(() {
+                              editController;
+                            });
+                          },
+                          child: card(
+                              icon: Icons.close,
+                              iconColor: 0xff4F4F4F,
+                              cardColor: 0xffF3FBF8),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            delete();
+                          },
+                          child: card(
+                              icon: Icons.delete_outlined,
+                              iconColor: 0xffEB5757,
+                              cardColor: 0xffF3FBF8),
+                        ),
+                      ]),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Color(0xffF3FBF8),
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    return listItem(_lists[index]['list_id'] as int, index,
+                        listname: _lists[index]['name'].toString(),
+                        sumWords: _lists[index]['sum_word'].toString(),
+                        sumUnloearned: _lists[index]['sum_unlearned'].toString());
+                  },
+                  itemCount: _lists.length,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-      body: SafeArea(
-          child: Column(
-        children: [
-          Container(
-            color: const Color(0xff00b2ca),
-            height: 70,
-            width: MediaQuery.of(context).size.width,
-            
-            child: Padding(
-              padding: const EdgeInsets.only(left:14),
-              child: Row( 
-                
-                children: [
-                card(icon: Icons.add_circle_outline, iconColor: 0xff6FCF97),
-                card(icon: Icons.create_outlined, iconColor: 0xffF2C94C),
-              ]),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                return listItem(_lists[index]['list_id'] as int, index,
-                    listname: _lists[index]['name'].toString(),
-                    sumWords: _lists[index]['sum_word'].toString(),
-                    sumUnloearned: _lists[index]['sum_unlearned'].toString());
-              },
-              itemCount: _lists.length,
-            ),
-          ),
-        ],
-      )),
     );
   }
 
@@ -153,7 +194,7 @@ class _ListPageState extends State<ListPage> {
       },
       onLongPress: () {
         setState(() {
-          pressController = true;
+          editController = true;
           deleteIndexList[index] = true;
         });
       },
@@ -216,9 +257,10 @@ class _ListPageState extends State<ListPage> {
                         child: Text(
                           listname!,
                           style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontFamily: "RobotoMedium"),
+                              color: Color(0xff4F4F4F),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: "Raleway"),
                         ),
                       ),
                       Row(
@@ -234,7 +276,7 @@ class _ListPageState extends State<ListPage> {
                           Text(
                             "$sumWords ",
                             style: const TextStyle(
-                                color: Colors.black,
+                                color: Color(0xff828282),
                                 fontSize: 14,
                                 fontFamily: "RobotoRegular"),
                           ),
@@ -249,7 +291,7 @@ class _ListPageState extends State<ListPage> {
                           Text(
                             "${int.parse(sumWords) - int.parse(sumUnloearned)} ",
                             style: const TextStyle(
-                                color: Colors.black,
+                                color: Color(0xff828282),
                                 fontSize: 14,
                                 fontFamily: "RobotoRegular"),
                           ),
@@ -259,10 +301,12 @@ class _ListPageState extends State<ListPage> {
                   ),
                 ],
               ),
-              pressController == true
+              editController == true
                   ? Checkbox(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
                       checkColor: Colors.white,
-                      activeColor: Colors.deepPurpleAccent,
+                      activeColor: const Color(0xff3574C3),
                       hoverColor: Colors.blueAccent,
                       value: deleteIndexList[index],
                       onChanged: (bool? value) {
@@ -273,7 +317,7 @@ class _ListPageState extends State<ListPage> {
                           for (var element in deleteIndexList) {
                             if (element == true) deleteProcessController = true;
                           }
-                          if (!deleteProcessController) pressController = false;
+                          if (!deleteProcessController) editController = false;
                         });
                       },
                     )
@@ -290,21 +334,22 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-  InkWell card({@required IconData? icon, @required int? iconColor}) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        margin:const EdgeInsets.only(left: 10,),
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
-        width: 38,
-        height: 38,
-        child: Icon(
-          icon,
-          color: Color(iconColor!),
-          size: 34,
-        ),
+  Container card(
+      {@required IconData? icon, @required int? iconColor, @required int? cardColor}) {
+    return Container(
+      margin: const EdgeInsets.only(
+        left: 10,
+      ),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          color: Color(cardColor!),
+          borderRadius: const BorderRadius.all(Radius.circular(10))),
+      width: 38,
+      height: 38,
+      child: Icon(
+        icon,
+        color: Color(iconColor!),
+        size: 34,
       ),
     );
   }

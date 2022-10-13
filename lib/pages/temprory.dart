@@ -72,11 +72,11 @@ class _TemproryPageState extends State<TemproryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Center(
+    return Container(
+      color: const Color(0xffF3FBF8),
+      child: SafeArea(
+          child: Scaffold(
+        body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -114,7 +114,7 @@ class _TemproryPageState extends State<TemproryPage> {
             ],
           ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 }
