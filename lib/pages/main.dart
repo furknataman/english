@@ -172,7 +172,7 @@ class _MainPageState extends State<MainPage> {
                       
                                 cardInfo: false),
                             card(context,
-                                text: "Kartlarım",
+                                text: "Kart",
                                 icon: FontAwesomeIcons.creditCard,
                                 page: const WordCardspage(),
                        

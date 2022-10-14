@@ -86,7 +86,7 @@ class _TemproryPageState extends State<TemproryPage> {
                     padding: const EdgeInsets.only(top: 60),
                     child: Image.asset(
                       "assets/images/logo.png",
-                      width: 120,
+                      width: 140,
                     ),
                   ),
                   const Padding(
