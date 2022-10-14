@@ -169,20 +169,17 @@ class _MainPageState extends State<MainPage> {
                                 text: "Kelimelerim",
                                 icon: FontAwesomeIcons.book,
                                 page: const ListPage(),
-                      
                                 cardInfo: false),
                             card(context,
-                                text: "Kart",
+                                text: "Kartlarım",
                                 icon: FontAwesomeIcons.creditCard,
                                 page: const WordCardspage(),
-                       
                                 cardInfo: false),
                             card(
                               context,
                               text: "Test",
                               icon: FontAwesomeIcons.clockRotateLeft,
                               page: const MultipleChoicePage(),
-                
                               cardInfo: false,
                             )
                           ],
@@ -280,7 +277,6 @@ class _MainPageState extends State<MainPage> {
                               text: "Liste Oluştur",
                               icon: FontAwesomeIcons.add,
                               page: const AddList(),
-          
                               cardInfo: true,
                             )
                           ],
@@ -316,7 +312,8 @@ class _MainPageState extends State<MainPage> {
             width: 100,
             height: 120,
             decoration: BoxDecoration(
-                color: cardInfo != true ? const Color(0xffFFFFFF) : const Color(0xff00b2ca),
+                color:
+                    cardInfo != true ? const Color(0xffFFFFFF) : const Color(0xff00b2ca),
                 borderRadius: const BorderRadius.all(Radius.circular(8))),
             child: Column(
               children: [
@@ -328,7 +325,9 @@ class _MainPageState extends State<MainPage> {
                     alignment: Alignment.center,
                     height: 90,
                     decoration: BoxDecoration(
-                        color:cardInfo!=true? const Color(0xff00b2ca):const Color(0xffFFFFFF),
+                        color: cardInfo != true
+                            ? const Color(0xff00b2ca)
+                            : const Color(0xffFFFFFF),
                         borderRadius: cardInfo == false
                             ? const BorderRadius.all(Radius.circular(5))
                             : const BorderRadius.all(Radius.circular(0))),
@@ -338,7 +337,9 @@ class _MainPageState extends State<MainPage> {
                       children: [
                         FaIcon(
                           icon,
-                          color: cardInfo!=true? const Color(0xffFFFFFF):const Color(0xff00b2ca),
+                          color: cardInfo != true
+                              ? const Color(0xffFFFFFF)
+                              : const Color(0xff00b2ca),
                           size: 40,
                         ),
                       ],
@@ -347,7 +348,11 @@ class _MainPageState extends State<MainPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 5),
-                  child: Text(text!, style: TextStyle(color: cardInfo!=true? const Color(0xff00b2ca):const Color(0xffFFFFFF))),
+                  child: Text(text!,
+                      style: TextStyle(
+                          color: cardInfo != true
+                              ? const Color(0xff00b2ca)
+                              : const Color(0xffFFFFFF))),
                 ),
               ],
             ),
