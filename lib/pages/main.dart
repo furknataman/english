@@ -253,7 +253,7 @@ class _MainPageState extends State<MainPage> {
                                           width: 185,
                                           height: 50,
                                           child: const Text(
-                                            "Öğrenilen Kelime",
+                                            "Öğrenilen",
                                             style: TextStyle(
                                                 color: Color(0xff00b2ca), fontSize: 20),
                                           ),

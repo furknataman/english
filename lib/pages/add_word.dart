@@ -31,8 +31,7 @@ class _addWordPageState extends State<addWordPage> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < 6; ++i) 
-    {
+    for (int i = 0; i < 6; ++i) {
       wordTextEditingList.add(TextEditingController());
     }
 
@@ -40,10 +39,13 @@ class _addWordPageState extends State<addWordPage> {
       wordListField.add(Row(
         children: [
           Expanded(
-              child: textFieldBuilder(textEditingController: wordTextEditingList[2 * i])),
+              child: textFieldBuilder(
+                  padding: EdgeInsets.only(left: 4),
+                  textEditingController: wordTextEditingList[2 * i])),
           Expanded(
-              child:
-                  textFieldBuilder(textEditingController: wordTextEditingList[2 * i + 1])),
+              child: textFieldBuilder(
+                  padding: EdgeInsets.only(right: 4),
+                  textEditingController: wordTextEditingList[2 * i + 1])),
         ],
       ));
     }
@@ -53,30 +55,40 @@ class _addWordPageState extends State<addWordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appbar(context,
-          left: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 22),
+          left: const Icon(
+            Icons.arrow_back_ios,
+            color: Color(0xffF3FBF8),
+            size: 22,
+          ),
           center: Text(
             ListName!,
-            style:
-                const TextStyle(fontFamily: "carter", fontSize: 22, color: Colors.black),
+             style: const TextStyle(
+                color: Color(0xffF3FBF8), fontSize: 22, fontWeight: FontWeight.w600),
           ),
-          right: const Icon(Icons.add, color: Colors.black, size: 22),
+          
           leftWidgetOnClik: () => Navigator.pop(context)),
       body: SafeArea(
         child: Container(
           color: Colors.white,
           child: Column(children: [
             Container(
-              margin:const EdgeInsets.only(top: 10, bottom: 10),
+              margin: const EdgeInsets.only(top: 10, bottom: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: const [
-                   Text(
+                  Text(
                     "İngilizce",
-                    style: TextStyle(fontSize: 18, fontFamily: "RobotoRegular"),
+                    style: TextStyle(
+                      color: Color(0xff4F4F4F),
+                      fontSize: 18,
+                    ),
                   ),
-                   Text(
+                  Text(
                     "Türkçe",
-                    style: TextStyle(fontSize: 18, fontFamily: "RobotoRegular"),
+                    style: TextStyle(
+                      color: Color(0xff4F4F4F),
+                      fontSize: 18,
+                    ),
                   )
                 ],
               ),
@@ -108,7 +120,8 @@ class _addWordPageState extends State<addWordPage> {
         height: 40,
         width: 40,
         margin: const EdgeInsets.only(bottom: 15),
-        decoration: const BoxDecoration(color:  Color.fromRGBO(157, 192, 198,0.9), shape: BoxShape.circle),
+        decoration: const BoxDecoration(
+            color: Color.fromRGBO(157, 192, 198, 0.9), shape: BoxShape.circle),
         child: Icon(
           icon,
           size: 28,
@@ -125,10 +138,12 @@ class _addWordPageState extends State<addWordPage> {
       children: [
         Expanded(
             child: textFieldBuilder(
+                padding: const EdgeInsets.only(left: 4),
                 textEditingController:
                     wordTextEditingList[wordTextEditingList.length - 2])),
         Expanded(
             child: textFieldBuilder(
+                padding: const EdgeInsets.only(right: 4),
                 textEditingController:
                     wordTextEditingList[wordTextEditingList.length - 1])),
       ],
@@ -158,7 +173,7 @@ class _addWordPageState extends State<addWordPage> {
           Word word = await DB.instance.insertWord(
               Word(list_id: ListID, word_eng: eng, word_tr: tr, status: false));
           //debugPrint(
-            //  "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
+          //  "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
         }
 
         toastMessage("Kelimeler eklendi");

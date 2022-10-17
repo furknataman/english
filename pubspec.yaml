@@ -91,21 +91,15 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Carter
-      fonts:
-        - asset: assets/fonts/carter.ttf
-    - family: Luck
-      fonts:
-        - asset: assets/fonts/luck.ttf
-    - family: RobotoMedium
-      fonts:
-        - asset: assets/fonts/robotomedium.ttf
     - family: RobotoRegular
       fonts:
         - asset: assets/fonts/robotoregular.ttf
     - family: mainn
       fonts:
         - asset: assets/fonts/main.ttf
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/Raleway.ttf
       
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic

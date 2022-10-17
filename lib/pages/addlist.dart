@@ -34,15 +34,17 @@ class _AddListState extends State<AddList> {
       wordListField.add(Row(
         children: [
           Expanded(
-              child: textFieldBuilder(textEditingController: wordTextEditingList[2 * i])),
+              child: textFieldBuilder(
+                  padding: const EdgeInsets.only(left: 4),
+                  textEditingController: wordTextEditingList[2 * i])),
           Expanded(
-              child:
-                  textFieldBuilder(textEditingController: wordTextEditingList[2 * i + 1])),
+              child: textFieldBuilder(
+                  padding: const EdgeInsets.only(right: 4),
+                  textEditingController: wordTextEditingList[2 * i + 1])),
         ],
       ));
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,23 +52,22 @@ class _AddListState extends State<AddList> {
       appBar: appbar(
         context,
         left: const Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
-          size: 22,
-        ),
-          center: const Text("Liste Oluştur", style:TextStyle(fontFamily: "Carter", color: Colors.black, fontSize: 22,fontWeight:FontWeight.w700 ),),
-        right: Image.asset(
-          "assets/images/logo.png",
-          height: 60,
-          width: 60,
-        ),
+            Icons.arrow_back_ios,
+            color: Color(0xffF3FBF8),
+            size: 22,
+          ),
+        center: const Text("Liste Oluştur",
+            style: TextStyle(
+                color: Color(0xffF3FBF8), fontSize: 22, fontWeight: FontWeight.w600)),
+        
         leftWidgetOnClik: () => {Navigator.pop(context)},
       ),
       body: SafeArea(
         child: Container(
-          color: Colors.white,
+          color: const Color(0xffF3FBF8),
           child: Column(children: [
             textFieldBuilder(
+                padding: const EdgeInsets.only(left: 4, right: 4),
                 icon: const Icon(
                   Icons.list,
                   size: 18,
@@ -75,17 +76,23 @@ class _AddListState extends State<AddList> {
                 textEditingController: _listName,
                 textAlign: TextAlign.left),
             Container(
-              margin: const EdgeInsets.only(top: 20, bottom: 10),
+              margin: const EdgeInsets.only(top: 10, bottom: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: const [
                   Text(
                     "İngilizce",
-                    style: TextStyle(fontSize: 18, fontFamily: "RobotoRegular"),
+                    style: TextStyle(
+                        color: Color(0xff4F4F4F),
+                        fontSize: 18,
+              ),
                   ),
                   Text(
                     "Türkçe",
-                    style: TextStyle(fontSize: 18, fontFamily: "RobotoRegular"),
+                    style: TextStyle(
+                        color: Color(0xff4F4F4F),
+                        fontSize: 18,
+                        ),
                   )
                 ],
               ),
@@ -117,7 +124,8 @@ class _AddListState extends State<AddList> {
         height: 40,
         width: 40,
         margin: const EdgeInsets.only(bottom: 15),
-        decoration: const BoxDecoration(color:  Color.fromRGBO(157, 192, 198,0.9), shape: BoxShape.circle),
+        decoration: const BoxDecoration(
+            color: Color.fromRGBO(157, 192, 198, 0.9), shape: BoxShape.circle),
         child: Icon(
           icon,
           size: 28,
@@ -134,10 +142,12 @@ class _AddListState extends State<AddList> {
       children: [
         Expanded(
             child: textFieldBuilder(
+                padding: const EdgeInsets.only(left: 4),
                 textEditingController:
                     wordTextEditingList[wordTextEditingList.length - 2])),
         Expanded(
             child: textFieldBuilder(
+                padding: const EdgeInsets.only(right: 4),
                 textEditingController:
                     wordTextEditingList[wordTextEditingList.length - 1])),
       ],
@@ -170,7 +180,7 @@ class _AddListState extends State<AddList> {
             Word word = await DB.instance.insertWord(
                 Word(list_id: addedList.id, word_eng: eng, word_tr: tr, status: false));
             //debugPrint(
-              //  "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
+            //  "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
           }
 
           toastMessage("Liste oluşturuldu");
