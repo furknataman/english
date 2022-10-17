@@ -62,14 +62,13 @@ class _addWordPageState extends State<addWordPage> {
           ),
           center: Text(
             ListName!,
-             style: const TextStyle(
+            style: const TextStyle(
                 color: Color(0xffF3FBF8), fontSize: 22, fontWeight: FontWeight.w600),
           ),
-          
           leftWidgetOnClik: () => Navigator.pop(context)),
       body: SafeArea(
         child: Container(
-          color: Colors.white,
+          color: const Color(0xffF3FBF8),
           child: Column(children: [
             Container(
               margin: const EdgeInsets.only(top: 10, bottom: 10),
