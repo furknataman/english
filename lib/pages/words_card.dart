@@ -49,6 +49,8 @@ class _WordCardspageState extends State<WordCardspage> {
   List<Word> _words = [];
   bool start = false;
   List<bool> changeLand = [];
+  bool learn = false;
+  bool unlearn = false;
 
   void getSelectedWordOfLists(List<int> selectedListID) async {
     List<String> value = selectedListID.map((e) => e.toString()).toList();
@@ -88,7 +90,7 @@ class _WordCardspageState extends State<WordCardspage> {
           size: 22,
         ),
         center: const Text(
-          "Kelime Kartları",
+          "Yeni Kart Destesi",
           style: TextStyle(
               fontFamily: "Carter",
               color: Colors.black,
@@ -104,9 +106,84 @@ class _WordCardspageState extends State<WordCardspage> {
                   margin: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
                   padding: const EdgeInsets.only(left: 4, top: 15, right: 4),
                   decoration: const BoxDecoration(
-                      color: const Color.fromRGBO(157, 192, 198,0.9),
+                      color: Color(0xffF3FBF8),
                       borderRadius: BorderRadius.all(Radius.circular(8))),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    const Text(
+                      "İçerik",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Color(0xff333333),
+                          fontWeight: FontWeight.w700),
+                    ),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            if (learn == false) {
+                              learn = true;
+                            } else {
+                              learn = false;
+                            }
+                            setState(() {
+                              learn;
+                            });
+                          },
+                          child: Container(
+                            width: 134,
+                            height: 36,
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.only(top: 9, right: 9),
+                            decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Text(
+                                "Öğrendiklerim",
+                                style: learn == false
+                                    ? const TextStyle(
+                                        fontSize: 15, color: Color(0xffBDBDBD))
+                                    : const TextStyle(
+                                        fontSize: 15, color: Color(0xff4F4F4F)),
+                              ),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (unlearn == false) {
+                              unlearn = true;
+                            } else {
+                              unlearn = false;
+                            }
+                            setState(() {
+                              unlearn;
+                            });
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: 144,
+                            height: 36,
+                            margin: const EdgeInsets.only(top: 9),
+                            decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Text(
+                                "Öğrenmediklerim",
+                                style: unlearn == false
+                                    ? const TextStyle(
+                                        fontSize: 15, color: Color(0xffBDBDBD))
+                                    : const TextStyle(
+                                        fontSize: 15, color: Color(0xff4F4F4F)),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     whichRadioButton(text: "Öğrendinlerimi sor", value: Which.learned),
                     whichRadioButton(text: "Öğrenmediklerimi sor", value: Which.unlearned),
                     whichRadioButton(text: "Hepsini sor", value: Which.all),
@@ -118,11 +195,11 @@ class _WordCardspageState extends State<WordCardspage> {
                     ),
                     const Padding(
                       padding: EdgeInsets.only(left: 16),
-                      child: Text("Listeler",
+                      child: Text("Kaynak Listeler",
                           style: TextStyle(
-                              fontFamily: 'RobotoRegular',
-                              fontSize: 18,
-                              color: Colors.black)),
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20,
+                              color: Color(0xff333333))),
                     ),
                     Container(
                       margin:
@@ -208,7 +285,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                     left: 16, right: 16, top: 8, bottom: 16),
                                 padding: const EdgeInsets.only(left: 4, top: 15, right: 4),
                                 decoration: const BoxDecoration(
-                                    color:  Color.fromRGBO(157, 192, 198,0.9),
+                                    color: Color.fromRGBO(157, 192, 198, 0.9),
                                     borderRadius: BorderRadius.all(Radius.circular(8))),
                                 child: Text(
                                   word,
