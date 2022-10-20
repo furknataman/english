@@ -18,7 +18,8 @@ PreferredSize appbar(context,
             alignment: Alignment.centerLeft,
             width: MediaQuery.of(context).size.width * 0.2,
             child: InkWell(
-              onTap: () => leftWidgetOnClik!(),
+              onTap: () => 
+              leftWidgetOnClik!(),
               child: left,
             ),
           ),

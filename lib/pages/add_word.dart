@@ -40,11 +40,11 @@ class _addWordPageState extends State<addWordPage> {
         children: [
           Expanded(
               child: textFieldBuilder(
-                  padding: EdgeInsets.only(left: 4),
+                  padding: const EdgeInsets.only(left: 4),
                   textEditingController: wordTextEditingList[2 * i])),
           Expanded(
               child: textFieldBuilder(
-                  padding: EdgeInsets.only(right: 4),
+                  padding: const EdgeInsets.only(right: 4),
                   textEditingController: wordTextEditingList[2 * i + 1])),
         ],
       ));
