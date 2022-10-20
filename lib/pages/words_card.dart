@@ -342,8 +342,6 @@ class _WordCardspageState extends State<WordCardspage> {
                   options: CarouselOptions(
                     height: double.infinity,
                     viewportFraction: 1,
-                                        
-                    
                   ),
                   itemCount: _words.length,
                   itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) {
@@ -420,16 +418,17 @@ class _WordCardspageState extends State<WordCardspage> {
                                           changeLand;
                                         });
                                       },
-                                      child: changeLand[itemIndex] == true? const Icon(
-                                        Icons.remove_red_eye_outlined,
-                                        size: 40,
-                                        color: Colors.white,
-                                      ):const Icon(
-                                        IconData(0xf662) ,
-                                       
-                                        size: 40,
-                                        color: Colors.white,
-                                      ))),
+                                      child: changeLand[itemIndex] == true
+                                          ? const Icon(
+                                              Icons.remove_red_eye_outlined,
+                                              size: 40,
+                                              color: Colors.white,
+                                            )
+                                          : const Icon(
+                                              IconData(0xf662),
+                                              size: 40,
+                                              color: Colors.white,
+                                            ))),
                             ),
                           ]),
                         ),
