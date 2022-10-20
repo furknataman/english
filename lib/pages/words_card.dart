@@ -247,7 +247,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                 color: Color(0xff4F4F4F)),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
+                            padding: const EdgeInsets.only(left: 18.0),
                             child: FlutterSwitch(
                               activeTextColor: Colors.white,
                               inactiveTextColor: const Color(0xff828282),
