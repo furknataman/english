@@ -4,6 +4,9 @@ import 'package:english/global_widget/app_bar.dart';
 import 'package:english/global_widget/toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_switch/flutter_switch.dart';
+import 'package:switcher/core/switcher_size.dart';
+import 'package:switcher/switcher.dart';
 
 import '../db/db/db.dart';
 import '../db/db/sharedPreferences.dart';
@@ -55,15 +58,16 @@ class _WordCardspageState extends State<WordCardspage> {
   void getSelectedWordOfLists(List<int> selectedListID) async {
     List<String> value = selectedListID.map((e) => e.toString()).toList();
     SP.write("selected_list", value);
-    if (chooseQuwstionType == Which.learned) {
+    if (learn == true && unlearn != true) {
       _words = await DB.instance.readWordByLists(selectedListID, status: true);
-    } else if (chooseQuwstionType == Which.unlearned) {
+    } else if (learn != true && unlearn == true) {
       _words = await DB.instance.readWordByLists(selectedListID, status: false);
     } else {
       _words = await DB.instance.readWordByLists(
         selectedListID,
       );
     }
+
     if (_words.isNotEmpty) {
       for (int i = 0; i < _words.length; i++) {
         changeLand.add(true);
@@ -82,32 +86,50 @@ class _WordCardspageState extends State<WordCardspage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff00b2ca),
       appBar: appbar(
         context,
-        left: const Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
-          size: 22,
-        ),
-        center: const Text(
-          "Yeni Kart Destesi",
-          style: TextStyle(
-              fontFamily: "Carter",
-              color: Colors.black,
-              fontSize: 22,
-              fontWeight: FontWeight.w700),
-        ),
-        leftWidgetOnClik: () => Navigator.pop(context),
+        left: start == false
+            ? const Icon(
+                Icons.arrow_back_ios,
+                color: Color(0xffF3FBF8),
+                size: 22,
+              )
+            : InkWell(
+                onTap: () {
+                  setState(() {
+                    start = false;
+                  });
+                },
+                child: const Icon(
+                  Icons.highlight_off_outlined,
+                  color: Color(0xffF3FBF8),
+                  size: 31,
+                ),
+              ),
+        center: start == false
+            ? const Text(
+                "Yeni Kart Destesi",
+                style: TextStyle(
+                    fontFamily: "Carter",
+                    color: Color(0xffF3FBF8),
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700),
+              )
+            : svgLogoIcon,
+        leftWidgetOnClik: () => start == false ? Navigator.pop(context) : start = false,
       ),
-      body: SafeArea(
+      body: Container(
           child: start == false
               ? Container(
                   width: double.infinity,
-                  margin: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
-                  padding: const EdgeInsets.only(left: 4, top: 15, right: 4),
+                  padding: const EdgeInsets.only(
+                    left: 15,
+                    top: 40,
+                  ),
                   decoration: const BoxDecoration(
                       color: Color(0xffF3FBF8),
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     const Text(
                       "İçerik",
@@ -184,28 +206,14 @@ class _WordCardspageState extends State<WordCardspage> {
                         ),
                       ],
                     ),
-                    whichRadioButton(text: "Öğrendinlerimi sor", value: Which.learned),
-                    whichRadioButton(text: "Öğrenmediklerimi sor", value: Which.unlearned),
-                    whichRadioButton(text: "Hepsini sor", value: Which.all),
-                    checkBox(text: "Listeyi karıştır", fwhat: ForWhat.fortListMixed),
                     const SizedBox(height: 20),
-                    const Divider(
-                      color: Colors.black,
-                      thickness: 1,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 16),
-                      child: Text("Kaynak Listeler",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 20,
-                              color: Color(0xff333333))),
-                    ),
-                    Container(
-                      margin:
-                          const EdgeInsets.only(left: 8, right: 8, top: 10, bottom: 10),
-                      height: 200,
-                      decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1)),
+                    const Text("Kaynak Listeler",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
+                            color: Color(0xff333333))),
+                    SizedBox(
+                      height: 210,
                       child: Scrollbar(
                         thickness: 5,
                         child: ListView.builder(
@@ -217,41 +225,126 @@ class _WordCardspageState extends State<WordCardspage> {
                         ),
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      margin: const EdgeInsets.only(right: 20),
-                      child: InkWell(
-                        onTap: () {
-                          List<int> selectedIndexNoOfList = [];
-                          for (int i = 0; i < selectedListIndex.length; i++) {
-                            if (selectedListIndex[i] == true) {
-                              selectedIndexNoOfList.add(i);
-                            }
-                          }
-                          List<int> selectedListIdList = [];
-                          for (int i = 0; i < selectedIndexNoOfList.length; i++) {
-                            selectedListIdList
-                                .add(lists[selectedIndexNoOfList[i]]['list_id'] as int);
-                          }
-                          if (selectedListIdList.isNotEmpty) {
-                            getSelectedWordOfLists(selectedListIdList);
-                          } else {
-                            toastMessage("Lütfen, liste seçiniz");
-                          }
-                        },
-                        child: const Text(
-                          "Başla",
-                          style: TextStyle(
-                              fontFamily: "RobotoRegular",
-                              fontSize: 18,
-                              color: Colors.black),
-                        ),
+                    const Text(
+                      "Deste Ayarları",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Color(0xff333333),
+                          fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Listeyi Karıştır",
+                            style: TextStyle(
+                                fontFamily: 'RobotoRegular',
+                                fontSize: 16,
+                                color: Color(0xff4F4F4F)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: FlutterSwitch(
+                              activeTextColor: Colors.white,
+                              inactiveTextColor: const Color(0xff828282),
+                              width: 88.0,
+                              height: 34.0,
+                              valueFontSize: 14.0,
+                              activeColor: const Color(0xff00b2ca),
+                              inactiveSwitchBorder:
+                                  Border.all(color: const Color(0xffBDBDBD)),
+                              activeText: "Açık",
+                              inactiveText: "Kapalı",
+                              toggleSize: 28.0,
+                              inactiveColor: const Color(0xffFFFFFF),
+                              inactiveToggleColor: const Color(0xffBDBDBD),
+                              value: listMixed,
+                              borderRadius: 18.0,
+                              padding: 3.0,
+                              showOnOff: true,
+                              onToggle: (val) {
+                                setState(() {
+                                  listMixed = val;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 36,
+                          decoration: const BoxDecoration(
+                              color: Color(0xff00b2ca),
+                              borderRadius: BorderRadius.all(Radius.circular(20))),
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.only(right: 20),
+                          child: InkWell(
+                            onTap: () {
+                              if (learn == false && unlearn == false) {
+                                toastMessage("Lütfen, liste seçiniz");
+                              } else {
+                                /* setState(() {
+                                  if (learn == true && unlearn == true) {
+                                    SP.write("which", 2);
+                                    Which.all;
+                                  } else if (learn == true) {
+                                    SP.write("which", 0);
+                                    Which.learned;
+                                  } else if (unlearn == true) {
+                                    SP.write("which", 1);
+                                    Which.unlearned;
+                                  }
+                                });*/
+                                List<int> selectedIndexNoOfList = [];
+                                for (int i = 0; i < selectedListIndex.length; i++) {
+                                  if (selectedListIndex[i] == true) {
+                                    selectedIndexNoOfList.add(i);
+                                  }
+                                }
+                                List<int> selectedListIdList = [];
+                                for (int i = 0; i < selectedIndexNoOfList.length; i++) {
+                                  selectedListIdList.add(
+                                      lists[selectedIndexNoOfList[i]]['list_id'] as int);
+                                }
+                                if (selectedListIdList.isNotEmpty) {
+                                  getSelectedWordOfLists(selectedListIdList);
+                                } else {
+                                  toastMessage("Lütfen, liste seçiniz");
+                                }
+                              }
+                            },
+                            child: const Text(
+                              "Oluştur",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xffF3FBF8),
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                      ],
                     )
                   ]),
                 )
               : CarouselSlider.builder(
-                  options: CarouselOptions(height: double.infinity),
+                  options: CarouselOptions(
+                    height: double.infinity,
+                    viewportFraction: 1,
+                                        
+                    
+                  ),
                   itemCount: _words.length,
                   itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) {
                     String word = "";
@@ -266,47 +359,78 @@ class _WordCardspageState extends State<WordCardspage> {
                     }
                     return Column(
                       children: [
-                        Expanded(
+                        Container(
+                          decoration: const BoxDecoration(
+                              color: Color(0xffF3FBF8),
+                              borderRadius: BorderRadius.all(Radius.circular(20))),
+                          width: 385,
+                          height: 285,
                           child: Stack(children: [
-                            InkWell(
-                              onTap: () {
-                                if (changeLand[itemIndex] == true) {
-                                  changeLand[itemIndex] = false;
-                                } else {
-                                  changeLand[itemIndex] = true;
-                                }
-                                setState(() {
-                                  changeLand;
-                                });
-                              },
+                            Container(
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.only(
+                                  left: 16, right: 16, top: 8, bottom: 16),
+                              padding: const EdgeInsets.only(left: 4, top: 15, right: 4),
+                              child: Text(
+                                word,
+                                style: const TextStyle(
+                                    fontFamily: "RobotoRegular",
+                                    fontSize: 28,
+                                    color: Colors.black),
+                              ),
+                            ),
+                            Positioned(
+                              left: 40,
                               child: Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(
-                                    left: 16, right: 16, top: 8, bottom: 16),
-                                padding: const EdgeInsets.only(left: 4, top: 15, right: 4),
+                                width: 45,
+                                height: 45,
                                 decoration: const BoxDecoration(
-                                    color: Color.fromRGBO(157, 192, 198, 0.9),
-                                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                                    color: Color(0xff3574C3),
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10))),
                                 child: Text(
-                                  word,
-                                  style: const TextStyle(
-                                      fontFamily: "RobotoRegular",
-                                      fontSize: 28,
-                                      color: Colors.black),
+                                  "${itemIndex + 1}/${_words.length}",
+                                  style:
+                                      const TextStyle(fontSize: 14, color: Colors.white),
                                 ),
                               ),
                             ),
                             Positioned(
-                              left: 30,
-                              top: 10,
-                              child: Text(
-                                "${itemIndex + 1}/${_words.length}",
-                                style: const TextStyle(
-                                    fontFamily: "RobotoRegular",
-                                    fontSize: 16,
-                                    color: Colors.black),
-                              ),
-                            )
+                              right: 40,
+                              bottom: 0,
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  width: 60,
+                                  height: 60,
+                                  decoration: const BoxDecoration(
+                                      color: Color(0xff3574C3),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10))),
+                                  child: InkWell(
+                                      onTap: () {
+                                        if (changeLand[itemIndex] == true) {
+                                          changeLand[itemIndex] = false;
+                                        } else {
+                                          changeLand[itemIndex] = true;
+                                        }
+                                        setState(() {
+                                          changeLand;
+                                        });
+                                      },
+                                      child: changeLand[itemIndex] == true? const Icon(
+                                        Icons.remove_red_eye_outlined,
+                                        size: 40,
+                                        color: Colors.white,
+                                      ):const Icon(
+                                        IconData(0xf662) ,
+                                       
+                                        size: 40,
+                                        color: Colors.white,
+                                      ))),
+                            ),
                           ]),
                         ),
                         SizedBox(
@@ -340,66 +464,39 @@ class _WordCardspageState extends State<WordCardspage> {
     );
   }
 
-  SizedBox whichRadioButton({@required String? text, @required Which? value}) {
-    return SizedBox(
-      width: 275,
-      height: 32,
+  Container checkBox({int index = 0, String? text}) {
+    return Container(
+      margin: const EdgeInsets.only(top: 5),
+      width: 363,
+      height: 42,
+      decoration: const BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
       child: ListTile(
-        title: Text(
-          text!,
-          style: const TextStyle(fontFamily: 'RobotoRegular', fontSize: 18),
+        contentPadding: const EdgeInsets.only(bottom: 3),
+        horizontalTitleGap: 1,
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 12.0),
+          child: Text(
+            text!,
+            style: const TextStyle(
+                fontFamily: 'RobotoRegular', fontSize: 16, color: Color(0xff4F4F4F)),
+          ),
         ),
-        leading: Radio<Which>(
-          value: value!,
-          groupValue: chooseQuwstionType,
-          onChanged: (Which? value) {
-            setState(() {
-              chooseQuwstionType = value;
-            });
-
-            switch (value) {
-              case Which.learned:
-                SP.write("which", 0);
-                break;
-              case Which.unlearned:
-                SP.write("which", 1);
-                break;
-              case Which.all:
-                SP.write("which", 2);
-                break;
-              default:
-                break;
-            }
-          },
-        ),
-      ),
-    );
-  }
-
-  SizedBox checkBox({int index = 0, String? text, ForWhat fwhat = ForWhat.fortList}) {
-    return SizedBox(
-      width: 270,
-      height: 35,
-      child: ListTile(
-        title: Text(
-          text!,
-          style: const TextStyle(fontFamily: 'RobotoRegular', fontSize: 18),
-        ),
-        leading: Checkbox(
-          checkColor: Colors.white,
-          activeColor: Colors.deepPurpleAccent,
-          hoverColor: Colors.blueAccent,
-          value: fwhat == ForWhat.fortList ? selectedListIndex[index] : listMixed,
-          onChanged: (bool? value) {
-            setState(() {
-              if (fwhat == ForWhat.fortList) {
+        leading: Padding(
+          padding: const EdgeInsets.only(bottom: 12.0),
+          child: Checkbox(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5.0))),
+            checkColor: Colors.white,
+            activeColor: const Color(0xff00b2ca),
+            hoverColor: Colors.blueAccent,
+            value: selectedListIndex[index],
+            onChanged: (bool? value) {
+              setState(() {
                 selectedListIndex[index] = value!;
-              } else {
-                listMixed = value!;
-                SP.write("mix", value);
-              }
-            });
-          },
+              });
+            },
+          ),
         ),
       ),
     );
