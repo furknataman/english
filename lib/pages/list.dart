@@ -71,10 +71,7 @@ class _ListPageState extends State<ListPage> {
           center: const Text(
             "Listelerim",
             style: TextStyle(
-                fontFamily: "Raleway",
-                color: Color(0xffF3FBF8),
-                fontSize: 22,
-                fontWeight: FontWeight.w600),
+                color: Color(0xffF3FBF8), fontSize: 22, fontWeight: FontWeight.w600),
           ),
           right: Padding(
             padding: const EdgeInsets.only(top: 8.0),
@@ -257,10 +254,10 @@ class _ListPageState extends State<ListPage> {
                         child: Text(
                           listname!,
                           style: const TextStyle(
-                              color: Color(0xff4F4F4F),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: "Raleway"),
+                            color: Color(0xff4F4F4F),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                       Row(
