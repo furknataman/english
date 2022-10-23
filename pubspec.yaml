@@ -43,6 +43,15 @@ dependencies:
   pie_chart: ^5.3.2
   font_awesome_flutter: ^10.2.1
   flutter_svg: ^1.1.5
+  flutter_switch: ^0.3.2
+  flip_card: ^0.6.0
+  carousel_slider: ^4.1.1
+  flutter_lints: ^2.0.0
+  package_info_plus: ^1.4.3
+  sqflite: ^2.0.3
+  fluttertoast: ^8.0.9
+  shared_preferences: ^2.0.15
+  flutter_launcher_icons: ^0.10.0
   
 
 dev_dependencies:
@@ -54,13 +63,6 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
-  package_info_plus: ^1.4.3
-  sqflite: ^2.0.3
-  fluttertoast: ^8.0.9
-  carousel_slider: ^4.1.1
-  shared_preferences: ^2.0.15
-  flutter_launcher_icons: ^0.10.0
 
 
 
@@ -91,21 +93,15 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Carter
-      fonts:
-        - asset: assets/fonts/carter.ttf
-    - family: Luck
-      fonts:
-        - asset: assets/fonts/luck.ttf
-    - family: RobotoMedium
-      fonts:
-        - asset: assets/fonts/robotomedium.ttf
     - family: RobotoRegular
       fonts:
         - asset: assets/fonts/robotoregular.ttf
     - family: mainn
       fonts:
         - asset: assets/fonts/main.ttf
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/Raleway.ttf
       
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
