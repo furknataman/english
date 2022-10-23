@@ -9,7 +9,7 @@ PreferredSize appbar(context,
     preferredSize: const Size.fromHeight(50),
     child: AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: const Color(0xff00b2ca),
+      backgroundColor: const Color.fromRGBO(0, 178, 202, 1),
       elevation: 0,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
