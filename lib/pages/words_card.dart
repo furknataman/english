@@ -2,9 +2,11 @@ import 'package:english/db/models/words.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/global_widget/toast_message.dart';
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
 
@@ -54,6 +56,8 @@ class _WordCardspageState extends State<WordCardspage> {
   List<bool> changeLand = [];
   bool learn = false;
   bool unlearn = false;
+  int? itemIndex;
+  int indexpage = 0;
 
   void getSelectedWordOfLists(List<int> selectedListID) async {
     List<String> value = selectedListID.map((e) => e.toString()).toList();
@@ -83,11 +87,17 @@ class _WordCardspageState extends State<WordCardspage> {
     }
   }
 
+  List<Color> cardColor = [
+    const Color(0xff9B51E0),
+    const Color(0xffBB6BD9),
+    const Color(0xff56CCF2),
+    const Color(0xffF3FBF8),
+  ];
   CarouselController buttonCarouselController = CarouselController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff00b2ca),
+      backgroundColor: const Color(0xff3574C3),
       appBar: appbar(
         context,
         left: start == false
@@ -256,7 +266,7 @@ class _WordCardspageState extends State<WordCardspage> {
                               width: 88.0,
                               height: 34.0,
                               valueFontSize: 14.0,
-                              activeColor: const Color(0xff00b2ca),
+                              activeColor: const Color(0xff3574C3),
                               inactiveSwitchBorder:
                                   Border.all(color: const Color(0xffBDBDBD)),
                               activeText: "Açık",
@@ -288,7 +298,7 @@ class _WordCardspageState extends State<WordCardspage> {
                           width: 100,
                           height: 36,
                           decoration: const BoxDecoration(
-                              color: Color(0xff00b2ca),
+                              color: Color(0xff3574C3),
                               borderRadius: BorderRadius.all(Radius.circular(20))),
                           alignment: Alignment.center,
                           margin: const EdgeInsets.only(right: 20),
@@ -331,20 +341,26 @@ class _WordCardspageState extends State<WordCardspage> {
               : SafeArea(
                   child: Padding(
                     padding:
-                        const EdgeInsets.only(left: 20, top: 24.0, bottom: 24, right: 20),
+                        const EdgeInsets.only(top: 24.0, bottom: 24, left: 15, right: 15),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CarouselSlider.builder(
                             carouselController: buttonCarouselController,
                             options: CarouselOptions(
+                              onPageChanged: (index, reason) {
+                                indexpage = index;
+                                setState(() {});
+                              },
+                              scrollPhysics: const NeverScrollableScrollPhysics(),
                               enlargeCenterPage: true,
                               height: 500,
-                              viewportFraction: 0.9,
+                              viewportFraction: 1,
+                              enableInfiniteScroll: true,
                             ),
                             itemCount: _words.length,
                             itemBuilder:
-                                (BuildContext context, int itemIndex, int pageViewIndex) {
+                                (BuildContext context, itemIndex, int pageViewIndex) {
                               String word = "";
                               if (chooeseLang == Lang.tr) {
                                 word = changeLand[itemIndex]
@@ -357,182 +373,304 @@ class _WordCardspageState extends State<WordCardspage> {
                               }
                               return Column(
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        color: changeLand[itemIndex] == true
-                                            ? const Color(0xff002250)
-                                            : const Color(0xffF3FBF8),
-                                        borderRadius:
-                                            const BorderRadius.all(Radius.circular(20))),
-                                    width: 385,
-                                    height: 285,
-                                    child: Stack(children: [
+                                  Stack(
+                                    children: [
                                       Container(
                                         width: 385,
-                                        height: 285,
+                                        height: 350,
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               const BorderRadius.all(Radius.circular(20)),
-                                          color: changeLand[itemIndex] == false
-                                              ? const Color(0xff002250)
-                                              : const Color(0xffF3FBF8),
+                                          color: cardColor[(indexpage) % 4],
                                         ),
-                                        alignment: Alignment.center,
-                                        margin: const EdgeInsets.only(bottom: 16),
-                                        padding: const EdgeInsets.only(
-                                            left: 4, top: 15, right: 4),
-                                        child: Text(
-                                          word,
-                                          style: TextStyle(
-                                              fontSize: 28,
-                                              color: changeLand[itemIndex] == true
-                                                  ? Colors.black
-                                                  : Colors.white),
+                                      ),
+                                      Container(
+                                        width: 385,
+                                        height: 330,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              const BorderRadius.all(Radius.circular(20)),
+                                          color: cardColor[(indexpage + 1) % 4],
                                         ),
                                       ),
                                       Positioned(
-                                        left: 40,
                                         child: Container(
-                                          alignment: Alignment.center,
-                                          width: 45,
-                                          height: 45,
-                                          decoration: const BoxDecoration(
-                                              color: Color(0xff3574C3),
-                                              borderRadius: BorderRadius.only(
-                                                  bottomLeft: Radius.circular(10),
-                                                  bottomRight: Radius.circular(10))),
-                                          child: Text(
-                                            "${itemIndex + 1}/${_words.length}",
-                                            style: const TextStyle(
-                                                fontSize: 14, color: Colors.white),
+                                          width: 385,
+                                          height: 310,
+                                          decoration: BoxDecoration(
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(20)),
+                                            color: cardColor[(indexpage + 2) % 4],
                                           ),
                                         ),
                                       ),
-                                      Positioned(
-                                        right: 40,
-                                        bottom: 15,
-                                        child: Container(
+                                      FlipCard(
+                                        direction: FlipDirection.VERTICAL,
+                                        onFlip: () {
+                                          if (changeLand[itemIndex] == true) {
+                                            changeLand[itemIndex] = false;
+                                          } else {
+                                            changeLand[itemIndex] = true;
+                                          }
+                                          setState(() {
+                                            changeLand;
+                                          });
+                                        },
+                                        front: Stack(children: [
+                                          Container(
+                                            width: 385,
+                                            height: 290,
+                                            decoration: BoxDecoration(
+                                              borderRadius: const BorderRadius.all(
+                                                  Radius.circular(20)),
+                                              color: cardColor[(indexpage + 3) % 4],
+                                            ),
                                             alignment: Alignment.center,
-                                            width: 60,
-                                            height: 60,
-                                            decoration: const BoxDecoration(
-                                                color: Color(0xff3574C3),
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft: Radius.circular(10),
-                                                    topRight: Radius.circular(10))),
-                                            child: InkWell(
-                                                onTap: () {
-                                                  if (changeLand[itemIndex] == true) {
-                                                    changeLand[itemIndex] = false;
-                                                  } else {
-                                                    changeLand[itemIndex] = true;
-                                                  }
-                                                  setState(() {
-                                                    changeLand;
-                                                  });
-                                                },
-                                                child: changeLand[itemIndex] == true
-                                                    ? const Icon(
-                                                        Icons.remove_red_eye_outlined,
-                                                        size: 40,
-                                                        color: Colors.white,
-                                                      )
-                                                    : const Icon(
-                                                        IconData(0xf662),
-                                                        size: 40,
-                                                        color: Colors.white,
-                                                      ))),
-                                      ),
-                                      /* SizedBox(
-                                        width: 160,
-                                        child: CheckboxListTile(
-                                          title: const Text(
-                                            "Öğrendim",
-                                            style: TextStyle(
-                                                fontFamily: "RobotoRegular",
-                                                fontSize: 16,
-                                                color: Colors.black),
+                                            margin: const EdgeInsets.only(bottom: 16),
+                                            padding: const EdgeInsets.only(
+                                                left: 4, top: 15, right: 4),
+                                            child: Text(
+                                              word,
+                                              style: const TextStyle(
+                                                  fontSize: 28, color: Colors.black),
+                                            ),
                                           ),
-                                          value: _words[itemIndex].status,
-                                          onChanged: (value) {
-                                            _words[itemIndex] =
-                                                _words[itemIndex].copy(status: value);
-                                            DB.instance.markAslearned(
-                                                value!, _words[itemIndex].id as int);
-                                            toastMessage(value
-                                                ? "Öğrenildi olarak işaretlendi"
-                                                : "Öğrenilmedi olarak işaretlendi.");
-
-                                            setState(() {
-                                              _words[itemIndex];
-                                            });
-                                          },
-                                        ),
-                                      )*/
-                                    ]),
+                                          Positioned(
+                                            left: 40,
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              width: 45,
+                                              height: 45,
+                                              decoration: const BoxDecoration(
+                                                  color: Color(0xff002250),
+                                                  borderRadius: BorderRadius.only(
+                                                      bottomLeft: Radius.circular(10),
+                                                      bottomRight: Radius.circular(10))),
+                                              child: Text(
+                                                "${itemIndex + 1}/${_words.length}",
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Color(0xffF3FBF8),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            right: 40,
+                                            bottom: 15,
+                                            child: Container(
+                                                alignment: Alignment.center,
+                                                width: 60,
+                                                height: 60,
+                                                decoration: const BoxDecoration(
+                                                    color: Color(0xff002250),
+                                                    borderRadius: BorderRadius.only(
+                                                        topLeft: Radius.circular(10),
+                                                        topRight: Radius.circular(10))),
+                                                child: const Icon(
+                                                  Icons.remove_red_eye_outlined,
+                                                  size: 40,
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                        ]),
+                                        back: Stack(children: [
+                                          Container(
+                                            width: 385,
+                                            height: 290,
+                                            decoration: const BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.all(Radius.circular(20)),
+                                              color: Color(0xff002250),
+                                            ),
+                                            alignment: Alignment.center,
+                                            margin: const EdgeInsets.only(bottom: 16),
+                                            padding: const EdgeInsets.only(
+                                                left: 4, top: 15, right: 4),
+                                            child: Text(
+                                              word,
+                                              style: const TextStyle(
+                                                  fontSize: 28, color: Colors.white),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            left: 40,
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              width: 45,
+                                              height: 45,
+                                              decoration: const BoxDecoration(
+                                                  color: Color(0xffF3FBF8),
+                                                  borderRadius: BorderRadius.only(
+                                                      bottomLeft: Radius.circular(10),
+                                                      bottomRight: Radius.circular(10))),
+                                              child: Text(
+                                                "${itemIndex + 1}/${_words.length}",
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Color(0xff002250),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            right: 40,
+                                            bottom: 15,
+                                            child: Container(
+                                                alignment: Alignment.center,
+                                                width: 60,
+                                                height: 60,
+                                                decoration: const BoxDecoration(
+                                                    color: Color(0xffF3FBF8),
+                                                    borderRadius: BorderRadius.only(
+                                                        topLeft: Radius.circular(10),
+                                                        topRight: Radius.circular(10))),
+                                                child: const FaIcon(
+                                                  FontAwesomeIcons.eyeSlash,
+                                                  size: 32,
+                                                  color: Colors.black,
+                                                )),
+                                          ),
+                                        ]),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               );
                             }),
-                        Row(
-                          children: [
-                            Container(
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.only(left: 10, right: 10),
-                              width: 340,
-                              height: 50,
-                              decoration: const BoxDecoration(
-                                  color: Color(0xffF3FBF8),
-                                  borderRadius: BorderRadius.all(Radius.circular(20))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  InkWell(
-                                    onTap: () => buttonCarouselController.previousPage(
-                                        duration: const Duration(milliseconds: 300),
-                                        curve: Curves.easeInExpo),
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: 36,
-                                      width: 100,
-                                      decoration: const BoxDecoration(
-                                          color: Color(0xffE0E0E0),
-                                          borderRadius:
-                                              BorderRadius.all(Radius.circular(20))),
-                                      child: const Text(
-                                        "Önceki",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xff4F4F4F)),
+                        SizedBox(
+                          height: 86,
+                          width: 390,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.only(left: 10, right: 10),
+                                width: 380,
+                                height: 50,
+                                decoration: const BoxDecoration(
+                                    color: Color(0xffF3FBF8),
+                                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    InkWell(
+                                      onTap: () => buttonCarouselController.previousPage(
+                                          duration: const Duration(milliseconds: 1),
+                                          curve: Curves.easeInExpo),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 36,
+                                        width: 100,
+                                        decoration: const BoxDecoration(
+                                            color: Color(0xffE0E0E0),
+                                            borderRadius:
+                                                BorderRadius.all(Radius.circular(20))),
+                                        child: const Text(
+                                          "Önceki",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xff4F4F4F)),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  InkWell(
-                                    onTap: () => buttonCarouselController.nextPage(
-                                        duration: const Duration(milliseconds: 300),
-                                        curve: Curves.easeInBack),
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: 36,
-                                      width: 100,
-                                      decoration: const BoxDecoration(
-                                          color: Color(0xffE0E0E0),
-                                          borderRadius:
-                                              BorderRadius.all(Radius.circular(20))),
-                                      child: const Text(
-                                        "Sonraki",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xff4F4F4F)),
+                                    InkWell(
+                                      onTap: () => buttonCarouselController.nextPage(
+                                          duration: const Duration(milliseconds: 1),
+                                          curve: Curves.easeInBack),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 36,
+                                        width: 100,
+                                        decoration: const BoxDecoration(
+                                            color: Color(0xffE0E0E0),
+                                            borderRadius:
+                                                BorderRadius.all(Radius.circular(20))),
+                                        child: const Text(
+                                          "Sonraki",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xff4F4F4F)),
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                ],
+                                    )
+                                  ],
+                                ),
                               ),
-                            )
-                          ],
+                              Positioned(
+                                bottom: 50,
+                                child: InkWell(
+                                  onTap: () {
+                                    if (_words[indexpage].status == true) {
+                                      _words[indexpage] =
+                                          _words[indexpage].copy(status: false);
+                                    } else {
+                                      _words[indexpage] =
+                                          _words[indexpage].copy(status: true);
+                                    }
+                                    setState(() {
+                                      _words[indexpage].status;
+                                    });
+                                  },
+                                  child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      width: 120,
+                                      height: 30,
+                                      decoration: const BoxDecoration(
+                                          color: Color(0xff6FCF97),
+                                          borderRadius:
+                                              BorderRadius.all(Radius.circular(10))),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          SizedBox(
+                                            width: 17,
+                                            height: 17,
+                                            child: Checkbox(
+                                              side: MaterialStateBorderSide.resolveWith(
+                                                  (states) {
+                                                if (states
+                                                    .contains(MaterialState.pressed)) {
+                                                  return const BorderSide(
+                                                      color: Colors.white);
+                                                } else {
+                                                  return const BorderSide(
+                                                      color: Colors.white);
+                                                }
+                                              }),
+                                              shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(
+                                                      Radius.circular(5.0))),
+                                              checkColor: Colors.black,
+                                              activeColor: const Color(0xff6FCF97),
+                                              hoverColor: Colors.blueAccent,
+                                              value: _words[indexpage].status,
+                                              onChanged: (value) {
+                                                _words[indexpage] =
+                                                    _words[indexpage].copy(status: value);
+                                                DB.instance.markAslearned(
+                                                    value!, _words[indexpage].id as int);
+
+                                                setState(() {
+                                                  _words[indexpage];
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          const Text(
+                                            "Öğrendim",
+                                            style: TextStyle(
+                                                fontSize: 14, color: Colors.white),
+                                          )
+                                        ],
+                                      )),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -543,7 +681,7 @@ class _WordCardspageState extends State<WordCardspage> {
 
   Container checkBox({int index = 0, String? text}) {
     return Container(
-      margin: const EdgeInsets.only(top: 5),
+      margin: const EdgeInsets.only(top: 5, right: 20),
       width: 363,
       height: 42,
       decoration: const BoxDecoration(
@@ -565,7 +703,7 @@ class _WordCardspageState extends State<WordCardspage> {
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5.0))),
             checkColor: Colors.white,
-            activeColor: const Color(0xff00b2ca),
+            activeColor: const Color(0xff3574C3),
             hoverColor: Colors.blueAccent,
             value: selectedListIndex[index],
             onChanged: (bool? value) {

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 
 PreferredSize appbar(context,
-    {@required Widget? left,
-    Widget? center,
-    Widget? right,
-    Function? leftWidgetOnClik}) {
+    {@required Widget? left, Widget? center, Widget? right, Function? leftWidgetOnClik}) {
   return PreferredSize(
     preferredSize: const Size.fromHeight(50),
     child: AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: const Color.fromRGBO(0, 178, 202, 1),
+      backgroundColor: const Color(0xff3574C3),
       elevation: 0,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -18,8 +15,7 @@ PreferredSize appbar(context,
             alignment: Alignment.centerLeft,
             width: MediaQuery.of(context).size.width * 0.2,
             child: InkWell(
-              onTap: () => 
-              leftWidgetOnClik!(),
+              onTap: () => leftWidgetOnClik!(),
               child: left,
             ),
           ),

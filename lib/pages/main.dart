@@ -87,7 +87,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff00b2ca),
+      backgroundColor: const Color(0xff3574C3),
       key: _scaffoldKey,
       appBar: appbar(
         context,
@@ -218,7 +218,7 @@ class _MainPageState extends State<MainPage> {
                                           child: const Text(
                                             "Toplam",
                                             style: TextStyle(
-                                                color: Color(0xff00b2ca), fontSize: 20),
+                                                color: Color(0xff3574C3), fontSize: 20),
                                           ),
                                         ),
                                         Padding(
@@ -255,7 +255,7 @@ class _MainPageState extends State<MainPage> {
                                           child: const Text(
                                             "Öğrenilen",
                                             style: TextStyle(
-                                                color: Color(0xff00b2ca), fontSize: 20),
+                                                color: Color(0xff3574C3), fontSize: 20),
                                           ),
                                         ),
                                         Padding(
@@ -313,7 +313,7 @@ class _MainPageState extends State<MainPage> {
             height: 120,
             decoration: BoxDecoration(
                 color:
-                    cardInfo != true ? const Color(0xffFFFFFF) : const Color(0xff00b2ca),
+                    cardInfo != true ? const Color(0xffFFFFFF) : const Color(0xff3574C3),
                 borderRadius: const BorderRadius.all(Radius.circular(8))),
             child: Column(
               children: [
@@ -326,7 +326,7 @@ class _MainPageState extends State<MainPage> {
                     height: 90,
                     decoration: BoxDecoration(
                         color: cardInfo != true
-                            ? const Color(0xff00b2ca)
+                            ? const Color(0xff3574C3)
                             : const Color(0xffFFFFFF),
                         borderRadius: cardInfo == false
                             ? const BorderRadius.all(Radius.circular(5))
@@ -339,7 +339,7 @@ class _MainPageState extends State<MainPage> {
                           icon,
                           color: cardInfo != true
                               ? const Color(0xffFFFFFF)
-                              : const Color(0xff00b2ca),
+                              : const Color(0xff3574C3),
                           size: 40,
                         ),
                       ],
@@ -351,7 +351,7 @@ class _MainPageState extends State<MainPage> {
                   child: Text(text!,
                       style: TextStyle(
                           color: cardInfo != true
-                              ? const Color(0xff00b2ca)
+                              ? const Color(0xff3574C3)
                               : const Color(0xffFFFFFF))),
                 ),
               ],

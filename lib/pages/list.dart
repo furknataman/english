@@ -80,7 +80,7 @@ class _ListPageState extends State<ListPage> {
           leftWidgetOnClik: () => {Navigator.pop(context)}),
       body: Container(
         decoration: const BoxDecoration(
-          color: Color(0xff00b2ca),
+          color: Color(0xff3574C3),
         ),
         child: Column(
           children: [
@@ -217,12 +217,12 @@ class _ListPageState extends State<ListPage> {
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: const Color(0xff00b2ca),
+                          color: const Color(0xff3574C3),
                           width: 4.0,
                         )),
                     child: PieChart(
                       colorList: const [
-                        Color(0xff00b2ca),
+                        Color(0xff3574C3),
                       ],
                       dataMap: {
                         "Learn": double.parse(sumWords!) - double.parse(sumUnloearned!),
@@ -266,7 +266,7 @@ class _ListPageState extends State<ListPage> {
                             margin: const EdgeInsets.only(left: 10, right: 5),
                             child: const FaIcon(
                               FontAwesomeIcons.grip,
-                              color: Color(0xff00b2ca),
+                              color: Color(0xff3574C3),
                               size: 15,
                             ),
                           ),
@@ -281,7 +281,7 @@ class _ListPageState extends State<ListPage> {
                             margin: const EdgeInsets.only(left: 10, right: 5),
                             child: const FaIcon(
                               FontAwesomeIcons.circleCheck,
-                              color: Color(0xff00b2ca),
+                              color: Color(0xff3574C3),
                               size: 15,
                             ),
                           ),
@@ -300,12 +300,14 @@ class _ListPageState extends State<ListPage> {
               ),
               editController == true
                   ? Checkbox(
+                      side: const BorderSide(color: Colors.white),
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5.0))),
                       checkColor: Colors.white,
                       activeColor: const Color(0xff3574C3),
                       hoverColor: Colors.blueAccent,
                       value: deleteIndexList[index],
+                   
                       onChanged: (bool? value) {
                         setState(() {
                           deleteIndexList[index] = value!;
@@ -322,7 +324,7 @@ class _ListPageState extends State<ListPage> {
                       padding: EdgeInsets.only(right: 8.0),
                       child: Icon(
                         Icons.arrow_forward_ios_rounded,
-                        color: Color(0xff00b2ca),
+                        color: Color(0xff3574C3),
                         size: 22,
                       ),
                     ),
@@ -335,7 +337,7 @@ class _ListPageState extends State<ListPage> {
       {@required IconData? icon, @required int? iconColor, @required int? cardColor}) {
     return Container(
       margin: const EdgeInsets.only(
-        left: 10,
+        left: 8,
       ),
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -346,7 +348,7 @@ class _ListPageState extends State<ListPage> {
       child: Icon(
         icon,
         color: Color(iconColor!),
-        size: 34,
+        size: 32,
       ),
     );
   }
