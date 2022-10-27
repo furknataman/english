@@ -507,9 +507,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                                   Icons.close,
                                                   color: Colors.red,
                                                   size: 60,
-                                                ))
-                                    else
-                                      Container(),
+                                                )),
                                     Positioned(
                                         left: 30,
                                         child: Container(
