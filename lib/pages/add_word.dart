@@ -1,9 +1,6 @@
 // ignore_for_file: prefer_is_not_empty
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
 import '../db/db/db.dart';
 import '../db/models/words.dart';
 import '../global_widget/app_bar.dart';

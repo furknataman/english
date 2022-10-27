@@ -4,8 +4,6 @@ import 'package:english/global_variable.dart';
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/global_widget/toast_message.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

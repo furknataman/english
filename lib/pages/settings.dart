@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 
 import '../global_widget/app_bar.dart';
 
@@ -33,7 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         leftWidgetOnClik: () => Navigator.pop(context),
       ),
-      body: SafeArea(child: const Text("data")),
+      body: const SafeArea(child: Text("data")),
     );
   }
 }

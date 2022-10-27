@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'db/db/db.dart';
-import 'db/db/sharedPreferences.dart';
-
 enum Lang { eng, tr }
 
 Lang? chooeseLang = Lang.eng;
