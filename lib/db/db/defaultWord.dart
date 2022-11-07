@@ -1,10 +1,9 @@
-
 import '../models/lists.dart';
 import '../models/words.dart';
 import 'package:english/db/db/sharedPreferences.dart';
 import 'db.dart';
 
-void DefaultWord() async {
+void defaultWord() async {
   if (await SP.read("default") != false) {
     Lists addedList = await DB.instance.insertList(const Lists(name: "Temel Kelimeler-1"));
     List<String> eng = ["After", "Again", "All", "Another", "Answer"];

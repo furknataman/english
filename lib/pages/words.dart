@@ -7,24 +7,23 @@ import '../db/models/words.dart';
 
 class WordsPage extends StatefulWidget {
   final int? listID;
-  final String? listname;
-  const WordsPage(this.listID, this.listname, {Key? key}) : super(key: key);
+  final String? listName;
+  const WordsPage(this.listID, this.listName, {Key? key}) : super(key: key);
 
   @override
-  State<WordsPage> createState() => WordsPageState(listID: listID, listname: listname);
+  State<WordsPage> createState() => WordsPageState(listID: listID, listName: listName);
 }
 
 class WordsPageState extends State<WordsPage> {
   int? listID;
-  String? listname;
-  WordsPageState({@required this.listID, @required this.listname});
+  String? listName;
+  WordsPageState({@required this.listID, @required this.listName});
   List<Word> _wordlist = [];
   bool pressController = false;
   List<bool> deleteIndexList = [];
   @override
   void initState() {
     super.initState();
-   // debugPrint("$listID ${listname!}");f
     getWordByList();
   }
 
@@ -64,7 +63,7 @@ class WordsPageState extends State<WordsPage> {
       appBar: appbar(context,
           left: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 22),
           center: Text(
-            listname!,
+            listName!,
             style:
                 const TextStyle(fontFamily: "Carter", fontSize: 22, color: Colors.black),
           ),
@@ -95,7 +94,7 @@ class WordsPageState extends State<WordsPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-                  MaterialPageRoute(builder: ((context) => addWordPage(listID, listname))))
+                  MaterialPageRoute(builder: ((context) => AddWordPage(listID, listName))))
               .then((value) {
             getWordByList();
           });

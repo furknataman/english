@@ -8,6 +8,8 @@ import '../global_variable.dart';
 import '../global_widget/toast_message.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'add_word.dart';
+
 class ListPage extends StatefulWidget {
   const ListPage({Key? key}) : super(key: key);
 
@@ -183,8 +185,8 @@ class _ListPageState extends State<ListPage> {
       @required String? sumUnloearned}) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-                context, MaterialPageRoute(builder: (context) => WordsPage(id, listname)))
+        Navigator.push(context,
+                MaterialPageRoute(builder: (context) => AddWordPage(id, listname)))
             .then((value) {
           getLists();
         });
@@ -300,14 +302,13 @@ class _ListPageState extends State<ListPage> {
               ),
               editController == true
                   ? Checkbox(
-                      side: const BorderSide(color: Colors.white),
+                      side: const BorderSide(color: Color(0xff3574C3)),
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5.0))),
                       checkColor: Colors.white,
                       activeColor: const Color(0xff3574C3),
                       hoverColor: Colors.blueAccent,
                       value: deleteIndexList[index],
-                   
                       onChanged: (bool? value) {
                         setState(() {
                           deleteIndexList[index] = value!;

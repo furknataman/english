@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-enum textFieldType { main, lefet, rigt }
-
 Column textFieldBuilder(
     {int height = 40,
+    Color borderColor = const Color(0xff3574C3),
+    bool editting = true,
     EdgeInsets? padding,
     @required TextEditingController? textEditingController,
     Icon? icon,
@@ -12,10 +12,10 @@ Column textFieldBuilder(
   return Column(
     children: [
       Padding(
-        padding: const EdgeInsets.only(top:10.0,left: 20,right: 20),
+        padding: const EdgeInsets.only(top: 10.0, left: 15, right: 15),
         child: Container(
           decoration: BoxDecoration(
-              color: const Color(0xff00b2ca), borderRadius: BorderRadius.circular(4)),
+              color: borderColor, borderRadius: BorderRadius.circular(4)),
           child: Padding(
             padding: padding!,
             child: Container(
@@ -23,19 +23,16 @@ Column textFieldBuilder(
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(4)),
               child: Padding(
-                padding: const EdgeInsets.only(left:4.0),
+                padding: const EdgeInsets.only(left: 4.0),
                 child: TextField(
-                  
+                  enabled: editting,
                   keyboardType: TextInputType.name,
                   maxLines: 1,
                   textAlign: textAlign,
                   textAlignVertical: TextAlignVertical.top,
                   controller: textEditingController,
                   style: const TextStyle(
-                      color: Colors.black,
-                      fontFamily: "RobotoMedium",
-                      decoration: TextDecoration.none,
-                      fontSize: 18),
+                      color: Colors.black, decoration: TextDecoration.none, fontSize: 18),
                   decoration: InputDecoration(
                       icon: icon,
                       border: InputBorder.none,

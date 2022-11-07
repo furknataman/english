@@ -171,7 +171,7 @@ class _MainPageState extends State<MainPage> {
                                 page: const ListPage(),
                                 cardInfo: false),
                             card(context,
-                                text: "Kartlarım",
+                                text: "Kart Oluştur",
                                 icon: FontAwesomeIcons.creditCard,
                                 page: const WordCardspage(),
                                 cardInfo: false),
