@@ -82,6 +82,7 @@ class _AddListState extends State<AddList> {
                     style: TextStyle(
                         color: Color(0xff4F4F4F),
                         fontSize: 18,
+                        fontWeight: FontWeight.w600
               ),
                   ),
                   Text(
@@ -89,6 +90,7 @@ class _AddListState extends State<AddList> {
                     style: TextStyle(
                         color: Color(0xff4F4F4F),
                         fontSize: 18,
+                        fontWeight: FontWeight.w600
                         ),
                   )
                 ],

@@ -29,7 +29,6 @@ Column textFieldBuilder(
                   keyboardType: TextInputType.name,
                   maxLines: 1,
                   textAlign: textAlign,
-                  textAlignVertical: TextAlignVertical.top,
                   controller: textEditingController,
                   style: const TextStyle(
                       color: Colors.black, decoration: TextDecoration.none, fontSize: 18),

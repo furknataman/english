@@ -258,7 +258,7 @@ class _ListPageState extends State<ListPage> {
                           style: const TextStyle(
                             color: Color(0xff4F4F4F),
                             fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -277,7 +277,7 @@ class _ListPageState extends State<ListPage> {
                             style: const TextStyle(
                                 color: Color(0xff828282),
                                 fontSize: 14,
-                                fontFamily: "RobotoRegular"),
+                                fontWeight: FontWeight.w600),
                           ),
                           Container(
                             margin: const EdgeInsets.only(left: 10, right: 5),
@@ -292,7 +292,8 @@ class _ListPageState extends State<ListPage> {
                             style: const TextStyle(
                                 color: Color(0xff828282),
                                 fontSize: 14,
-                                fontFamily: "RobotoRegular"),
+                                fontWeight: FontWeight.w600
+                                ),
                           ),
                         ],
                       )

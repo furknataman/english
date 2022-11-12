@@ -25,17 +25,18 @@ class _AddWordPageState extends State<AddWordPage> {
   List<TextEditingController> wordTextEditingList = [];
   List<Row> wordListField = [];
   List<Word> _wordlist = [];
-  List<Word> dbWordList = [];
-  List<bool> deleteIndexList = [];
+  int dbcount = 0;
+  List<bool> selectIndexList = [];
   bool editController = false;
   int listItem = 0;
 
   void getWordByList() async {
+    wordTextEditingList = [];
     _wordlist = await DB.instance.readWordByList(listID);
-    dbWordList = _wordlist;
+    dbcount = _wordlist.length;
 
     for (int i = 0; i < _wordlist.length; i++) {
-      deleteIndexList.add(false);
+      selectIndexList.add(false);
     }
     for (int i = 0; i < _wordlist.length * 2; ++i) {
       wordTextEditingList.add(TextEditingController());
@@ -45,45 +46,27 @@ class _AddWordPageState extends State<AddWordPage> {
       _wordlist;
       wordTextEditingList;
       wordListField;
-      dbWordList;
     });
-  }
-
-  void delete() async {
-    List<int> removeIndexLits = [];
-    //print(deleteIndexList);
-    for (int i = 0; i < deleteIndexList.length; i++) {
-      if (deleteIndexList[i] == true) {
-        removeIndexLits.add(i);
-      }
-    }
-
-    for (int i = removeIndexLits.length - 1; i >= 0; i--) {
-      DB.instance.deleteWord(_wordlist[removeIndexLits[i]].id!);
-      _wordlist.removeAt(removeIndexLits[i]);
-      deleteIndexList.removeAt(removeIndexLits[i]);
-    }
-    setState(() {
-      _wordlist;
-      deleteIndexList;
-    });
-    toastMessage("Seçili kelimeler silindi");
   }
 
   void learn() async {
     List<int> learnIndexList = [];
-    for (int i = 0; i < deleteIndexList.length; i++) {
-      if (deleteIndexList[i] == true) {
+    for (int i = 0; i < selectIndexList.length; i++) {
+      if (selectIndexList[i] == true) {
         learnIndexList.add(i);
       }
     }
     for (int i = learnIndexList.length - 1; i >= 0; i--) {
-      DB.instance.markAslearned(true, _wordlist[i].id as int);
-
-      deleteIndexList[i] = false;
+      _wordlist[learnIndexList[i]] = _wordlist[learnIndexList[i]].copy(status: true);
+      await DB.instance.markAslearned(true, _wordlist[learnIndexList[i]].id as int);
+      //print(_wordlist[i].word_eng);
     }
+    for (int i = 0; i < selectIndexList.length; i++) {
+      selectIndexList[i] = false;
+    }
+
     setState(() {
-      deleteIndexList;
+      selectIndexList;
       learnIndexList;
       _wordlist;
     });
@@ -93,18 +76,22 @@ class _AddWordPageState extends State<AddWordPage> {
 
   void unlearn() async {
     List<int> learnIndexList = [];
-    for (int i = 0; i < deleteIndexList.length; i++) {
-      if (deleteIndexList[i] == true) {
+    for (int i = 0; i < selectIndexList.length; i++) {
+      if (selectIndexList[i] == true) {
         learnIndexList.add(i);
       }
     }
     for (int i = learnIndexList.length - 1; i >= 0; i--) {
-      DB.instance.markAslearned(false, _wordlist[i].id as int);
-
-      deleteIndexList[i] = false;
+      _wordlist[learnIndexList[i]] = _wordlist[learnIndexList[i]].copy(status: false);
+      await DB.instance.markAslearned(false, _wordlist[learnIndexList[i]].id as int);
+      //print(_wordlist[i].word_eng);
     }
+    for (int i = 0; i < selectIndexList.length; i++) {
+      selectIndexList[i] = false;
+    }
+
     setState(() {
-      deleteIndexList;
+      selectIndexList;
       learnIndexList;
       _wordlist;
     });
@@ -130,7 +117,7 @@ class _AddWordPageState extends State<AddWordPage> {
           center: Text(
             listName!,
             style: const TextStyle(
-                color: Color(0xffF3FBF8), fontSize: 22, fontWeight: FontWeight.w600),
+                color: Color(0xffF3FBF8), fontSize: 20, fontWeight: FontWeight.w600),
           ),
           leftWidgetOnClik: () => Navigator.pop(context)),
       body: Column(
@@ -156,44 +143,55 @@ class _AddWordPageState extends State<AddWordPage> {
                             cardColor: 0xffF3FBF8),
                       ),
                     ])
-                  : Row(children: [
-                      card(
-                          icon: Icons.create_outlined,
-                          iconColor: 0xff828282,
-                          cardColor: 0xffE0E0E0),
-                      InkWell(
-                        onTap: () {
-                          editController = false;
+                  : Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        alignment: Alignment.centerLeft,
+                        child: Row(children: [
+                          card(
+                              icon: Icons.create_outlined,
+                              iconColor: 0xff828282,
+                              cardColor: 0xffE0E0E0),
+                          InkWell(
+                            onTap: () {
+                              editController = false;
+                              for (int i = 0; i < selectIndexList.length; i++) {
+                                selectIndexList[i] = false;
+                              }
 
-                          setState(() {
-                            editController;
-                          });
-                        },
-                        child: card(
-                            icon: Icons.close,
-                            iconColor: 0xff4F4F4F,
-                            cardColor: 0xffF3FBF8),
+                              selectIndexList;
+                              setState(() {
+                                editController;
+                              });
+                            },
+                            child: card(
+                                icon: Icons.close,
+                                iconColor: 0xff4F4F4F,
+                                cardColor: 0xffF3FBF8),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              addRow();
+                            },
+                            child: card(
+                                icon: Icons.add_circle_outline,
+                                iconColor: 0xff6FCF97,
+                                cardColor: 0xffF3FBF8),
+                          ),
+                        ]),
                       ),
-                      InkWell(
-                        onTap: () {
-                          addRow();
-                        },
-                        child: card(
-                            icon: Icons.add_circle_outline,
-                            iconColor: 0xff6FCF97,
-                            cardColor: 0xffF3FBF8),
-                      ),
-                      const SizedBox(
-                        width: 210,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          save();
-                        },
-                        child: card(
-                            icon: Icons.save_rounded,
-                            iconColor: 0xff6FCF97,
-                            cardColor: 0xffF3FBF8),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.2,
+                        alignment: Alignment.center,
+                        child: InkWell(
+                          onTap: () {
+                            save();
+                          },
+                          child: card(
+                              icon: Icons.save_rounded,
+                              iconColor: 0xff6FCF97,
+                              cardColor: 0xffF3FBF8),
+                        ),
                       ),
                     ]),
             ),
@@ -207,7 +205,7 @@ class _AddWordPageState extends State<AddWordPage> {
               child: Column(children: [
                 if (editController == true)
                   Container(
-                    padding: const EdgeInsets.only(left: 15, right: 10),
+                    padding: const EdgeInsets.only(left: 10, right: 10),
                     height: 70,
                     decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
@@ -216,7 +214,7 @@ class _AddWordPageState extends State<AddWordPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         const Text(
-                          "Seçilen Kelimeleri... ",
+                          "Seçilen Kelimeleri...",
                           style: TextStyle(
                               fontSize: 16,
                               color: Colors.white,
@@ -241,6 +239,7 @@ class _AddWordPageState extends State<AddWordPage> {
                     child: Column(children: [
                       Container(
                         margin: const EdgeInsets.only(top: 15),
+                        padding: const EdgeInsets.only(right: 30),
                         height: 40,
                         decoration: const BoxDecoration(
                             color: Color(0xffF3FBF8),
@@ -270,9 +269,7 @@ class _AddWordPageState extends State<AddWordPage> {
                       ),
                       Expanded(
                         child: Container(
-                          decoration: const BoxDecoration(
-                              color: Color(0xffF3FBF8),
-                              borderRadius: BorderRadius.all(Radius.circular(20))),
+                          color: const Color(0xffF3FBF8),
                           child: ListView.builder(
                               itemBuilder: (context, index) {
                                 return list(index,
@@ -302,32 +299,30 @@ class _AddWordPageState extends State<AddWordPage> {
   }) {
     wordTextEditingList[2 * index + 1].text = wordTr!;
     wordTextEditingList[2 * index].text = wordEng!;
-    Color? color;
-    if (learn!) {
-      color = const Color.fromARGB(255, 102, 210, 147);
-    } else {
-      color = const Color(0xff3574C3);
-    }
 
     return Row(
       children: [
         Expanded(
             child: textFieldBuilder(
-                borderColor: color,
+                borderColor: learn!
+                    ? const Color.fromARGB(255, 102, 210, 147)
+                    : const Color(0xff3574C3),
                 editting: editController,
                 padding: const EdgeInsets.only(left: 4),
                 textEditingController: wordTextEditingList[2 * index])),
         Expanded(
             child: textFieldBuilder(
-                borderColor: color,
+                borderColor: learn
+                    ? const Color.fromARGB(255, 102, 210, 147)
+                    : const Color(0xff3574C3),
                 editting: editController,
-                padding: const EdgeInsets.only(right: 2),
+                padding: const EdgeInsets.only(right: 4),
                 textEditingController: wordTextEditingList[2 * index + 1])),
         editController
             ? Container(
                 padding: const EdgeInsets.only(top: 10),
                 margin: const EdgeInsets.only(
-                  right: 15,
+                  right: 10,
                 ),
                 width: 20,
                 height: 30,
@@ -338,15 +333,15 @@ class _AddWordPageState extends State<AddWordPage> {
                   checkColor: Colors.white,
                   activeColor: const Color(0xff3574C3),
                   hoverColor: Colors.blueAccent,
-                  value: deleteIndexList[index],
+                  value: selectIndexList[index],
                   onChanged: (bool? value) {
-                    if (deleteIndexList[index]) {
-                      deleteIndexList[index] = false;
+                    if (selectIndexList[index]) {
+                      selectIndexList[index] = false;
                     } else {
-                      deleteIndexList[index] = true;
+                      selectIndexList[index] = true;
                     }
                     setState(() {
-                      deleteIndexList[index];
+                      selectIndexList[index];
                     });
                   },
                 ),
@@ -359,65 +354,76 @@ class _AddWordPageState extends State<AddWordPage> {
   void addRow() async {
     wordTextEditingList.add(TextEditingController());
     wordTextEditingList.add(TextEditingController());
-    deleteIndexList.add(false);
-    Word word = await DB.instance
-        .insertWord(Word(list_id: listID, word_eng: " ", word_tr: "", status: false));
+    selectIndexList.add(false);
+    Word word = (Word(list_id: listID, word_eng: " ", word_tr: "", status: false));
     _wordlist.add(word);
     setState(() {
       wordListField;
-      deleteIndexList;
+      selectIndexList;
       _wordlist;
     });
   }
 
+  void delete() async {
+    List<int> removeIndexLits = [];
+    //print(selectIndexList);
+    for (int i = 0; i < selectIndexList.length; i++) {
+      if (selectIndexList[i] == true) {
+        removeIndexLits.add(i);
+      }
+    }
+
+    for (int i = removeIndexLits.length - 1; i >= 0; i--) {
+      _wordlist.removeAt(removeIndexLits[i]);
+      selectIndexList.removeAt(removeIndexLits[i]);
+      wordTextEditingList.length--;
+      wordTextEditingList.length--;
+    }
+    setState(() {
+      wordTextEditingList;
+      _wordlist;
+      selectIndexList;
+    });
+    toastMessage(
+        "Seçili kelimeler silindi, değişiklikleri kaydetmek için lütfen KAYDET tuşuna basınız.",
+        time: 2);
+  }
+
   void save() async {
-    int counter = 0;
     bool notEmptyPair = false;
     for (int i = 0; i < wordTextEditingList.length / 2; i++) {
       String eng = wordTextEditingList[2 * i].text;
       String tr = wordTextEditingList[2 * i + 1].text;
-
       if (!eng.isEmpty && !tr.isEmpty) {
-        counter++;
       } else {
         notEmptyPair = true;
       }
     }
 
-    if (counter > 1) {
-      if (!notEmptyPair) {
-        for (int i = _wordlist.length - 1; i >= 0; i--) {
-          DB.instance.deleteWord(_wordlist[i].id!);
-        }
+    if (!notEmptyPair) {
+      DB.instance.deleteTableWord(listID!);
 
-        for (int i = 0; i < wordTextEditingList.length / 2; i++) {
-          String eng = wordTextEditingList[2 * i].text;
-          String tr = wordTextEditingList[2 * i + 1].text;
-          Word word = await DB.instance.insertWord(
-              Word(list_id: listID, word_eng: eng, word_tr: tr, status: false));
-          //debugPrint(
-          //  "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
-        }
-
-        toastMessage("Kelimeler eklendi");
-        for (var element in wordTextEditingList) {
-          element.clear();
-        }
-      } else {
-        toastMessage("Alanlar boş bırakılamaz. Silin veya doldurun.");
+      for (int i = 0; i < wordTextEditingList.length / 2; i++) {
+        String eng = wordTextEditingList[2 * i].text;
+        String tr = wordTextEditingList[2 * i + 1].text;
+        Word word = await DB.instance
+            .insertWord(Word(list_id: listID, word_eng: eng, word_tr: tr, status: false));
+        //debugPrint(
+        //  "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
       }
+
+      toastMessage("Kelime listesi güncellendi");
+      for (var element in wordTextEditingList) {
+        element.clear();
+      }
+      getWordByList();
     } else {
-      toastMessage("En az 1 çift dolu olmalıdır.");
+      toastMessage("Alanlar boş bırakılamaz. Silin veya doldurun.");
     }
   }
 
   void deleteRow() {
     if (wordListField.length > _wordlist.length) {
-      wordTextEditingList.removeAt(wordTextEditingList.length - 1);
-      wordTextEditingList.removeAt(wordTextEditingList.length - 1);
-
-      wordListField.removeAt(wordListField.length - 1);
-
       setState(() => wordListField);
     } else {
       toastMessage("Kayıtlı Kelimeleri silmek için lütfen menüyü kullanın");
@@ -426,9 +432,7 @@ class _AddWordPageState extends State<AddWordPage> {
 
   Container card({IconData? icon, @required int? iconColor, @required int? cardColor}) {
     return Container(
-      margin: const EdgeInsets.only(
-        left: 8,
-      ),
+      margin: const EdgeInsets.only(left: 6),
       alignment: Alignment.center,
       decoration: BoxDecoration(
           color: Color(cardColor!),

@@ -146,6 +146,11 @@ class DB {
     return db.delete(tableNameWord, where: '${WordTableFields.id}=?', whereArgs: [id]);
   }
 
+  Future deleteTableWord(int id) async {
+    final db = await instance.database;
+    await db.delete(tableNameWord, where: '${WordTableFields.list_id}=?', whereArgs: [id]);
+  }
+
   Future<int> markAslearned(bool mark, int id) async {
     final db = await instance.database;
     int result = mark == true ? 1 : 0;

@@ -10,7 +10,7 @@ void defaultWord() async {
     List<String> tr = ["Sonra", "Tekrar", "Hepsi", "Başka", "Cevap"];
 
     for (int i = 0; i < eng.length; i++) {
-      Word word = await DB.instance.insertWord(
+     await DB.instance.insertWord(
           Word(list_id: addedList.id, word_eng: eng[i], word_tr: tr[i], status: false));
     }
 
@@ -26,7 +26,7 @@ void defaultWord() async {
       "Değişim"
     ];
     for (int i = 0; i < eng2.length; i++) {
-      Word word = await DB.instance.insertWord(
+      await DB.instance.insertWord(
           Word(list_id: addedList2.id, word_eng: eng2[i], word_tr: tr2[i], status: false));
     }
 
@@ -43,7 +43,7 @@ void defaultWord() async {
       "Unutmak"
     ];
     for (int i = 0; i < eng3.length; i++) {
-      Word word = await DB.instance.insertWord(
+    await DB.instance.insertWord(
           Word(list_id: addedList3.id, word_eng: eng3[i], word_tr: tr3[i], status: false));
     }
     /*int x = await DB.instance.getCount();

@@ -95,7 +95,7 @@ class _TemproryPageState extends State<TemproryPage> {
                       "Learn",
                       style: TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
-                          fontFamily: "Luck",
+                         fontWeight: FontWeight.w600,
                           fontSize: 40),
                     ),
                   ),
@@ -107,7 +107,7 @@ class _TemproryPageState extends State<TemproryPage> {
                   " What You Want",
                   style: TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
-                      fontFamily: "Luck",
+                      fontWeight: FontWeight.w600,
                       fontSize: 25),
                 ),
               )

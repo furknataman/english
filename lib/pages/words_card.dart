@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../db/db/db.dart';
 import '../db/db/sharedPreferences.dart';
+import '../global_widget/admob.dart';
 
 class WordCardspage extends StatefulWidget {
   const WordCardspage({Key? key}) : super(key: key);
@@ -17,12 +19,22 @@ class WordCardspage extends StatefulWidget {
   @override
   State<WordCardspage> createState() => _WordCardspageState();
 }
+Container? adContainer;
 
 class _WordCardspageState extends State<WordCardspage> {
   @override
   void initState() {
     super.initState();
     getLists();
+    MobileAds.instance.initialize();
+    myBanner.load();
+    final AdWidget adWidget = AdWidget(ad: myBanner);
+    adContainer = Container(
+      alignment: Alignment.center,
+      width: 320,
+      height: 100,
+      child: adWidget,
+    );
   }
 
   void getLists() async {
@@ -120,10 +132,10 @@ class _WordCardspageState extends State<WordCardspage> {
             ? const Text(
                 "Yeni Kart Destesi",
                 style: TextStyle(
-                    fontFamily: "Carter",
+                    fontWeight: FontWeight.w600,
                     color: Color(0xffF3FBF8),
                     fontSize: 22,
-                    fontWeight: FontWeight.w700),
+                    ),
               )
             : svgLogoIcon,
         leftWidgetOnClik: () => start == false ? Navigator.pop(context) : start = false,
@@ -139,205 +151,216 @@ class _WordCardspageState extends State<WordCardspage> {
                   decoration: const BoxDecoration(
                       color: Color(0xffF3FBF8),
                       borderRadius: BorderRadius.all(Radius.circular(20))),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    const Text(
-                      "İçerik",
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Color(0xff333333),
-                          fontWeight: FontWeight.w700),
-                    ),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            if (learn == false) {
-                              learn = true;
-                            } else {
-                              learn = false;
-                            }
-                            setState(() {
-                              learn;
-                            });
-                          },
-                          child: Container(
-                            width: 134,
-                            height: 36,
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.only(top: 9, right: 9),
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(10))),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Text(
-                                "Öğrendiklerim",
-                                style: learn == false
-                                    ? const TextStyle(
-                                        fontSize: 15, color: Color(0xffBDBDBD))
-                                    : const TextStyle(
-                                        fontSize: 15, color: Color(0xff4F4F4F)),
-                              ),
-                            ),
-                          ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        const Text(
+                          "İçerik",
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color(0xff333333),
+                             fontWeight: FontWeight.w600,),
                         ),
-                        InkWell(
-                          onTap: () {
-                            if (unlearn == false) {
-                              unlearn = true;
-                            } else {
-                              unlearn = false;
-                            }
-                            setState(() {
-                              unlearn;
-                            });
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            width: 144,
-                            height: 36,
-                            margin: const EdgeInsets.only(top: 9),
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(10))),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Text(
-                                "Öğrenmediklerim",
-                                style: unlearn == false
-                                    ? const TextStyle(
-                                        fontSize: 15, color: Color(0xffBDBDBD))
-                                    : const TextStyle(
-                                        fontSize: 15, color: Color(0xff4F4F4F)),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    const Text("Kaynak Listeler",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20,
-                            color: Color(0xff333333))),
-                    SizedBox(
-                      height: 210,
-                      child: Scrollbar(
-                        thickness: 5,
-                        child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            return checkBox(
-                                index: index, text: lists[index]['name'].toString());
-                          },
-                          itemCount: lists.length,
-                        ),
-                      ),
-                    ),
-                    const Text(
-                      "Deste Ayarları",
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Color(0xff333333),
-                          fontWeight: FontWeight.w700),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12, right: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Listeyi Karıştır",
-                            style: TextStyle(
-                                fontFamily: 'RobotoRegular',
-                                fontSize: 16,
-                                color: Color(0xff4F4F4F)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 18.0),
-                            child: FlutterSwitch(
-                              activeTextColor: Colors.white,
-                              inactiveTextColor: const Color(0xff828282),
-                              width: 88.0,
-                              height: 34.0,
-                              valueFontSize: 14.0,
-                              activeColor: const Color(0xff3574C3),
-                              inactiveSwitchBorder:
-                                  Border.all(color: const Color(0xffBDBDBD)),
-                              activeText: "Açık",
-                              inactiveText: "Kapalı",
-                              toggleSize: 28.0,
-                              inactiveColor: const Color(0xffFFFFFF),
-                              inactiveToggleColor: const Color(0xffBDBDBD),
-                              value: listMixed,
-                              borderRadius: 18.0,
-                              padding: 3.0,
-                              showOnOff: true,
-                              onToggle: (val) {
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                if (learn == false) {
+                                  learn = true;
+                                } else {
+                                  learn = false;
+                                }
                                 setState(() {
-                                  listMixed = val;
+                                  learn;
                                 });
                               },
+                              child: Container(
+                                width: 134,
+                                height: 36,
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(top: 9, right: 9),
+                                decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Text(
+                                    "Öğrendiklerim",
+                                    style: learn == false
+                                        ? const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                            fontSize: 15, color: Color(0xffBDBDBD))
+                                        : const TextStyle(fontWeight: FontWeight.w600,
+                                            fontSize: 15, color: Color(0xff4F4F4F)),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 36,
-                          decoration: const BoxDecoration(
-                              color: Color(0xff3574C3),
-                              borderRadius: BorderRadius.all(Radius.circular(20))),
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.only(right: 20),
-                          child: InkWell(
-                            onTap: () {
-                              if (learn == false && unlearn == false) {
-                                toastMessage("Lütfen, liste seçiniz");
-                              } else {
-                                List<int> selectedIndexNoOfList = [];
-                                for (int i = 0; i < selectedListIndex.length; i++) {
-                                  if (selectedListIndex[i] == true) {
-                                    selectedIndexNoOfList.add(i);
-                                  }
-                                }
-                                List<int> selectedListIdList = [];
-                                for (int i = 0; i < selectedIndexNoOfList.length; i++) {
-                                  selectedListIdList.add(
-                                      lists[selectedIndexNoOfList[i]]['list_id'] as int);
-                                }
-                                if (selectedListIdList.isNotEmpty) {
-                                  getSelectedWordOfLists(selectedListIdList);
+                            InkWell(
+                              onTap: () {
+                                if (unlearn == false) {
+                                  unlearn = true;
                                 } else {
-                                  toastMessage("Lütfen, liste seçiniz");
+                                  unlearn = false;
                                 }
-                              }
-                            },
-                            child: const Text(
-                              "Oluştur",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xffF3FBF8),
-                                  fontWeight: FontWeight.w700),
+                                setState(() {
+                                  unlearn;
+                                });
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 144,
+                                height: 36,
+                                margin: const EdgeInsets.only(top: 9),
+                                decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Text(
+                                    "Öğrenmediklerim",
+                                    style: unlearn == false
+                                        ? const TextStyle(
+                                            fontSize: 15, color: Color(0xffBDBDBD))
+                                        : const TextStyle(
+                                            fontSize: 15, color: Color(0xff4F4F4F)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        const Text("Kaynak Listeler",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                                color: Color(0xff333333))),
+                        SizedBox(
+                          height: 210,
+                          child: Scrollbar(
+                            thickness: 5,
+                            child: ListView.builder(
+                              itemBuilder: (context, index) {
+                                return checkBox(
+                                    index: index, text: lists[index]['name'].toString());
+                              },
+                              itemCount: lists.length,
                             ),
                           ),
                         ),
-                      ],
-                    )
-                  ]),
+                        const Text(
+                          "Deste Ayarları",
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color(0xff333333),
+                              fontWeight: FontWeight.w600,),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12, right: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Listeyi Karıştır",
+                                style: TextStyle(
+                                   fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: Color(0xff4F4F4F)),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 18.0),
+                                child: FlutterSwitch(
+                                  activeTextColor: Colors.white,
+                                  inactiveTextColor: const Color(0xff828282),
+                                  width: 88.0,
+                                  height: 34.0,
+                                  valueFontSize: 14.0,
+                                  activeColor: const Color(0xff3574C3),
+                                  inactiveSwitchBorder:
+                                      Border.all(color: const Color(0xffBDBDBD)),
+                                  activeText: "Açık",
+                                  inactiveText: "Kapalı",
+                                  toggleSize: 28.0,
+                                  inactiveColor: const Color(0xffFFFFFF),
+                                  inactiveToggleColor: const Color(0xffBDBDBD),
+                                  value: listMixed,
+                                  borderRadius: 18.0,
+                                  padding: 3.0,
+                                  showOnOff: true,
+                                  onToggle: (val) {
+                                    setState(() {
+                                      listMixed = val;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 100,
+                              height: 36,
+                              decoration: const BoxDecoration(
+                                  color: Color(0xff3574C3),
+                                  borderRadius: BorderRadius.all(Radius.circular(20))),
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.only(right: 20),
+                              child: InkWell(
+                                onTap: () {
+                                  if (learn == false && unlearn == false) {
+                                    toastMessage("Lütfen, liste seçiniz");
+                                  } else {
+                                    List<int> selectedIndexNoOfList = [];
+                                    for (int i = 0; i < selectedListIndex.length; i++) {
+                                      if (selectedListIndex[i] == true) {
+                                        selectedIndexNoOfList.add(i);
+                                      }
+                                    }
+                                    List<int> selectedListIdList = [];
+                                    for (int i = 0; i < selectedIndexNoOfList.length; i++) {
+                                      selectedListIdList.add(
+                                          lists[selectedIndexNoOfList[i]]['list_id'] as int);
+                                    }
+                                    if (selectedListIdList.isNotEmpty) {
+                                      getSelectedWordOfLists(selectedListIdList);
+                                    } else {
+                                      toastMessage("Lütfen, liste seçiniz");
+                                    }
+                                  }
+                                },
+                                child: const Text(
+                                  "Oluştur",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xffF3FBF8),
+                                      fontWeight: FontWeight.w600,),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ]),
+                      Padding(
+                         padding: const EdgeInsets.only(bottom:50.0),
+                         child: adContainer!,
+                       )
+                    ],
+                  ),
                 )
               : Padding(
-                  padding: const EdgeInsets.only(top: 24.0,bottom: 24, left: 15, right: 15),
+                  padding:
+                      const EdgeInsets.only(top: 24.0, bottom: 24, left: 15, right: 15),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -427,7 +450,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                               left: 4, top: 15, right: 4),
                                           child: Text(
                                             word,
-                                            style: const TextStyle(
+                                            style: const TextStyle(fontWeight: FontWeight.w600,
                                                 fontSize: 28, color: Colors.black),
                                           ),
                                         ),
@@ -445,6 +468,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                             child: Text(
                                               "${itemIndex + 1}/${_words.length}",
                                               style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
                                                 fontSize: 14,
                                                 color: Color(0xffF3FBF8),
                                               ),
@@ -485,7 +509,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                               left: 4, top: 15, right: 4),
                                           child: Text(
                                             word,
-                                            style: const TextStyle(
+                                            style: const TextStyle(fontWeight: FontWeight.w600,
                                                 fontSize: 28, color: Colors.white),
                                           ),
                                         ),
@@ -502,7 +526,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                                     bottomRight: Radius.circular(10))),
                                             child: Text(
                                               "${itemIndex + 1}/${_words.length}",
-                                              style: const TextStyle(
+                                              style: const TextStyle(fontWeight: FontWeight.w600,
                                                 fontSize: 14,
                                                 color: Color(0xff002250),
                                               ),
@@ -567,7 +591,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                         "Önceki",
                                         style: TextStyle(
                                             fontSize: 14,
-                                            fontWeight: FontWeight.bold,
+                                           fontWeight: FontWeight.w600,
                                             color: Color(0xff4F4F4F)),
                                       ),
                                     ),
@@ -588,7 +612,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                         "Sonraki",
                                         style: TextStyle(
                                             fontSize: 14,
-                                            fontWeight: FontWeight.bold,
+                                            fontWeight: FontWeight.w600,
                                             color: Color(0xff4F4F4F)),
                                       ),
                                     ),
@@ -603,9 +627,13 @@ class _WordCardspageState extends State<WordCardspage> {
                                   if (_words[indexpage].status == true) {
                                     _words[indexpage] =
                                         _words[indexpage].copy(status: false);
+                                    DB.instance
+                                        .markAslearned(false, _words[indexpage].id as int);
                                   } else {
                                     _words[indexpage] =
                                         _words[indexpage].copy(status: true);
+                                    DB.instance
+                                        .markAslearned(true, _words[indexpage].id as int);
                                   }
                                   setState(() {
                                     _words[indexpage].status;
@@ -658,7 +686,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                         const Text(
                                           "Öğrendim",
                                           style:
-                                              TextStyle(fontSize: 14, color: Colors.white),
+                                              TextStyle(fontSize: 14,fontWeight: FontWeight.w600, color: Colors.white),
                                         )
                                       ],
                                     )),
@@ -688,7 +716,7 @@ class _WordCardspageState extends State<WordCardspage> {
           child: Text(
             text!,
             style: const TextStyle(
-                fontFamily: 'RobotoRegular', fontSize: 16, color: Color(0xff4F4F4F)),
+               fontWeight: FontWeight.w600, fontSize: 16, color: Color(0xff4F4F4F)),
           ),
         ),
         leading: Padding(

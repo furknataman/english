@@ -65,7 +65,7 @@ class WordsPageState extends State<WordsPage> {
           center: Text(
             listName!,
             style:
-                const TextStyle(fontFamily: "Carter", fontSize: 22, color: Colors.black),
+                const TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: Colors.black),
           ),
           right: pressController != true
               ? Image.asset(
@@ -77,7 +77,7 @@ class WordsPageState extends State<WordsPage> {
                   onTap: delete,
                   child: const Icon(
                     Icons.delete,
-                    color: Color.fromRGBO(157, 192, 198,0.9),
+                    color: Color.fromRGBO(157, 192, 198, 0.9),
                     size: 24,
                   )),
           leftWidgetOnClik: () => Navigator.pop(context)),
@@ -99,7 +99,7 @@ class WordsPageState extends State<WordsPage> {
             getWordByList();
           });
         },
-        backgroundColor:const Color.fromRGBO(157, 192, 198,0.9),
+        backgroundColor: const Color.fromRGBO(157, 192, 198, 0.9),
         child: const Icon(Icons.add),
       ),
     );
@@ -118,7 +118,9 @@ class WordsPageState extends State<WordsPage> {
         child: SizedBox(
           width: double.infinity,
           child: Card(
-            color: pressController != true ?  const Color.fromRGBO(157, 192, 198,0.9) : const Color(0xffE3E7E5),
+            color: pressController != true
+                ? const Color.fromRGBO(157, 192, 198, 0.9)
+                : const Color(0xffE3E7E5),
             elevation: 8,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
             margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
@@ -137,7 +139,7 @@ class WordsPageState extends State<WordsPage> {
                           style: const TextStyle(
                               color: Colors.black,
                               fontSize: 18,
-                              fontFamily: "RobotoMedium"),
+                              fontWeight: FontWeight.w600,),
                         ),
                       ),
                       Container(
@@ -147,7 +149,7 @@ class WordsPageState extends State<WordsPage> {
                           style: const TextStyle(
                               color: Colors.black,
                               fontSize: 16,
-                              fontFamily: "RobotoRegular"),
+                              fontWeight: FontWeight.w600,),
                         ),
                       ),
                     ],
@@ -194,7 +196,4 @@ class WordsPageState extends State<WordsPage> {
       ),
     );
   }
-
-  
-
 }

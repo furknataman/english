@@ -32,8 +32,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
         
+        fontFamily: "Raleway",
+        
+        
       ),
-      darkTheme: ThemeData.dark(),
       home: const TemproryPage(),
     );
   }
