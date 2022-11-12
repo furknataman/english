@@ -35,7 +35,7 @@ class _MainPageState extends State<MainPage> {
   //example ad mob: ca-app-pub-3940256099942544/6300978111
   //IOS Ad mob : ca-app-pub-8345811531238514/8104574622
   final AdManagerBannerAd myBanner = AdManagerBannerAd(
-    adUnitId: 'ca-app-pub-8345811531238514/8104574622',
+    adUnitId: 'ca-app-pub-8345811531238514/3942353745',
     sizes: [AdSize.mediumRectangle],
     request: const AdManagerAdRequest(),
     listener: AdManagerBannerAdListener(),
@@ -297,7 +297,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ],
                     ),
-                    Center(child: adContainer!),
+                   Center(child: adContainer!),
                   ],
                 ),
               ),

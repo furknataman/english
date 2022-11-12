@@ -1,7 +1,7 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 final AdManagerBannerAd myBanner = AdManagerBannerAd(
-  adUnitId: 'ca-app-pub-8345811531238514/8104574622',
+  adUnitId: 'ca-app-pub-8345811531238514/3942353745',
   sizes: [AdSize.largeBanner],
   request: const AdManagerAdRequest(),
   listener: AdManagerBannerAdListener(),
