@@ -20,8 +20,6 @@ class MultipleChoicePage extends StatefulWidget {
   State<MultipleChoicePage> createState() => _MultipleChoicePage();
 }
 
-
-
 Container? adContainer;
 
 class _MultipleChoicePage extends State<MultipleChoicePage> {
@@ -82,6 +80,29 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
   bool unlearn = false;
   int indexpage = 0;
   bool clicked = false;
+  void cancel() {
+    setState(() {
+      changeLand = [];
+
+      _words = [];
+      start = false;
+
+      optionsList = [];
+      correctAnswers = [];
+
+      clickControl = [];
+      clickControlList = [];
+
+      correct = false;
+      correctCount = 0;
+      wrongCount = 0;
+      learn = false;
+      unlearn = false;
+      indexpage = 0;
+      clicked = false;
+    });
+  }
+
   void getSelectedWordOfLists(List<int> selectedListID) async {
     List<String> value = selectedListID.map((e) => e.toString()).toList();
     SP.write("selected_list", value);
@@ -169,9 +190,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
               )
             : InkWell(
                 onTap: () {
-                  setState(() {
-                    start = false;
-                  });
+                  cancel();
                 },
                 child: const Icon(
                   Icons.highlight_off_outlined,
@@ -237,7 +256,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                       color: Color(0xffF3FBF8),
                       borderRadius: BorderRadius.all(Radius.circular(20))),
                   child: Column(
-                    mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         const Text(
@@ -422,9 +441,12 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                       }
                                     }
                                     List<int> selectedListIdList = [];
-                                    for (int i = 0; i < selectedIndexNoOfList.length; i++) {
+                                    for (int i = 0;
+                                        i < selectedIndexNoOfList.length;
+                                        i++) {
                                       selectedListIdList.add(
-                                          lists[selectedIndexNoOfList[i]]['list_id'] as int);
+                                          lists[selectedIndexNoOfList[i]]['list_id']
+                                              as int);
                                     }
                                     if (selectedListIdList.isNotEmpty) {
                                       getSelectedWordOfLists(selectedListIdList);
@@ -443,16 +465,13 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                 ),
                               ),
                             ),
-                           
                           ],
                         ),
-                        
                       ]),
-                       Padding(
-                         padding: const EdgeInsets.only(bottom:50.0),
-                         child: adContainer!,
-                       )
-
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 50.0),
+                        child: adContainer!,
+                      )
                     ],
                   ),
                 )

@@ -49,14 +49,13 @@ class _AddListState extends State<AddList> {
       appBar: appbar(
         context,
         left: const Icon(
-            Icons.arrow_back_ios,
-            color: Color(0xffF3FBF8),
-            size: 22,
-          ),
+          Icons.arrow_back_ios,
+          color: Color(0xffF3FBF8),
+          size: 22,
+        ),
         center: const Text("Liste Oluştur",
             style: TextStyle(
                 color: Color(0xffF3FBF8), fontSize: 22, fontWeight: FontWeight.w600)),
-        
         leftWidgetOnClik: () => {Navigator.pop(context)},
       ),
       body: SafeArea(
@@ -82,16 +81,14 @@ class _AddListState extends State<AddList> {
                     style: TextStyle(
                         color: Color(0xff4F4F4F),
                         fontSize: 18,
-                        fontWeight: FontWeight.w600
-              ),
+                        fontWeight: FontWeight.w600),
                   ),
                   Text(
                     "Türkçe",
                     style: TextStyle(
                         color: Color(0xff4F4F4F),
                         fontSize: 18,
-                        fontWeight: FontWeight.w600
-                        ),
+                        fontWeight: FontWeight.w600),
                   )
                 ],
               ),
@@ -105,9 +102,9 @@ class _AddListState extends State<AddList> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                actionsbutons(addRow, Icons.add),
-                actionsbutons(save, Icons.save),
-                actionsbutons(deleteRow, Icons.remove)
+                actionsbutons(addRow, Icons.add, 0xffF2C94C),
+                actionsbutons(save, Icons.save,0xff6FCF97),
+                actionsbutons(deleteRow, Icons.remove,0xffEB5757)
               ],
             )
           ]),
@@ -116,18 +113,19 @@ class _AddListState extends State<AddList> {
     );
   }
 
-  InkWell actionsbutons(Function() click, IconData icon) {
+  InkWell actionsbutons(Function() click, IconData icon,int? color) {
     return InkWell(
       onTap: () => click(),
       child: Container(
         height: 40,
         width: 40,
         margin: const EdgeInsets.only(bottom: 15),
-        decoration: const BoxDecoration(
-            color: Color.fromRGBO(157, 192, 198, 0.9), shape: BoxShape.circle),
+        decoration:
+             BoxDecoration(color:  Color(color!), shape: BoxShape.circle),
         child: Icon(
           icon,
           size: 28,
+          color: Colors.white,
         ),
       ),
     );
