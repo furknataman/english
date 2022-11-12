@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:english/db/db/DefaultWord.dart';
+import 'package:english/db/db/defaultWord.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/pages/main.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,7 +26,7 @@ class _TemproryPageState extends State<TemproryPage> {
 
     sPRead();
     setFiravase();
-    DefaultWord();
+    defaultWord();
   }
 
   void setFiravase() async {
@@ -95,7 +95,7 @@ class _TemproryPageState extends State<TemproryPage> {
                       "Learn",
                       style: TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
-                          fontFamily: "Luck",
+                         fontWeight: FontWeight.w600,
                           fontSize: 40),
                     ),
                   ),
@@ -107,7 +107,7 @@ class _TemproryPageState extends State<TemproryPage> {
                   " What You Want",
                   style: TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
-                      fontFamily: "Luck",
+                      fontWeight: FontWeight.w600,
                       fontSize: 25),
                 ),
               )

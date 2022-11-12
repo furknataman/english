@@ -31,11 +31,12 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  //
   //example ad mob: ca-app-pub-3940256099942544/6300978111
   //IOS Ad mob : ca-app-pub-8345811531238514/8104574622
   final AdManagerBannerAd myBanner = AdManagerBannerAd(
-    adUnitId: 'ca-app-pub-3940256099942544/6300978111',
-    sizes: [AdSize.banner],
+    adUnitId: 'ca-app-pub-8345811531238514/8104574622',
+    sizes: [AdSize.mediumRectangle],
     request: const AdManagerAdRequest(),
     listener: AdManagerBannerAdListener(),
   );
@@ -75,8 +76,8 @@ class _MainPageState extends State<MainPage> {
     final AdWidget adWidget = AdWidget(ad: myBanner);
     adContainer = Container(
       alignment: Alignment.center,
-      width: 320,
-      height: 100,
+      width: 300,
+      height: 250,
       child: adWidget,
     );
     setState(() {
@@ -103,6 +104,7 @@ class _MainPageState extends State<MainPage> {
               size: 24,
               color: Color(0xffF3FBF8),
             )),
+            leftWidgetOnClik: (){},
       ),
       body: Column(
         children: [
@@ -116,7 +118,7 @@ class _MainPageState extends State<MainPage> {
                   padding: EdgeInsets.all(8.0),
                   child: Text("Türkçe",
                       style: TextStyle(
-                          fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold)),
+                          fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600)),
                 ),
                 Switcher(
                   value: false,
@@ -143,7 +145,7 @@ class _MainPageState extends State<MainPage> {
                   child: Text(
                     "İngilizce",
                     style: TextStyle(
-                        fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                        fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600),
                   ),
                 )
               ],
@@ -151,141 +153,153 @@ class _MainPageState extends State<MainPage> {
           ),
           Expanded(
             child: Container(
+              padding: const EdgeInsets.only(bottom: 20),
               decoration: const BoxDecoration(
                   color: Color(0xffF3FBF8),
                   borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            card(context,
-                                text: "Kelimelerim",
-                                icon: FontAwesomeIcons.book,
-                                page: const ListPage(),
-                                cardInfo: false),
-                            card(context,
-                                text: "Kartlarım",
-                                icon: FontAwesomeIcons.creditCard,
-                                page: const WordCardspage(),
-                                cardInfo: false),
-                            card(
-                              context,
-                              text: "Test",
-                              icon: FontAwesomeIcons.clockRotateLeft,
-                              page: const MultipleChoicePage(),
-                              cardInfo: false,
-                            )
-                          ],
+              child: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              card(context,
+                                  text: "Kelimelerim",
+                                  icon: FontAwesomeIcons.book,
+                                  page: const ListPage(),
+                                  cardInfo: false),
+                              card(context,
+                                  text: "Kart Oluştur",
+                                  icon: FontAwesomeIcons.creditCard,
+                                  page: const WordCardspage(),
+                                  cardInfo: false),
+                              card(
+                                context,
+                                text: "Test",
+                                icon: FontAwesomeIcons.clockRotateLeft,
+                                page: const MultipleChoicePage(),
+                                cardInfo: false,
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 25.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            SizedBox(
-                              height: 120,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                        color: Color(0xffCC3366),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 25.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              SizedBox(
+                                height: 120,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                          color: Color(0xffCC3366),
+                                          borderRadius:
+                                              BorderRadius.all(Radius.circular(10))),
+                                      width: 235,
+                                      height: 50,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(10),
+                                              ),
+                                              color: Colors.white,
+                                            ),
+                                            alignment: Alignment.centerLeft,
+                                            padding: const EdgeInsets.only(left: 18),
+                                            width: 185,
+                                            height: 50,
+                                            child: const Text(
+                                              "Toplam Kelime",
+                                              style: TextStyle(
+                                                  color: Color(0xff3574C3),
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 12),
+                                            child: Text(
+                                              totalWord.toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        color: Color.fromARGB(255, 83, 27, 46),
                                         borderRadius:
-                                            BorderRadius.all(Radius.circular(10))),
-                                    width: 235,
-                                    height: 50,
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(10),
+                                            BorderRadius.all(Radius.circular(10)),
+                                      ),
+                                      width: 235,
+                                      height: 50,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(10),
+                                              ),
+                                              color: Colors.white,
                                             ),
-                                            color: Colors.white,
-                                          ),
-                                          alignment: Alignment.centerLeft,
-                                          padding: const EdgeInsets.only(left: 18),
-                                          width: 185,
-                                          height: 50,
-                                          child: const Text(
-                                            "Toplam",
-                                            style: TextStyle(
-                                                color: Color(0xff3574C3), fontSize: 20),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 12),
-                                          child: Text(
-                                            totalWord.toString(),
-                                            style: const TextStyle(
-                                                color: Colors.white, fontSize: 20),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      color: Color.fromARGB(255, 83, 27, 46),
-                                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    ),
-                                    width: 235,
-                                    height: 50,
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(10),
+                                            alignment: Alignment.centerLeft,
+                                            padding: const EdgeInsets.only(left: 18),
+                                            width: 185,
+                                            height: 50,
+                                            child: const Text(
+                                              "Öğrenilen Kelime",
+                                              style: TextStyle(
+                                                  color: Color(0xff3574C3),
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600),
                                             ),
-                                            color: Colors.white,
                                           ),
-                                          alignment: Alignment.centerLeft,
-                                          padding: const EdgeInsets.only(left: 18),
-                                          width: 185,
-                                          height: 50,
-                                          child: const Text(
-                                            "Öğrenilen",
-                                            style: TextStyle(
-                                                color: Color(0xff3574C3), fontSize: 20),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 12),
+                                            child: Text(
+                                              learnedWord.toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 12),
-                                          child: Text(
-                                            learnedWord.toString(),
-                                            style: const TextStyle(
-                                                color: Colors.white, fontSize: 20),
-                                          ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            card(
-                              context,
-                              text: "Liste Oluştur",
-                              icon: FontAwesomeIcons.add,
-                              page: const AddList(),
-                              cardInfo: true,
-                            )
-                          ],
+                              card(
+                                context,
+                                text: "Liste Oluştur",
+                                icon: FontAwesomeIcons.add,
+                                page: const AddList(),
+                                cardInfo: true,
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  adContainer!
-                ],
+                      ],
+                    ),
+                    Center(child: adContainer!),
+                  ],
+                ),
               ),
             ),
           ),
@@ -350,6 +364,7 @@ class _MainPageState extends State<MainPage> {
                   padding: const EdgeInsets.only(top: 5),
                   child: Text(text!,
                       style: TextStyle(
+                          fontWeight: FontWeight.w600,
                           color: cardInfo != true
                               ? const Color(0xff3574C3)
                               : const Color(0xffFFFFFF))),

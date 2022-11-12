@@ -32,7 +32,7 @@ class _AddListState extends State<AddList> {
         children: [
           Expanded(
               child: textFieldBuilder(
-                  padding: const EdgeInsets.only(left: 4),
+                  padding: const EdgeInsets.only(left: 3),
                   textEditingController: wordTextEditingList[2 * i])),
           Expanded(
               child: textFieldBuilder(
@@ -82,6 +82,7 @@ class _AddListState extends State<AddList> {
                     style: TextStyle(
                         color: Color(0xff4F4F4F),
                         fontSize: 18,
+                        fontWeight: FontWeight.w600
               ),
                   ),
                   Text(
@@ -89,6 +90,7 @@ class _AddListState extends State<AddList> {
                     style: TextStyle(
                         color: Color(0xff4F4F4F),
                         fontSize: 18,
+                        fontWeight: FontWeight.w600
                         ),
                   )
                 ],
