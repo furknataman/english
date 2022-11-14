@@ -432,7 +432,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                               child: InkWell(
                                 onTap: () {
                                   if (learn == false && unlearn == false) {
-                                    toastMessage("Lütfen, liste seçiniz");
+                                    toastMessage("Lütfen, içerik seçiniz");
                                   } else {
                                     List<int> selectedIndexNoOfList = [];
                                     for (int i = 0; i < selectedListIndex.length; i++) {

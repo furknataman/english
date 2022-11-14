@@ -19,6 +19,7 @@ class WordCardspage extends StatefulWidget {
   @override
   State<WordCardspage> createState() => _WordCardspageState();
 }
+
 Container? adContainer;
 
 class _WordCardspageState extends State<WordCardspage> {
@@ -70,30 +71,30 @@ class _WordCardspageState extends State<WordCardspage> {
   int indexpage = 0;
 
   void getSelectedWordOfLists(List<int> selectedListID) async {
-    List<String> value = selectedListID.map((e) => e.toString()).toList();
-    SP.write("selected_list", value);
-    if (learn == true && unlearn != true) {
-      _words = await DB.instance.readWordByLists(selectedListID, status: true);
-    } else if (learn != true && unlearn == true) {
-      _words = await DB.instance.readWordByLists(selectedListID, status: false);
-    } else {
-      _words = await DB.instance.readWordByLists(
-        selectedListID,
-      );
-    }
-
-    if (_words.isNotEmpty) {
-      for (int i = 0; i < _words.length; i++) {
-        changeLand.add(true);
+   
+      List<String> value = selectedListID.map((e) => e.toString()).toList();
+      SP.write("selected_list", value);
+      if (learn == true && unlearn != true) {
+        _words = await DB.instance.readWordByLists(selectedListID, status: true);
+      } else if (learn != true && unlearn == true) {
+        _words = await DB.instance.readWordByLists(selectedListID, status: false);
+      } else {
+        _words = await DB.instance.readWordByLists(
+          selectedListID,
+        );
       }
-      if (listMixed) _words.shuffle();
-      start = true;
-      setState(() {
-        start;
-        _words;
-      });
-    } else {
-      toastMessage("Seçilen şartlar liste boş.");
+
+      if (_words.isNotEmpty) {
+        for (int i = 0; i < _words.length; i++) {
+          changeLand.add(true);
+        }
+        if (listMixed) _words.shuffle();
+        start = true;
+        setState(() {
+          start;
+          _words;
+        });
+     
     }
   }
 
@@ -132,10 +133,10 @@ class _WordCardspageState extends State<WordCardspage> {
             ? const Text(
                 "Yeni Kart Destesi",
                 style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xffF3FBF8),
-                    fontSize: 22,
-                    ),
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xffF3FBF8),
+                  fontSize: 22,
+                ),
               )
             : svgLogoIcon,
         leftWidgetOnClik: () => start == false ? Navigator.pop(context) : start = false,
@@ -150,7 +151,8 @@ class _WordCardspageState extends State<WordCardspage> {
                   ),
                   decoration: const BoxDecoration(
                       color: Color(0xffF3FBF8),
-                      borderRadius: BorderRadius.only(topLeft:Radius.circular(10),topRight:Radius.circular(10))),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10), topRight: Radius.circular(10))),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -158,9 +160,10 @@ class _WordCardspageState extends State<WordCardspage> {
                         const Text(
                           "İçerik",
                           style: TextStyle(
-                              fontSize: 20,
-                              color: Color(0xff333333),
-                             fontWeight: FontWeight.w600,),
+                            fontSize: 20,
+                            color: Color(0xff333333),
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         Row(
                           children: [
@@ -189,10 +192,13 @@ class _WordCardspageState extends State<WordCardspage> {
                                     "Öğrendiklerim",
                                     style: learn == false
                                         ? const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                            fontSize: 15, color: Color(0xffBDBDBD))
-                                        : const TextStyle(fontWeight: FontWeight.w600,
-                                            fontSize: 15, color: Color(0xff4F4F4F)),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15,
+                                            color: Color(0xffBDBDBD))
+                                        : const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15,
+                                            color: Color(0xff4F4F4F)),
                                   ),
                                 ),
                               ),
@@ -253,9 +259,10 @@ class _WordCardspageState extends State<WordCardspage> {
                         const Text(
                           "Deste Ayarları",
                           style: TextStyle(
-                              fontSize: 20,
-                              color: Color(0xff333333),
-                              fontWeight: FontWeight.w600,),
+                            fontSize: 20,
+                            color: Color(0xff333333),
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(
                           height: 20,
@@ -268,7 +275,7 @@ class _WordCardspageState extends State<WordCardspage> {
                               const Text(
                                 "Listeyi Karıştır",
                                 style: TextStyle(
-                                   fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w600,
                                     fontSize: 16,
                                     color: Color(0xff4F4F4F)),
                               ),
@@ -319,7 +326,7 @@ class _WordCardspageState extends State<WordCardspage> {
                               child: InkWell(
                                 onTap: () {
                                   if (learn == false && unlearn == false) {
-                                    toastMessage("Lütfen, liste seçiniz");
+                                    toastMessage("Lütfen İçerik Seçiniz");
                                   } else {
                                     List<int> selectedIndexNoOfList = [];
                                     for (int i = 0; i < selectedListIndex.length; i++) {
@@ -328,9 +335,12 @@ class _WordCardspageState extends State<WordCardspage> {
                                       }
                                     }
                                     List<int> selectedListIdList = [];
-                                    for (int i = 0; i < selectedIndexNoOfList.length; i++) {
+                                    for (int i = 0;
+                                        i < selectedIndexNoOfList.length;
+                                        i++) {
                                       selectedListIdList.add(
-                                          lists[selectedIndexNoOfList[i]]['list_id'] as int);
+                                          lists[selectedIndexNoOfList[i]]['list_id']
+                                              as int);
                                     }
                                     if (selectedListIdList.isNotEmpty) {
                                       getSelectedWordOfLists(selectedListIdList);
@@ -342,9 +352,10 @@ class _WordCardspageState extends State<WordCardspage> {
                                 child: const Text(
                                   "Oluştur",
                                   style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color(0xffF3FBF8),
-                                      fontWeight: FontWeight.w600,),
+                                    fontSize: 14,
+                                    color: Color(0xffF3FBF8),
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ),
@@ -352,9 +363,9 @@ class _WordCardspageState extends State<WordCardspage> {
                         )
                       ]),
                       Padding(
-                         padding: const EdgeInsets.only(bottom:50.0),
-                         child: adContainer!,
-                       )
+                        padding: const EdgeInsets.only(bottom: 50.0),
+                        child: adContainer!,
+                      )
                     ],
                   ),
                 )
@@ -450,8 +461,10 @@ class _WordCardspageState extends State<WordCardspage> {
                                               left: 4, top: 15, right: 4),
                                           child: Text(
                                             word,
-                                            style: const TextStyle(fontWeight: FontWeight.w600,
-                                                fontSize: 28, color: Colors.black),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 28,
+                                                color: Colors.black),
                                           ),
                                         ),
                                         Positioned(
@@ -509,8 +522,10 @@ class _WordCardspageState extends State<WordCardspage> {
                                               left: 4, top: 15, right: 4),
                                           child: Text(
                                             word,
-                                            style: const TextStyle(fontWeight: FontWeight.w600,
-                                                fontSize: 28, color: Colors.white),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 28,
+                                                color: Colors.white),
                                           ),
                                         ),
                                         Positioned(
@@ -526,7 +541,8 @@ class _WordCardspageState extends State<WordCardspage> {
                                                     bottomRight: Radius.circular(10))),
                                             child: Text(
                                               "${itemIndex + 1}/${_words.length}",
-                                              style: const TextStyle(fontWeight: FontWeight.w600,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
                                                 fontSize: 14,
                                                 color: Color(0xff002250),
                                               ),
@@ -591,7 +607,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                         "Önceki",
                                         style: TextStyle(
                                             fontSize: 14,
-                                           fontWeight: FontWeight.w600,
+                                            fontWeight: FontWeight.w600,
                                             color: Color(0xff4F4F4F)),
                                       ),
                                     ),
@@ -685,8 +701,10 @@ class _WordCardspageState extends State<WordCardspage> {
                                         ),
                                         const Text(
                                           "Öğrendim",
-                                          style:
-                                              TextStyle(fontSize: 14,fontWeight: FontWeight.w600, color: Colors.white),
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white),
                                         )
                                       ],
                                     )),
@@ -716,7 +734,7 @@ class _WordCardspageState extends State<WordCardspage> {
           child: Text(
             text!,
             style: const TextStyle(
-               fontWeight: FontWeight.w600, fontSize: 16, color: Color(0xff4F4F4F)),
+                fontWeight: FontWeight.w600, fontSize: 16, color: Color(0xff4F4F4F)),
           ),
         ),
         leading: Padding(
