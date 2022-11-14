@@ -150,7 +150,7 @@ class _WordCardspageState extends State<WordCardspage> {
                   ),
                   decoration: const BoxDecoration(
                       color: Color(0xffF3FBF8),
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                      borderRadius: BorderRadius.only(topLeft:Radius.circular(10),topRight:Radius.circular(10))),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

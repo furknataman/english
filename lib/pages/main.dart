@@ -161,7 +161,7 @@ class _MainPageState extends State<MainPage> {
               padding: const EdgeInsets.only(bottom: 20),
               decoration: const BoxDecoration(
                   color: Color(0xffF3FBF8),
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
+                  borderRadius: BorderRadius.only(topLeft:Radius.circular(10),topRight:Radius.circular(10))),
               child: SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

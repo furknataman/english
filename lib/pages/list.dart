@@ -161,7 +161,7 @@ class _ListPageState extends State<ListPage> {
               child: Container(
                 decoration: const BoxDecoration(
                     color: Color(0xffF3FBF8),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                    borderRadius: BorderRadius.only(topLeft:Radius.circular(10),topRight:Radius.circular(10))),
                 child: ListView.builder(
                   itemBuilder: (context, index) {
                     return listItem(_lists[index]['list_id'] as int, index,
