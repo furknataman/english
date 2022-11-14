@@ -1,7 +1,18 @@
+import 'dart:io';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+   String get interstitialAdUnitId {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-8345811531238514/9950718730';
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-8345811531238514/3942353745';
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+  }
 
 final AdManagerBannerAd myBanner = AdManagerBannerAd(
-  adUnitId: 'ca-app-pub-8345811531238514/3942353745',
+  adUnitId: interstitialAdUnitId,
   sizes: [AdSize.largeBanner],
   request: const AdManagerAdRequest(),
   listener: AdManagerBannerAdListener(),

@@ -1,4 +1,4 @@
-import 'dart:io';
+// ignore_for_file: avoid_print
 
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/about.dart';
@@ -15,6 +15,7 @@ import 'package:switcher/switcher.dart';
 import '../db/db/db.dart';
 import '../db/db/sharedPreferences.dart';
 import '../global_variable.dart';
+import '../global_widget/admob.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -33,15 +34,7 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  static String get interstitialAdUnitId {
-    if (Platform.isAndroid) {
-      return 'ca-app-pub-8345811531238514/9950718730';
-    } else if (Platform.isIOS) {
-      return 'ca-app-pub-8345811531238514/3942353745';
-    } else {
-      throw UnsupportedError('Unsupported platform');
-    }
-  }
+
 
   //android: ca-app-pub-8345811531238514/9950718730
   //example ad mob: ca-app-pub-3940256099942544/6300978111
