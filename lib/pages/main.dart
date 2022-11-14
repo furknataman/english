@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/about.dart';
 import 'package:english/pages/addlist.dart';
@@ -31,11 +33,21 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  //
+  static String get interstitialAdUnitId {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-8345811531238514/9950718730';
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-8345811531238514/3942353745';
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+  }
+
+  //android: ca-app-pub-8345811531238514/9950718730
   //example ad mob: ca-app-pub-3940256099942544/6300978111
-  //IOS Ad mob : ca-app-pub-8345811531238514/8104574622
+  //IOS Ad mob : ca-app-pub-8345811531238514/3942353745
   final AdManagerBannerAd myBanner = AdManagerBannerAd(
-    adUnitId: 'ca-app-pub-8345811531238514/3942353745',
+    adUnitId: interstitialAdUnitId,
     sizes: [AdSize.mediumRectangle],
     request: const AdManagerAdRequest(),
     listener: AdManagerBannerAdListener(),
@@ -104,7 +116,7 @@ class _MainPageState extends State<MainPage> {
               size: 24,
               color: Color(0xffF3FBF8),
             )),
-            leftWidgetOnClik: (){},
+        leftWidgetOnClik: () {},
       ),
       body: Column(
         children: [
@@ -297,7 +309,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ],
                     ),
-                   Center(child: adContainer!),
+                    Center(child: adContainer!),
                   ],
                 ),
               ),
