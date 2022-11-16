@@ -7,7 +7,6 @@ import '../db/db/db.dart';
 import '../global_variable.dart';
 import '../global_widget/toast_message.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'add_word.dart';
 
 class ListPage extends ConsumerStatefulWidget {
@@ -101,6 +100,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                         InkWell(
                           onTap: () {
                             wordList.delete();
+                            editController.editchange();
                           },
                           child: card(
                               icon: Icons.delete_outlined,
@@ -181,7 +181,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                       chartLegendSpacing: 90,
                       initialAngleInDegree: 270,
                       animationDuration: const Duration(milliseconds: 1600),
-                      //chartRadius: MediaQuery.of(context).size.width / 11.2,
+                      chartRadius: MediaQuery.of(context).size.width / 11.2,
                       chartType: ChartType.disc,
                       chartValuesOptions: const ChartValuesOptions(
                         showChartValues: false,
@@ -261,10 +261,11 @@ class _ListPageState extends ConsumerState<ListPage> {
                         wordList.deleteIndexList[index] = value!;
                         bool deleteProcessController = false;
                         for (var element in wordList.deleteIndexList) {
-                          if (element == true) 
-                          deleteProcessController = true;
+                          if (element == true) deleteProcessController = true;
                         }
-                        editController.editchange();
+                        if (!deleteProcessController) {
+                          editController._editCont = false;
+                        }
                       },
                     )
                   : const Padding(

@@ -11,17 +11,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
-import '../db/db/sharedPreferences.dart';
+import '../db/db/shared_preferences.dart';
 import '../global_variable.dart';
 import '../provider/admob.dart';
 
-class MainPage extends ConsumerWidget {
-  MainPage({super.key});
+
+class MainPage extends ConsumerStatefulWidget {
+  const MainPage({super.key});
+
+  @override
+  ConsumerState<MainPage> createState() => _MainPageState();
+}
+
+
+class _MainPageState extends ConsumerState<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context,) {
     InfoState info = ref.watch(infoProvider);
-    AsyncValue<Container> adMob = ref.watch(confifAdmob);
+    AsyncValue<Container> adMob = ref.watch(configAdmob);
 
     return Scaffold(
       backgroundColor: const Color(0xff3574C3),
@@ -108,7 +116,7 @@ class MainPage extends ConsumerWidget {
                               card(context,
                                   text: "Kelimelerim",
                                   icon: FontAwesomeIcons.book,
-                                  page:  ListPage(),
+                                  page:  const ListPage(),
                                   cardInfo: false),
                               card(context,
                                   text: "Kart Oluştur",
@@ -224,7 +232,7 @@ class MainPage extends ConsumerWidget {
                               card(
                                 context,
                                 text: "Liste Oluştur",
-                                icon: FontAwesomeIcons.add,
+                                icon: FontAwesomeIcons.plus,
                                 page: const AddList(),
                                 cardInfo: true,
                               )

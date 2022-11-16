@@ -6,7 +6,7 @@ import 'package:english/pages/main.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import '../db/db/sharedPreferences.dart';
+import '../db/db/shared_preferences.dart';
 
 class TemproryPage extends StatefulWidget {
   const TemproryPage({Key? key}) : super(key: key);

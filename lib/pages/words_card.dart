@@ -9,7 +9,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../db/db/db.dart';
-import '../db/db/sharedPreferences.dart';
+import '../db/db/shared_preferences.dart';
 import '../provider/admob.dart';
 
 class WordCardspage extends StatefulWidget {

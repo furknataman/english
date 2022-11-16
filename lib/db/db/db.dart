@@ -1,7 +1,7 @@
 import 'package:english/db/models/lists.dart';
 import 'package:english/db/models/words.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' ;
 
 class DB {
   //Singleton

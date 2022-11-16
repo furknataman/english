@@ -1,7 +1,7 @@
 import 'package:english/global_variable.dart';
 import '../models/lists.dart';
 import '../models/words.dart';
-import 'package:english/db/db/sharedPreferences.dart';
+import 'package:english/db/db/shared_preferences.dart';
 import 'db.dart';
 
 void defaultWord() async {
