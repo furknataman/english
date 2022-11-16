@@ -1,7 +1,7 @@
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/addlist.dart';
-import 'package:english/pages/words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pie_chart/pie_chart.dart';
 import '../db/db/db.dart';
 import '../global_variable.dart';
@@ -10,59 +10,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'add_word.dart';
 
-class ListPage extends StatefulWidget {
-  const ListPage({Key? key}) : super(key: key);
+class ListPage extends ConsumerStatefulWidget {
+  const ListPage({super.key});
 
   @override
-  State<ListPage> createState() => _ListPageState();
+  ConsumerState<ListPage> createState() => _ListPageState();
 }
 
-bool editController = false;
-List<bool> deleteIndexList = [];
-
-class _ListPageState extends State<ListPage> {
-  List<Map<String, Object?>> _lists = [];
+class _ListPageState extends ConsumerState<ListPage> {
   @override
-  void initState() {
-    super.initState();
-    getLists();
-  }
-
-  void delete() async {
-    List<int> removeIndexList = [];
-
-    for (int i = 0; i < _lists.length; i++) {
-      if (deleteIndexList[i] == true) removeIndexList.add(i);
-    }
-    for (int i = removeIndexList.length - 1; i >= 0; i--) {
-      DB.instance.deleteListsAndWordByList(_lists[removeIndexList[i]]['list_id'] as int);
-      _lists.removeAt(removeIndexList[i]);
-      deleteIndexList.removeAt(removeIndexList[i]);
-    }
-    for (int i = 0; i < deleteIndexList.length; i++) {
-      deleteIndexList[i] = false;
-    }
-
-    setState(() {
-      _lists;
-      deleteIndexList;
-      editController = false;
-    });
-    toastMessage("Seçili listeler silindi.");
-  }
-
-  void getLists() async {
-    _lists = await DB.instance.readListAll();
-    for (int i = 0; i < _lists.length; i++) {
-      deleteIndexList.add(false);
-    }
-    setState(() {
-      _lists;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
+    final editController = ref.watch<EditController>(editProvider);
+    final wordList = ref.watch<ListWord>(getListWord);
+    wordList.getLists();
     return Scaffold(
       appBar: appbar(context,
           left: const Icon(
@@ -91,17 +53,14 @@ class _ListPageState extends State<ListPage> {
               width: MediaQuery.of(context).size.width,
               child: Padding(
                 padding: const EdgeInsets.only(left: 14),
-                child: editController == false
+                child: !editController.value
                     ? Row(children: [
                         InkWell(
                           onTap: () {
                             Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: ((context) => const AddList())))
-                                .then((value) {
-                              getLists();
-                            });
+                                context,
+                                MaterialPageRoute(
+                                    builder: ((context) => const AddList())));
                           },
                           child: card(
                               icon: Icons.add_circle_outline,
@@ -110,10 +69,7 @@ class _ListPageState extends State<ListPage> {
                         ),
                         InkWell(
                           onTap: () {
-                            editController = true;
-                            setState(() {
-                              editController;
-                            });
+                            editController.editchange();
                           },
                           child: card(
                               icon: Icons.create_outlined,
@@ -135,10 +91,7 @@ class _ListPageState extends State<ListPage> {
                             cardColor: 0xffE0E0E0),
                         InkWell(
                           onTap: () {
-                            editController = false;
-                            setState(() {
-                              editController;
-                            });
+                            editController.editchange();
                           },
                           child: card(
                               icon: Icons.close,
@@ -147,7 +100,7 @@ class _ListPageState extends State<ListPage> {
                         ),
                         InkWell(
                           onTap: () {
-                            delete();
+                            wordList.delete();
                           },
                           child: card(
                               icon: Icons.delete_outlined,
@@ -161,15 +114,17 @@ class _ListPageState extends State<ListPage> {
               child: Container(
                 decoration: const BoxDecoration(
                     color: Color(0xffF3FBF8),
-                    borderRadius: BorderRadius.only(topLeft:Radius.circular(10),topRight:Radius.circular(10))),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10), topRight: Radius.circular(10))),
                 child: ListView.builder(
                   itemBuilder: (context, index) {
-                    return listItem(_lists[index]['list_id'] as int, index,
-                        listname: _lists[index]['name'].toString(),
-                        sumWords: _lists[index]['sum_word'].toString(),
-                        sumUnloearned: _lists[index]['sum_unlearned'].toString());
+                    context;
+                    return listItem(wordList._lists[index]['list_id'] as int, index,
+                        listname: wordList._lists[index]['name'].toString(),
+                        sumWords: wordList._lists[index]['sum_word'].toString(),
+                        sumUnloearned: wordList._lists[index]['sum_unlearned'].toString());
                   },
-                  itemCount: _lists.length,
+                  itemCount: wordList._lists.length,
                 ),
               ),
             ),
@@ -183,19 +138,12 @@ class _ListPageState extends State<ListPage> {
       {@required String? listname,
       @required String? sumWords,
       @required String? sumUnloearned}) {
+    final editController = ref.watch<EditController>(editProvider);
+    final wordList = ref.watch<ListWord>(getListWord);
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AddWordPage(id, listname)))
-            .then((value) {
-          getLists();
-        });
-      },
-      onLongPress: () {
-        setState(() {
-          editController = true;
-          deleteIndexList[index] = true;
-        });
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => AddWordPage(id, listname)));
       },
       child: Container(
         width: 370,
@@ -233,7 +181,7 @@ class _ListPageState extends State<ListPage> {
                       chartLegendSpacing: 90,
                       initialAngleInDegree: 270,
                       animationDuration: const Duration(milliseconds: 1600),
-                      chartRadius: MediaQuery.of(context).size.width / 11.2,
+                      //chartRadius: MediaQuery.of(context).size.width / 11.2,
                       chartType: ChartType.disc,
                       chartValuesOptions: const ChartValuesOptions(
                         showChartValues: false,
@@ -292,8 +240,7 @@ class _ListPageState extends State<ListPage> {
                             style: const TextStyle(
                                 color: Color(0xff828282),
                                 fontSize: 14,
-                                fontWeight: FontWeight.w600
-                                ),
+                                fontWeight: FontWeight.w600),
                           ),
                         ],
                       )
@@ -301,7 +248,7 @@ class _ListPageState extends State<ListPage> {
                   ),
                 ],
               ),
-              editController == true
+              editController.value == true
                   ? Checkbox(
                       side: const BorderSide(color: Color(0xff3574C3)),
                       shape: const RoundedRectangleBorder(
@@ -309,17 +256,15 @@ class _ListPageState extends State<ListPage> {
                       checkColor: Colors.white,
                       activeColor: const Color(0xff3574C3),
                       hoverColor: Colors.blueAccent,
-                      value: deleteIndexList[index],
+                      value: wordList.deleteIndexList[index],
                       onChanged: (bool? value) {
-                        setState(() {
-                          deleteIndexList[index] = value!;
-
-                          bool deleteProcessController = false;
-                          for (var element in deleteIndexList) {
-                            if (element == true) deleteProcessController = true;
-                          }
-                          if (!deleteProcessController) editController = false;
-                        });
+                        wordList.deleteIndexList[index] = value!;
+                        bool deleteProcessController = false;
+                        for (var element in wordList.deleteIndexList) {
+                          if (element == true) 
+                          deleteProcessController = true;
+                        }
+                        editController.editchange();
                       },
                     )
                   : const Padding(
@@ -355,3 +300,52 @@ class _ListPageState extends State<ListPage> {
     );
   }
 }
+
+class EditController extends ChangeNotifier {
+  bool _editCont = false;
+  bool get value => _editCont;
+
+  void editchange() {
+    if (_editCont) {
+      _editCont = false;
+    } else {
+      _editCont = true;
+    }
+    notifyListeners();
+  }
+}
+
+class ListWord extends ChangeNotifier {
+  List<Map<String, Object?>> _lists = [];
+  List<bool> deleteIndexList = [];
+
+  void getLists() async {
+    _lists = await DB.instance.readListAll();
+    for (int i = 0; i < _lists.length; i++) {
+      deleteIndexList.add(false);
+      notifyListeners();
+    }
+  }
+
+  void delete() async {
+    List<int> removeIndexList = [];
+
+    for (int i = 0; i < _lists.length; i++) {
+      if (deleteIndexList[i] == true) removeIndexList.add(i);
+    }
+    for (int i = removeIndexList.length - 1; i >= 0; i--) {
+      DB.instance.deleteListsAndWordByList(_lists[removeIndexList[i]]['list_id'] as int);
+      _lists.removeAt(removeIndexList[i]);
+      deleteIndexList.removeAt(removeIndexList[i]);
+    }
+    for (int i = 0; i < deleteIndexList.length; i++) {
+      deleteIndexList[i] = false;
+    }
+
+    toastMessage("Seçili listeler silindi.");
+  }
+}
+
+final getListWord = ChangeNotifierProvider((ref) => ListWord());
+
+final editProvider = ChangeNotifierProvider((ref) => EditController());

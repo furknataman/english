@@ -19,6 +19,8 @@ List<Map<String, Object?>> lists = [];
 List<bool> selectedListIndex = [];
 
 String version = "";
+int totalWord = 0;
+int learnedWord = 0;
 
 final Widget svgLogoIcon = SvgPicture.asset('assets/svg/logo.svg',
-    color: const Color(0xffF3FBF8), semanticsLabel: 'A red up arrow');
+color: const Color(0xffF3FBF8), semanticsLabel: 'A red up arrow');

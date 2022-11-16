@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../global_variable.dart';
 import '../global_widget/app_bar.dart';
+import '../provider/version.dart';
 
-class AbaoutPage extends StatefulWidget {
-  const AbaoutPage({super.key});
 
-  @override
-  State<AbaoutPage> createState() => _AbaoutPageState();
-}
 
-Map<String, double> dataMap = {
-  "Learn": 5,
-  "Unlearn": 3,
-};
+
 String? encodeQueryParameters(Map<String, String> params) {
   return params.entries
       .map((MapEntry<String, String> e) =>
@@ -22,7 +14,8 @@ String? encodeQueryParameters(Map<String, String> params) {
       .join('&');
 }
 
-class _AbaoutPageState extends State<AbaoutPage> {
+class AbaoutPage extends ConsumerWidget {
+   AbaoutPage({super.key});
   final Uri emailLaunchUri = Uri(
     scheme: 'mailto',
     path: 'furknataman@gmail.com',
@@ -31,7 +24,8 @@ class _AbaoutPageState extends State<AbaoutPage> {
     }),
   );
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    String? version = ref.watch(versionProvider).value;
     return Scaffold(
       appBar: appbar(context,
           left: const Icon(

@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:english/db/db/defaultWord.dart';
+import 'package:english/db/db/default_word.dart';
+import 'package:english/db/models/info_state.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/pages/main.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,18 +16,25 @@ class TemproryPage extends StatefulWidget {
 }
 
 class _TemproryPageState extends State<TemproryPage> {
-  
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const MainPage()));
+          context, MaterialPageRoute(builder: (context) => MainPage()));
     });
+
+    //init state setting
+    //create instance of state obj
+    //get vals from db to object
+    //set state with obj
+
+    InfoState stateObj = InfoState(4, 12);
 
     sPRead();
     setFiravase();
     defaultWord();
+    getCounter();
   }
 
   void setFiravase() async {
@@ -95,7 +103,7 @@ class _TemproryPageState extends State<TemproryPage> {
                       "Learn",
                       style: TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
-                         fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w600,
                           fontSize: 40),
                     ),
                   ),

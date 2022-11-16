@@ -8,10 +8,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import '../db/db/db.dart';
 import '../db/db/sharedPreferences.dart';
-import '../global_widget/admob.dart';
+import '../provider/admob.dart';
 
 class WordCardspage extends StatefulWidget {
   const WordCardspage({Key? key}) : super(key: key);
@@ -71,30 +70,28 @@ class _WordCardspageState extends State<WordCardspage> {
   int indexpage = 0;
 
   void getSelectedWordOfLists(List<int> selectedListID) async {
-   
-      List<String> value = selectedListID.map((e) => e.toString()).toList();
-      SP.write("selected_list", value);
-      if (learn == true && unlearn != true) {
-        _words = await DB.instance.readWordByLists(selectedListID, status: true);
-      } else if (learn != true && unlearn == true) {
-        _words = await DB.instance.readWordByLists(selectedListID, status: false);
-      } else {
-        _words = await DB.instance.readWordByLists(
-          selectedListID,
-        );
-      }
+    List<String> value = selectedListID.map((e) => e.toString()).toList();
+    SP.write("selected_list", value);
+    if (learn == true && unlearn != true) {
+      _words = await DB.instance.readWordByLists(selectedListID, status: true);
+    } else if (learn != true && unlearn == true) {
+      _words = await DB.instance.readWordByLists(selectedListID, status: false);
+    } else {
+      _words = await DB.instance.readWordByLists(
+        selectedListID,
+      );
+    }
 
-      if (_words.isNotEmpty) {
-        for (int i = 0; i < _words.length; i++) {
-          changeLand.add(true);
-        }
-        if (listMixed) _words.shuffle();
-        start = true;
-        setState(() {
-          start;
-          _words;
-        });
-     
+    if (_words.isNotEmpty) {
+      for (int i = 0; i < _words.length; i++) {
+        changeLand.add(true);
+      }
+      if (listMixed) _words.shuffle();
+      start = true;
+      setState(() {
+        start;
+        _words;
+      });
     }
   }
 
@@ -228,9 +225,13 @@ class _WordCardspageState extends State<WordCardspage> {
                                     "Öğrenmediklerim",
                                     style: unlearn == false
                                         ? const TextStyle(
-                                            fontSize: 15, color: Color(0xffBDBDBD))
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15,
+                                            color: Color(0xffBDBDBD))
                                         : const TextStyle(
-                                            fontSize: 15, color: Color(0xff4F4F4F)),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15,
+                                            color: Color(0xff4F4F4F)),
                                   ),
                                 ),
                               ),

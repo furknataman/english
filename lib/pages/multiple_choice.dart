@@ -8,10 +8,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import '../db/db/db.dart';
 import '../db/db/sharedPreferences.dart';
-import '../global_widget/admob.dart';
+import '../provider/admob.dart';
 
 class MultipleChoicePage extends StatefulWidget {
   const MultipleChoicePage({Key? key}) : super(key: key);
