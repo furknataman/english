@@ -8,8 +8,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../provider/admob.dart';
 import '../provider/word_card.dart';
 
 final wordCardChoiceProvider = ChangeNotifierProvider((ref) => WordCard());
@@ -21,22 +19,11 @@ class WordCardspage extends ConsumerStatefulWidget {
   ConsumerState<WordCardspage> createState() => _WordCardspageState();
 }
 
-Container? adContainer;
-
 class _WordCardspageState extends ConsumerState<WordCardspage> {
   @override
   void initState() {
     super.initState();
     ref.read<WordCard>(wordCardChoiceProvider).getLists();
-    MobileAds.instance.initialize();
-    myBanner.load();
-    final AdWidget adWidget = AdWidget(ad: myBanner);
-    adContainer = Container(
-      alignment: Alignment.center,
-      width: 320,
-      height: 100,
-      child: adWidget,
-    );
   }
 
   CarouselController buttonCarouselController = CarouselController();

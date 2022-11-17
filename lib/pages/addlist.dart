@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../global_widget/text_filed.dart';
 import '../provider/add_list.dart';
 
-
-
 final addListConfig = ChangeNotifierProvider((ref) => AddListProvider());
 
 class AddList extends ConsumerStatefulWidget {
@@ -18,9 +16,8 @@ class AddList extends ConsumerStatefulWidget {
 class _AddListState extends ConsumerState<AddList> {
   @override
   void initState() {
-    ref.read<AddListProvider>(addListConfig).getField();
     super.initState();
-    
+    ref.read<AddListProvider>(addListConfig).getField();
   }
 
   @override

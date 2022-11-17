@@ -58,7 +58,4 @@ void defaultWord() async {
 }
 
 
-void getCounter() async {
-   totalWord = await DB.instance.getCount();
-   learnedWord = await DB.instance.getLearnCount();
-}
+

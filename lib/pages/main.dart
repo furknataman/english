@@ -1,4 +1,3 @@
-import 'package:english/db/models/info_state.dart';
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/about.dart';
 import 'package:english/pages/addlist.dart';
@@ -15,6 +14,7 @@ import '../admob/admob_main.dart';
 import '../db/db/shared_preferences.dart';
 import '../global_variable.dart';
 
+final getListWord = ChangeNotifierProvider((ref) => InfoProvider());
 
 class MainPage extends ConsumerStatefulWidget {
   const MainPage({super.key});
@@ -23,12 +23,14 @@ class MainPage extends ConsumerStatefulWidget {
   ConsumerState<MainPage> createState() => _MainPageState();
 }
 
-
 class _MainPageState extends ConsumerState<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
-  Widget build(BuildContext context,) {
-    InfoState info = ref.watch(infoProvider);
+  Widget build(
+    BuildContext context,
+  ) {
+    final info = ref.watch<InfoProvider>(getListWord);
+    info.getCounter();
     AsyncValue<Container> adMob = ref.watch(configAdmob);
 
     return Scaffold(
@@ -40,7 +42,7 @@ class _MainPageState extends ConsumerState<MainPage> {
         right: InkWell(
             onTap: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) =>  AbaoutPage()));
+                  context, MaterialPageRoute(builder: (context) => AbaoutPage()));
             },
             child: const Icon(
               Icons.info_outline,
@@ -116,7 +118,7 @@ class _MainPageState extends ConsumerState<MainPage> {
                               card(context,
                                   text: "Kelimelerim",
                                   icon: FontAwesomeIcons.book,
-                                  page:  const ListPage(),
+                                  page: const ListPage(),
                                   cardInfo: false),
                               card(context,
                                   text: "Kart Oluştur",
@@ -174,7 +176,7 @@ class _MainPageState extends ConsumerState<MainPage> {
                                           Padding(
                                             padding: const EdgeInsets.only(left: 12),
                                             child: Text(
-                                              info.total.toString(),
+                                              info.totalWord.toString(),
                                               style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 20,
@@ -216,7 +218,7 @@ class _MainPageState extends ConsumerState<MainPage> {
                                           Padding(
                                             padding: const EdgeInsets.only(left: 12),
                                             child: (Text(
-                                              info.learned.toString(),
+                                              info.learnedWord.toString(),
                                               style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 20,

@@ -21,20 +21,11 @@ class _TemproryPageState extends State<TemproryPage> {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => MainPage()));
+          context, MaterialPageRoute(builder: (context) => const MainPage()));
     });
-
-    //init state setting
-    //create instance of state obj
-    //get vals from db to object
-    //set state with obj
-
-    InfoState stateObj = InfoState(4, 12);
-
     sPRead();
     setFiravase();
     defaultWord();
-    getCounter();
   }
 
   void setFiravase() async {
