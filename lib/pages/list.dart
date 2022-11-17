@@ -7,7 +7,12 @@ import '../db/db/db.dart';
 import '../global_variable.dart';
 import '../global_widget/toast_message.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'add_word.dart';
+import 'edit_word.dart';
+
+
+final getListWord = ChangeNotifierProvider((ref) => ListWord());
+
+final editProvider = ChangeNotifierProvider((ref) => EditController());
 
 class ListPage extends ConsumerStatefulWidget {
   const ListPage({super.key});
@@ -143,7 +148,7 @@ class _ListPageState extends ConsumerState<ListPage> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => AddWordPage(id, listname)));
+            context, MaterialPageRoute(builder: (context) => EditWordPage(id, listname)));
       },
       child: Container(
         width: 370,
@@ -248,7 +253,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                   ),
                 ],
               ),
-              editController.value == true
+              editController.value
                   ? Checkbox(
                       side: const BorderSide(color: Color(0xff3574C3)),
                       shape: const RoundedRectangleBorder(
@@ -328,6 +333,8 @@ class ListWord extends ChangeNotifier {
     }
   }
 
+  
+
   void delete() async {
     List<int> removeIndexList = [];
 
@@ -347,6 +354,4 @@ class ListWord extends ChangeNotifier {
   }
 }
 
-final getListWord = ChangeNotifierProvider((ref) => ListWord());
 
-final editProvider = ChangeNotifierProvider((ref) => EditController());

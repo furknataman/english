@@ -1,10 +1,6 @@
-import 'package:english/db/models/lists.dart';
 import 'package:english/global_widget/app_bar.dart';
-import 'package:english/global_widget/toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../db/db/db.dart';
-import '../db/models/words.dart';
 import '../global_widget/text_filed.dart';
 import '../provider/add_list.dart';
 
