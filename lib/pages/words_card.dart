@@ -1,31 +1,32 @@
-import 'package:english/db/models/words.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/global_widget/toast_message.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../db/db/db.dart';
-import '../db/db/shared_preferences.dart';
 import '../provider/admob.dart';
+import '../provider/word_card.dart';
 
-class WordCardspage extends StatefulWidget {
+final wordCardChoiceProvider = ChangeNotifierProvider((ref) => WordCard());
+
+class WordCardspage extends ConsumerStatefulWidget {
   const WordCardspage({Key? key}) : super(key: key);
 
   @override
-  State<WordCardspage> createState() => _WordCardspageState();
+  ConsumerState<WordCardspage> createState() => _WordCardspageState();
 }
 
 Container? adContainer;
 
-class _WordCardspageState extends State<WordCardspage> {
+class _WordCardspageState extends ConsumerState<WordCardspage> {
   @override
   void initState() {
     super.initState();
-    getLists();
+    ref.read<WordCard>(wordCardChoiceProvider).getLists();
     MobileAds.instance.initialize();
     myBanner.load();
     final AdWidget adWidget = AdWidget(ad: myBanner);
@@ -37,96 +38,26 @@ class _WordCardspageState extends State<WordCardspage> {
     );
   }
 
-  void getLists() async {
-    Object? value = await SP.read("selected_list");
-
-    lists = await DB.instance.readListAll();
-    selectedListIndex = [];
-
-    for (int i = 0; i < lists.length; i++) {
-      bool isThereSame = false;
-      if (value != null) {
-        for (var element in (value as List)) {
-          if (element == lists[i]['list_id'].toString()) {
-            isThereSame = true;
-          }
-        }
-      }
-
-      selectedListIndex.add(isThereSame);
-    }
-
-    setState(() {
-      lists;
-    });
-  }
-
-  List<Word> _words = [];
-  bool start = false;
-  List<bool> changeLand = [];
-  bool learn = false;
-  bool unlearn = false;
-  int? itemIndex;
-  int indexpage = 0;
-
-  void getSelectedWordOfLists(List<int> selectedListID) async {
-    List<String> value = selectedListID.map((e) => e.toString()).toList();
-    SP.write("selected_list", value);
-    if (learn == true && unlearn != true) {
-      _words = await DB.instance.readWordByLists(selectedListID, status: true);
-    } else if (learn != true && unlearn == true) {
-      _words = await DB.instance.readWordByLists(selectedListID, status: false);
-    } else {
-      _words = await DB.instance.readWordByLists(
-        selectedListID,
-      );
-    }
-
-    if (_words.isNotEmpty) {
-      for (int i = 0; i < _words.length; i++) {
-        changeLand.add(true);
-      }
-      if (listMixed) _words.shuffle();
-      start = true;
-      setState(() {
-        start;
-        _words;
-      });
-    }
-  }
-
-  List<Color> cardColor = [
-    const Color(0xff9B51E0),
-    const Color(0xffBB6BD9),
-    const Color(0xff56CCF2),
-    const Color(0xffF3FBF8),
-  ];
   CarouselController buttonCarouselController = CarouselController();
   @override
   Widget build(BuildContext context) {
+    final wordCard = ref.watch<WordCard>(wordCardChoiceProvider);
     return Scaffold(
       backgroundColor: const Color(0xff3574C3),
       appBar: appbar(
         context,
-        left: start == false
+        left: !wordCard.start
             ? const Icon(
                 Icons.arrow_back_ios,
                 color: Color(0xffF3FBF8),
                 size: 22,
               )
-            : InkWell(
-                onTap: () {
-                  setState(() {
-                    start = false;
-                  });
-                },
-                child: const Icon(
-                  Icons.highlight_off_outlined,
-                  color: Color(0xffF3FBF8),
-                  size: 31,
-                ),
+            : const Icon(
+                Icons.highlight_off_outlined,
+                color: Color(0xffF3FBF8),
+                size: 31,
               ),
-        center: start == false
+        center: !wordCard.start
             ? const Text(
                 "Yeni Kart Destesi",
                 style: TextStyle(
@@ -136,10 +67,11 @@ class _WordCardspageState extends State<WordCardspage> {
                 ),
               )
             : svgLogoIcon,
-        leftWidgetOnClik: () => start == false ? Navigator.pop(context) : start = false,
+        leftWidgetOnClik: () =>
+            !wordCard.start ? Navigator.pop(context) : wordCard.cancel(),
       ),
       body: Container(
-          child: start == false
+          child: !wordCard.start
               ? Container(
                   width: double.infinity,
                   padding: const EdgeInsets.only(
@@ -166,14 +98,8 @@ class _WordCardspageState extends State<WordCardspage> {
                           children: [
                             InkWell(
                               onTap: () {
-                                if (learn == false) {
-                                  learn = true;
-                                } else {
-                                  learn = false;
-                                }
-                                setState(() {
-                                  learn;
-                                });
+                                //learn
+                                wordCard.changelearn();
                               },
                               child: Container(
                                 width: 134,
@@ -187,7 +113,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: Text(
                                     "Öğrendiklerim",
-                                    style: learn == false
+                                    style: !wordCard.learn
                                         ? const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 15,
@@ -202,14 +128,8 @@ class _WordCardspageState extends State<WordCardspage> {
                             ),
                             InkWell(
                               onTap: () {
-                                if (unlearn == false) {
-                                  unlearn = true;
-                                } else {
-                                  unlearn = false;
-                                }
-                                setState(() {
-                                  unlearn;
-                                });
+                                //learn
+                                wordCard.changeunlearn();
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -223,7 +143,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: Text(
                                     "Öğrenmediklerim",
-                                    style: unlearn == false
+                                    style: !wordCard.unlearn
                                         ? const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 15,
@@ -326,7 +246,8 @@ class _WordCardspageState extends State<WordCardspage> {
                               margin: const EdgeInsets.only(right: 20),
                               child: InkWell(
                                 onTap: () {
-                                  if (learn == false && unlearn == false) {
+                                  if (wordCard.learn == false &&
+                                      wordCard.unlearn == false) {
                                     toastMessage("Lütfen İçerik Seçiniz");
                                   } else {
                                     List<int> selectedIndexNoOfList = [];
@@ -344,7 +265,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                               as int);
                                     }
                                     if (selectedListIdList.isNotEmpty) {
-                                      getSelectedWordOfLists(selectedListIdList);
+                                      wordCard.getSelectedWordOfLists(selectedListIdList);
                                     } else {
                                       toastMessage("Lütfen, liste seçiniz");
                                     }
@@ -380,8 +301,8 @@ class _WordCardspageState extends State<WordCardspage> {
                           carouselController: buttonCarouselController,
                           options: CarouselOptions(
                             onPageChanged: (index, reason) {
-                              indexpage = index;
-                              setState(() {});
+                              //learn
+                              wordCard.changeIndex(index);
                             },
                             scrollPhysics: const NeverScrollableScrollPhysics(),
                             enlargeCenterPage: true,
@@ -389,18 +310,18 @@ class _WordCardspageState extends State<WordCardspage> {
                             viewportFraction: 1,
                             enableInfiniteScroll: true,
                           ),
-                          itemCount: _words.length,
+                          itemCount: wordCard.words.length,
                           itemBuilder:
                               (BuildContext context, itemIndex, int pageViewIndex) {
                             String word = "";
                             if (chooeseLang == Lang.tr) {
-                              word = changeLand[itemIndex]
-                                  ? _words[itemIndex].word_tr!
-                                  : _words[itemIndex].word_eng!;
+                              word = wordCard.changeLand[itemIndex]
+                                  ? wordCard.words[itemIndex].word_tr!
+                                  : wordCard.words[itemIndex].word_eng!;
                             } else {
-                              word = changeLand[itemIndex]
-                                  ? _words[itemIndex].word_eng!
-                                  : _words[itemIndex].word_tr!;
+                              word = wordCard.changeLand[itemIndex]
+                                  ? wordCard.words[itemIndex].word_eng!
+                                  : wordCard.words[itemIndex].word_tr!;
                             }
                             return Column(
                               children: [
@@ -412,7 +333,8 @@ class _WordCardspageState extends State<WordCardspage> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             const BorderRadius.all(Radius.circular(20)),
-                                        color: cardColor[(indexpage) % 4],
+                                        color:
+                                            wordCard.cardColor[(wordCard.indexpage) % 4],
                                       ),
                                     ),
                                     Container(
@@ -421,7 +343,8 @@ class _WordCardspageState extends State<WordCardspage> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             const BorderRadius.all(Radius.circular(20)),
-                                        color: cardColor[(indexpage + 1) % 4],
+                                        color: wordCard
+                                            .cardColor[(wordCard.indexpage + 1) % 4],
                                       ),
                                     ),
                                     Positioned(
@@ -431,21 +354,19 @@ class _WordCardspageState extends State<WordCardspage> {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               const BorderRadius.all(Radius.circular(20)),
-                                          color: cardColor[(indexpage + 2) % 4],
+                                          color: wordCard
+                                              .cardColor[(wordCard.indexpage + 2) % 4],
                                         ),
                                       ),
                                     ),
                                     FlipCard(
                                       direction: FlipDirection.VERTICAL,
                                       onFlip: () {
-                                        if (changeLand[itemIndex] == true) {
-                                          changeLand[itemIndex] = false;
+                                        if (wordCard.changeLand[itemIndex] == true) {
+                                          wordCard.changeLand[itemIndex] = false;
                                         } else {
-                                          changeLand[itemIndex] = true;
+                                          wordCard.changeLand[itemIndex] = true;
                                         }
-                                        setState(() {
-                                          changeLand;
-                                        });
                                       },
                                       front: Stack(children: [
                                         Container(
@@ -454,7 +375,8 @@ class _WordCardspageState extends State<WordCardspage> {
                                           decoration: BoxDecoration(
                                             borderRadius: const BorderRadius.all(
                                                 Radius.circular(20)),
-                                            color: cardColor[(indexpage + 3) % 4],
+                                            color: wordCard
+                                                .cardColor[(wordCard.indexpage + 3) % 4],
                                           ),
                                           alignment: Alignment.center,
                                           margin: const EdgeInsets.only(bottom: 16),
@@ -480,7 +402,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                                     bottomLeft: Radius.circular(10),
                                                     bottomRight: Radius.circular(10))),
                                             child: Text(
-                                              "${itemIndex + 1}/${_words.length}",
+                                              "${itemIndex + 1}/${wordCard.words.length}",
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 14,
@@ -541,7 +463,7 @@ class _WordCardspageState extends State<WordCardspage> {
                                                     bottomLeft: Radius.circular(10),
                                                     bottomRight: Radius.circular(10))),
                                             child: Text(
-                                              "${itemIndex + 1}/${_words.length}",
+                                              "${itemIndex + 1}/${wordCard.words.length}",
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 14,
@@ -641,20 +563,7 @@ class _WordCardspageState extends State<WordCardspage> {
                               bottom: 50,
                               child: InkWell(
                                 onTap: () {
-                                  if (_words[indexpage].status == true) {
-                                    _words[indexpage] =
-                                        _words[indexpage].copy(status: false);
-                                    DB.instance
-                                        .markAslearned(false, _words[indexpage].id as int);
-                                  } else {
-                                    _words[indexpage] =
-                                        _words[indexpage].copy(status: true);
-                                    DB.instance
-                                        .markAslearned(true, _words[indexpage].id as int);
-                                  }
-                                  setState(() {
-                                    _words[indexpage].status;
-                                  });
+                                  wordCard.changelearnType();
                                 },
                                 child: Container(
                                     alignment: Alignment.centerLeft,
@@ -687,16 +596,10 @@ class _WordCardspageState extends State<WordCardspage> {
                                             checkColor: Colors.black,
                                             activeColor: const Color(0xff6FCF97),
                                             hoverColor: Colors.blueAccent,
-                                            value: _words[indexpage].status,
+                                            value:
+                                                wordCard.words[wordCard.indexpage].status,
                                             onChanged: (value) {
-                                              _words[indexpage] =
-                                                  _words[indexpage].copy(status: value);
-                                              DB.instance.markAslearned(
-                                                  value!, _words[indexpage].id as int);
-
-                                              setState(() {
-                                                _words[indexpage];
-                                              });
+                                              wordCard.changelearnType();
                                             },
                                           ),
                                         ),
