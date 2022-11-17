@@ -7,9 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../provider/admob.dart';
-
+import '../admob/admob_multiple_page.dart';
 
 final multipleChoiceProvider = ChangeNotifierProvider((ref) => MultipleChoice());
 
@@ -20,22 +18,12 @@ class MultipleChoicePage extends ConsumerStatefulWidget {
   ConsumerState<MultipleChoicePage> createState() => _MultipleChoicePage();
 }
 
-Container? adContainer;
 
 class _MultipleChoicePage extends ConsumerState<MultipleChoicePage> {
   @override
   void initState() {
     super.initState();
     ref.read<MultipleChoice>(multipleChoiceProvider).getLists();
-    MobileAds.instance.initialize();
-    myBanner.load();
-    final AdWidget adWidget = AdWidget(ad: myBanner);
-    adContainer = Container(
-      alignment: Alignment.center,
-      width: 320,
-      height: 100,
-      child: adWidget,
-    );
   }
 
   CarouselController buttonCarouselController = CarouselController();
@@ -43,6 +31,7 @@ class _MultipleChoicePage extends ConsumerState<MultipleChoicePage> {
   @override
   Widget build(BuildContext context) {
     final multiple = ref.watch<MultipleChoice>(multipleChoiceProvider);
+    AsyncValue<Container> adMob = ref.watch(configAdmob);
     return Scaffold(
       backgroundColor: const Color(0xff3574C3),
       appBar: appbar(
@@ -318,9 +307,14 @@ class _MultipleChoicePage extends ConsumerState<MultipleChoicePage> {
                         ),
                       ]),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 50.0),
-                        child: adContainer!,
-                      )
+                          padding: const EdgeInsets.only(bottom: 50.0),
+                          child: adMob.when(
+                            loading: () => const CircularProgressIndicator(),
+                            error: (err, stack) => Text('Error: $err'),
+                            data: (adMob) {
+                              return adMob;
+                            },
+                          ))
                     ],
                   ),
                 )
@@ -371,10 +365,8 @@ class _MultipleChoicePage extends ConsumerState<MultipleChoicePage> {
                                           !multiple.clicked
                                               ? Text(
                                                   chooeseLang == Lang.eng
-                                                      ? multiple
-                                                          .words[itemIndex].word_eng!
-                                                      : multiple
-                                                          .words[itemIndex].word_tr!,
+                                                      ? multiple.words[itemIndex].word_eng!
+                                                      : multiple.words[itemIndex].word_tr!,
                                                   style: const TextStyle(
                                                       fontWeight: FontWeight.w600,
                                                       fontSize: 28,
@@ -382,10 +374,8 @@ class _MultipleChoicePage extends ConsumerState<MultipleChoicePage> {
                                                 )
                                               : Text(
                                                   chooeseLang != Lang.eng
-                                                      ? multiple
-                                                          .words[itemIndex].word_eng!
-                                                      : multiple
-                                                          .words[itemIndex].word_tr!,
+                                                      ? multiple.words[itemIndex].word_eng!
+                                                      : multiple.words[itemIndex].word_tr!,
                                                   style: const TextStyle(
                                                       fontWeight: FontWeight.w600,
                                                       fontSize: 28,

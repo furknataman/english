@@ -11,9 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
+import '../admob/admob_main.dart';
 import '../db/db/shared_preferences.dart';
 import '../global_variable.dart';
-import '../provider/admob.dart';
 
 
 class MainPage extends ConsumerStatefulWidget {

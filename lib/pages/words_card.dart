@@ -1,3 +1,4 @@
+import 'package:english/admob/admob_word_card.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/global_widget/toast_message.dart';
@@ -42,6 +43,7 @@ class _WordCardspageState extends ConsumerState<WordCardspage> {
   @override
   Widget build(BuildContext context) {
     final wordCard = ref.watch<WordCard>(wordCardChoiceProvider);
+    AsyncValue<Container> adMob = ref.watch(configAdmob);
     return Scaffold(
       backgroundColor: const Color(0xff3574C3),
       appBar: appbar(
@@ -285,9 +287,14 @@ class _WordCardspageState extends ConsumerState<WordCardspage> {
                         )
                       ]),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 50.0),
-                        child: adContainer!,
-                      )
+                          padding: const EdgeInsets.only(bottom: 50.0),
+                          child: adMob.when(
+                            loading: () => const CircularProgressIndicator(),
+                            error: (err, stack) => Text('Error: $err'),
+                            data: (adMob) {
+                              return adMob;
+                            },
+                          ))
                     ],
                   ),
                 )
