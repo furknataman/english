@@ -45,6 +45,7 @@ class AbaoutPage extends ConsumerWidget {
           leftWidgetOnClik: () => {Navigator.pop(context)}),
       body: SafeArea(
         child: Container(
+          margin: const EdgeInsets.only(top: 10),
           color: Colors.white,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
