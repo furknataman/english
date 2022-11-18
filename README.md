@@ -11,6 +11,6 @@
 ## To Run The Application
 + cd English
 + Flutter pub get
-+ Start the simulator/Connect the physical device
++ Start the simulator or Connect the physical device
 + Flutter run 
 + Select device
