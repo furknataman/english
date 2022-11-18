@@ -1,97 +1,38 @@
-// ignore_for_file: avoid_print
-
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/about.dart';
 import 'package:english/pages/addlist.dart';
 import 'package:english/pages/list.dart';
 import 'package:english/pages/multiple_choice.dart';
 import 'package:english/pages/words_card.dart';
+import 'package:english/provider/word_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
-import '../db/db/db.dart';
-import '../db/db/sharedPreferences.dart';
+import '../admob/admob_main.dart';
+import '../db/db/shared_preferences.dart';
 import '../global_variable.dart';
-import '../global_widget/admob.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+final getListWord = ChangeNotifierProvider((ref) => InfoProvider());
+
+class MainPage extends ConsumerStatefulWidget {
+  const MainPage({super.key});
 
   @override
-  _MainPageState createState() => _MainPageState();
+  ConsumerState<MainPage> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends ConsumerState<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  PackageInfo? packageInfo;
-  void packageInfoInit() async {
-    packageInfo = await PackageInfo.fromPlatform();
-    setState(() {
-      version = packageInfo!.version;
-    });
-  }
-
-
-
-  //android: ca-app-pub-8345811531238514/9950718730
-  //example ad mob: ca-app-pub-3940256099942544/6300978111
-  //IOS Ad mob : ca-app-pub-8345811531238514/3942353745
-  final AdManagerBannerAd myBanner = AdManagerBannerAd(
-    adUnitId: interstitialAdUnitId,
-    sizes: [AdSize.mediumRectangle],
-    request: const AdManagerAdRequest(),
-    listener: AdManagerBannerAdListener(),
-  );
-
-  final AdManagerBannerAdListener listener = AdManagerBannerAdListener(
-    onAdLoaded: (Ad ad) => print('Ad loaded.'),
-    onAdFailedToLoad: (Ad ad, LoadAdError error) {
-      ad.dispose();
-      print('Ad failed to load: $error');
-    },
-    onAdOpened: (Ad ad) => print('Ad opened.'),
-    onAdClosed: (Ad ad) => print('Ad closed.'),
-    onAdImpression: (Ad ad) => print('Ad impression.'),
-  );
-
-  Container? adContainer;
-  int? totalWord;
-  int? learnedWord;
-  void getCount() async {
-    totalWord = await DB.instance.getCount();
-    learnedWord = await DB.instance.getLearnCount();
-    setState(() {
-      totalWord;
-      learnedWord;
-    });
-  }
-
-  bool isSwitched = false;
-
   @override
-  void initState() {
-    getCount();
-    super.initState();
-    MobileAds.instance.initialize();
-    packageInfoInit();
-    myBanner.load();
-    final AdWidget adWidget = AdWidget(ad: myBanner);
-    adContainer = Container(
-      alignment: Alignment.center,
-      width: 300,
-      height: 250,
-      child: adWidget,
-    );
-    setState(() {
-      adContainer;
-    });
-  }
+  Widget build(
+    BuildContext context,
+  ) {
+    final info = ref.watch<InfoProvider>(getListWord);
+    info.getCounter();
+    AsyncValue<Container> adMob = ref.watch(configAdmob);
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xff3574C3),
       key: _scaffoldKey,
@@ -101,8 +42,7 @@ class _MainPageState extends State<MainPage> {
         right: InkWell(
             onTap: () {
               Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => const AbaoutPage()))
-                  .then((value) => getCount());
+                  context, MaterialPageRoute(builder: (context) => AbaoutPage()));
             },
             child: const Icon(
               Icons.info_outline,
@@ -161,7 +101,8 @@ class _MainPageState extends State<MainPage> {
               padding: const EdgeInsets.only(bottom: 20),
               decoration: const BoxDecoration(
                   color: Color(0xffF3FBF8),
-                  borderRadius: BorderRadius.only(topLeft:Radius.circular(10),topRight:Radius.circular(10))),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10), topRight: Radius.circular(10))),
               child: SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -235,7 +176,7 @@ class _MainPageState extends State<MainPage> {
                                           Padding(
                                             padding: const EdgeInsets.only(left: 12),
                                             child: Text(
-                                              totalWord.toString(),
+                                              info.totalWord.toString(),
                                               style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 20,
@@ -276,14 +217,14 @@ class _MainPageState extends State<MainPage> {
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.only(left: 12),
-                                            child: Text(
-                                              learnedWord.toString(),
+                                            child: (Text(
+                                              info.learnedWord.toString(),
                                               style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.w600),
-                                            ),
-                                          ),
+                                            )),
+                                          )
                                         ],
                                       ),
                                     ),
@@ -293,7 +234,7 @@ class _MainPageState extends State<MainPage> {
                               card(
                                 context,
                                 text: "Liste Oluştur",
-                                icon: FontAwesomeIcons.add,
+                                icon: FontAwesomeIcons.plus,
                                 page: const AddList(),
                                 cardInfo: true,
                               )
@@ -302,7 +243,13 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ],
                     ),
-                    Center(child: adContainer!),
+                    adMob.when(
+                      loading: () => const CircularProgressIndicator(),
+                      error: (err, stack) => Text('Error: $err'),
+                      data: (adMob) {
+                        return adMob;
+                      },
+                    )
                   ],
                 ),
               ),
@@ -322,8 +269,7 @@ class _MainPageState extends State<MainPage> {
   }) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => page!))
-            .then((value) => getCount());
+        Navigator.push(context, MaterialPageRoute(builder: (context) => page!));
       },
       child: Column(
         children: [

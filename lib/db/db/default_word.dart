@@ -1,6 +1,7 @@
+import 'package:english/global_variable.dart';
 import '../models/lists.dart';
 import '../models/words.dart';
-import 'package:english/db/db/sharedPreferences.dart';
+import 'package:english/db/db/shared_preferences.dart';
 import 'db.dart';
 
 void defaultWord() async {
@@ -10,11 +11,12 @@ void defaultWord() async {
     List<String> tr = ["Sonra", "Tekrar", "Hepsi", "Başka", "Cevap"];
 
     for (int i = 0; i < eng.length; i++) {
-     await DB.instance.insertWord(
+      await DB.instance.insertWord(
           Word(list_id: addedList.id, word_eng: eng[i], word_tr: tr[i], status: false));
     }
 
-    Lists addedList2 = await DB.instance.insertList(const Lists(name: "Temel Kelimeler-2"));
+    Lists addedList2 =
+        await DB.instance.insertList(const Lists(name: "Temel Kelimeler-2"));
     List<String> eng2 = ["Ask", "Be", "Before", "Begin", "But", "Buy", "Change"];
     List<String> tr2 = [
       "Sormak",
@@ -30,7 +32,8 @@ void defaultWord() async {
           Word(list_id: addedList2.id, word_eng: eng2[i], word_tr: tr2[i], status: false));
     }
 
-    Lists addedList3 = await DB.instance.insertList(const Lists(name: "Temel Kelimeler-3"));
+    Lists addedList3 =
+        await DB.instance.insertList(const Lists(name: "Temel Kelimeler-3"));
     List<String> eng3 = ["Clean", "Come", "Game", "Easy", "Eat", "Feel", "Find", "Forget"];
     List<String> tr3 = [
       "Temiz",
@@ -43,7 +46,7 @@ void defaultWord() async {
       "Unutmak"
     ];
     for (int i = 0; i < eng3.length; i++) {
-    await DB.instance.insertWord(
+      await DB.instance.insertWord(
           Word(list_id: addedList3.id, word_eng: eng3[i], word_tr: tr3[i], status: false));
     }
     /*int x = await DB.instance.getCount();
@@ -53,3 +56,6 @@ void defaultWord() async {
     SP.write("default", false);
   }
 }
+
+
+

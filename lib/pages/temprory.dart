@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'package:english/db/db/defaultWord.dart';
+import 'package:english/db/db/default_word.dart';
+import 'package:english/db/models/info_state.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/pages/main.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import '../db/db/sharedPreferences.dart';
+import '../db/db/shared_preferences.dart';
 
 class TemproryPage extends StatefulWidget {
   const TemproryPage({Key? key}) : super(key: key);
@@ -15,7 +16,6 @@ class TemproryPage extends StatefulWidget {
 }
 
 class _TemproryPageState extends State<TemproryPage> {
-  
   @override
   void initState() {
     super.initState();
@@ -23,7 +23,6 @@ class _TemproryPageState extends State<TemproryPage> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const MainPage()));
     });
-
     sPRead();
     setFiravase();
     defaultWord();
@@ -95,7 +94,7 @@ class _TemproryPageState extends State<TemproryPage> {
                       "Learn",
                       style: TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
-                         fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w600,
                           fontSize: 40),
                     ),
                   ),

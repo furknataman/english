@@ -1,204 +1,53 @@
-import 'dart:math';
-import 'package:english/db/models/words.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/global_widget/toast_message.dart';
+import 'package:english/provider/multiple_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../admob/admob_multiple_page.dart';
 
-import '../db/db/db.dart';
-import '../db/db/sharedPreferences.dart';
-import '../global_widget/admob.dart';
+final multipleChoiceProvider = ChangeNotifierProvider((ref) => MultipleChoice());
 
-class MultipleChoicePage extends StatefulWidget {
+class MultipleChoicePage extends ConsumerStatefulWidget {
   const MultipleChoicePage({Key? key}) : super(key: key);
 
   @override
-  State<MultipleChoicePage> createState() => _MultipleChoicePage();
+  ConsumerState<MultipleChoicePage> createState() => _MultipleChoicePage();
 }
 
-Container? adContainer;
 
-class _MultipleChoicePage extends State<MultipleChoicePage> {
+class _MultipleChoicePage extends ConsumerState<MultipleChoicePage> {
   @override
   void initState() {
     super.initState();
-    getLists();
-    MobileAds.instance.initialize();
-    myBanner.load();
-    final AdWidget adWidget = AdWidget(ad: myBanner);
-    adContainer = Container(
-      alignment: Alignment.center,
-      width: 320,
-      height: 100,
-      child: adWidget,
-    );
-  }
-
-  void getLists() async {
-    Object? value = await SP.read("selected_list");
-
-    lists = await DB.instance.readListAll();
-    selectedListIndex = [];
-
-    for (int i = 0; i < lists.length; i++) {
-      bool isThereSame = false;
-      if (value != null) {
-        for (var element in (value as List)) {
-          if (element == lists[i]['list_id'].toString()) {
-            isThereSame = true;
-          }
-        }
-      }
-
-      selectedListIndex.add(isThereSame);
-    }
-
-    setState(() {
-      lists;
-    });
-  }
-
-  List<bool> changeLand = [];
-
-  List<Word> _words = [];
-  bool start = false;
-
-  List<List<String>> optionsList = [];
-  List<String> correctAnswers = [];
-
-  List<bool> clickControl = [];
-  List<List<bool>> clickControlList = [];
-
-  bool correct = false;
-  int correctCount = 0;
-  int wrongCount = 0;
-  bool learn = false;
-  bool unlearn = false;
-  int indexpage = 0;
-  bool clicked = false;
-  void cancel() {
-    setState(() {
-      changeLand = [];
-
-      _words = [];
-      start = false;
-
-      optionsList = [];
-      correctAnswers = [];
-
-      clickControl = [];
-      clickControlList = [];
-
-      correct = false;
-      correctCount = 0;
-      wrongCount = 0;
-      learn = false;
-      unlearn = false;
-      indexpage = 0;
-      clicked = false;
-    });
-  }
-
-  void getSelectedWordOfLists(List<int> selectedListID) async {
-    List<String> value = selectedListID.map((e) => e.toString()).toList();
-    SP.write("selected_list", value);
-    if (learn == true && unlearn != true) {
-      _words = await DB.instance.readWordByLists(selectedListID, status: true);
-    } else if (learn != true && unlearn == true) {
-      _words = await DB.instance.readWordByLists(selectedListID, status: false);
-    } else {
-      _words = await DB.instance.readWordByLists(
-        selectedListID,
-      );
-    }
-    if (_words.isNotEmpty) {
-      if (_words.length > 3) {
-        if (listMixed) _words.shuffle();
-
-        Random random = Random();
-        for (int i = 0; i < _words.length; i++) {
-          clickControl.add(false);
-
-          clickControlList.add([false, false, false, false]);
-
-          List<String> tempOptions = [];
-          while (true) {
-            int rand = random.nextInt(_words.length);
-            if (rand != i) {
-              bool isThereSame = false;
-              for (var element in tempOptions) {
-                if (chooeseLang == Lang.eng) {
-                  if (element == _words[rand].word_tr!) {
-                    isThereSame = true;
-                  }
-                } else {
-                  if (element == _words[rand].word_eng!) {
-                    isThereSame = true;
-                  }
-                }
-              }
-
-              if (!isThereSame) {
-                tempOptions.add(chooeseLang == Lang.eng
-                    ? _words[rand].word_tr!
-                    : _words[rand].word_eng!);
-              }
-            }
-
-            if (tempOptions.length == 3) {
-              break;
-            }
-          }
-          tempOptions
-              .add(chooeseLang == Lang.eng ? _words[i].word_tr! : _words[i].word_eng!);
-          tempOptions.shuffle();
-          correctAnswers
-              .add(chooeseLang == Lang.eng ? _words[i].word_tr! : _words[i].word_eng!);
-          optionsList.add(tempOptions);
-        }
-
-        start = true;
-        setState(() {
-          start;
-          _words;
-        });
-      } else {
-        toastMessage("En az 4 kelime gereklidir.");
-      }
-    } else {
-      toastMessage("Seçilen şartlar liste boş.");
-    }
+    ref.read<MultipleChoice>(multipleChoiceProvider).getLists();
   }
 
   CarouselController buttonCarouselController = CarouselController();
 
   @override
   Widget build(BuildContext context) {
+    final multiple = ref.watch<MultipleChoice>(multipleChoiceProvider);
+    AsyncValue<Container> adMob = ref.watch(configAdmob);
     return Scaffold(
       backgroundColor: const Color(0xff3574C3),
       appBar: appbar(
         context,
-        left: start == false
+        left: multiple.start == false
             ? const Icon(
                 Icons.arrow_back_ios,
                 color: Color(0xffF3FBF8),
                 size: 22,
               )
-            : InkWell(
-                onTap: () {
-                  cancel();
-                },
-                child: const Icon(
-                  Icons.highlight_off_outlined,
-                  color: Color(0xffF3FBF8),
-                  size: 31,
-                ),
+            : const Icon(
+                Icons.highlight_off_outlined,
+                color: Color(0xffF3FBF8),
+                size: 31,
               ),
-        center: start == false
+        center: !multiple.start
             ? const Text(
                 "Çoktan Seçmeli",
                 style: TextStyle(
@@ -208,7 +57,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                 ),
               )
             : svgLogoIcon,
-        right: start == true
+        right: multiple.start
             ? Container(
                 alignment: Alignment.center,
                 width: 73,
@@ -220,7 +69,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      "$correctCount",
+                      "${multiple.correctCount}",
                       style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
@@ -232,7 +81,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                       width: 8,
                     ),
                     Text(
-                      "$wrongCount",
+                      "${multiple.wrongCount}",
                       style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
@@ -242,10 +91,11 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                 ),
               )
             : Container(),
-        leftWidgetOnClik: () => start == false ? Navigator.pop(context) : start = false,
+        leftWidgetOnClik: () =>
+            !multiple.start ? Navigator.pop(context) : multiple.cancel(),
       ),
       body: Container(
-          child: start == false
+          child: !multiple.start
               ? Container(
                   width: double.infinity,
                   padding: const EdgeInsets.only(
@@ -254,7 +104,8 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                   ),
                   decoration: const BoxDecoration(
                       color: Color(0xffF3FBF8),
-                       borderRadius: BorderRadius.only(topLeft:Radius.circular(10),topRight:Radius.circular(10))),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10), topRight: Radius.circular(10))),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -271,14 +122,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                           children: [
                             InkWell(
                               onTap: () {
-                                if (learn == false) {
-                                  learn = true;
-                                } else {
-                                  learn = false;
-                                }
-                                setState(() {
-                                  learn;
-                                });
+                                multiple.changelearn();
                               },
                               child: Container(
                                 width: 134,
@@ -292,7 +136,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: Text(
                                     "Öğrendiklerim",
-                                    style: learn == false
+                                    style: !multiple.learn
                                         ? const TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w600,
@@ -307,14 +151,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                             ),
                             InkWell(
                               onTap: () {
-                                if (unlearn == false) {
-                                  unlearn = true;
-                                } else {
-                                  unlearn = false;
-                                }
-                                setState(() {
-                                  unlearn;
-                                });
+                                multiple.changeunlearn();
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -328,7 +165,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: Text(
                                     "Öğrenmediklerim",
-                                    style: unlearn == false
+                                    style: !multiple.unlearn
                                         ? const TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w600,
@@ -431,7 +268,8 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                               margin: const EdgeInsets.only(right: 20),
                               child: InkWell(
                                 onTap: () {
-                                  if (learn == false && unlearn == false) {
+                                  if (multiple.learn == false &&
+                                      multiple.unlearn == false) {
                                     toastMessage("Lütfen, içerik seçiniz");
                                   } else {
                                     List<int> selectedIndexNoOfList = [];
@@ -449,7 +287,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                               as int);
                                     }
                                     if (selectedListIdList.isNotEmpty) {
-                                      getSelectedWordOfLists(selectedListIdList);
+                                      multiple.getSelectedWordOfLists(selectedListIdList);
                                     } else {
                                       toastMessage("Lütfen, liste seçiniz");
                                     }
@@ -469,9 +307,14 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                         ),
                       ]),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 50.0),
-                        child: adContainer!,
-                      )
+                          padding: const EdgeInsets.only(bottom: 50.0),
+                          child: adMob.when(
+                            loading: () => const CircularProgressIndicator(),
+                            error: (err, stack) => Text('Error: $err'),
+                            data: (adMob) {
+                              return adMob;
+                            },
+                          ))
                     ],
                   ),
                 )
@@ -485,13 +328,9 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                           carouselController: buttonCarouselController,
                           options: CarouselOptions(
                             onPageChanged: (index, reason) {
-                              indexpage = index;
-                              correct = false;
-
-                              setState(() {
-                                clicked = false;
-                                correct;
-                              });
+                              multiple.changeIndex(index);
+                              multiple.correct = false;
+                              multiple.clicked = false;
                             },
                             scrollPhysics: const NeverScrollableScrollPhysics(),
                             enlargeCenterPage: true,
@@ -499,7 +338,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                             viewportFraction: 1,
                             enableInfiniteScroll: true,
                           ),
-                          itemCount: _words.length,
+                          itemCount: multiple.words.length,
                           itemBuilder:
                               (BuildContext context, int itemIndex, int pageViewIndex) {
                             return Column(
@@ -512,7 +351,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             const BorderRadius.all(Radius.circular(20)),
-                                        color: clicked == false
+                                        color: !multiple.clicked
                                             ? const Color(0xffF3FBF8)
                                             : const Color(0xff002250),
                                       ),
@@ -523,11 +362,11 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          clicked == false
+                                          !multiple.clicked
                                               ? Text(
                                                   chooeseLang == Lang.eng
-                                                      ? _words[itemIndex].word_eng!
-                                                      : _words[itemIndex].word_tr!,
+                                                      ? multiple.words[itemIndex].word_eng!
+                                                      : multiple.words[itemIndex].word_tr!,
                                                   style: const TextStyle(
                                                       fontWeight: FontWeight.w600,
                                                       fontSize: 28,
@@ -535,8 +374,8 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                                 )
                                               : Text(
                                                   chooeseLang != Lang.eng
-                                                      ? _words[itemIndex].word_eng!
-                                                      : _words[itemIndex].word_tr!,
+                                                      ? multiple.words[itemIndex].word_eng!
+                                                      : multiple.words[itemIndex].word_tr!,
                                                   style: const TextStyle(
                                                       fontWeight: FontWeight.w600,
                                                       fontSize: 28,
@@ -545,11 +384,11 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                         ],
                                       ),
                                     ),
-                                    if (clicked == true)
+                                    if (multiple.clicked)
                                       Positioned(
                                           right: 30,
                                           top: 30,
-                                          child: correct == true
+                                          child: multiple.correct
                                               ? const FaIcon(
                                                   FontAwesomeIcons.circleCheck,
                                                   color:
@@ -568,18 +407,18 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                           width: 45,
                                           height: 45,
                                           decoration: BoxDecoration(
-                                              color: clicked != false
+                                              color: multiple.clicked
                                                   ? const Color(0xffF3FBF8)
                                                   : const Color(0xff002250),
                                               borderRadius: const BorderRadius.only(
                                                   bottomLeft: Radius.circular(10),
                                                   bottomRight: Radius.circular(10))),
                                           child: Text(
-                                            "${itemIndex + 1}/${_words.length}",
+                                            "${itemIndex + 1}/${multiple.words.length}",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 16,
-                                                color: clicked == false
+                                                color: multiple.clicked == false
                                                     ? const Color(0xffF3FBF8)
                                                     : const Color(0xff002250)),
                                           ),
@@ -587,8 +426,10 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                   ],
                                 ),
                                 Container(
-                                  child: customRadioButtonList(itemIndex,
-                                      optionsList[itemIndex], correctAnswers[itemIndex]),
+                                  child: customRadioButtonList(
+                                      itemIndex,
+                                      multiple.optionsList[itemIndex],
+                                      multiple.correctAnswers[itemIndex]),
                                 )
                               ],
                             );
@@ -659,20 +500,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                               bottom: 50,
                               child: InkWell(
                                 onTap: () {
-                                  if (_words[indexpage].status == true) {
-                                    _words[indexpage] =
-                                        _words[indexpage].copy(status: false);
-                                    DB.instance
-                                        .markAslearned(false, _words[indexpage].id as int);
-                                  } else {
-                                    _words[indexpage] =
-                                        _words[indexpage].copy(status: true);
-                                    DB.instance
-                                        .markAslearned(true, _words[indexpage].id as int);
-                                  }
-                                  setState(() {
-                                    _words[indexpage].status;
-                                  });
+                                  multiple.changelearnType();
                                 },
                                 child: Container(
                                     alignment: Alignment.centerLeft,
@@ -705,16 +533,10 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
                                             checkColor: Colors.black,
                                             activeColor: const Color(0xff6FCF97),
                                             hoverColor: Colors.blueAccent,
-                                            value: _words[indexpage].status,
+                                            value:
+                                                multiple.words[multiple.indexpage].status,
                                             onChanged: (value) {
-                                              _words[indexpage] =
-                                                  _words[indexpage].copy(status: value);
-                                              DB.instance.markAslearned(
-                                                  value!, _words[indexpage].id as int);
-
-                                              setState(() {
-                                                _words[indexpage];
-                                              });
+                                              multiple.changelearnType();
                                             },
                                           ),
                                         ),
@@ -777,14 +599,15 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
   }
 
   Container customRadioButton(int index, List<String> options, int order) {
+    final multiple = ref.watch<MultipleChoice>(multipleChoiceProvider);
     return Container(
       alignment: Alignment.center,
       width: 170,
       height: 40,
       decoration: BoxDecoration(
           color: const Color(0xffF3FBF8),
-          border: clickControlList[index][order] != false
-              ? correct != false
+          border: multiple.clickControlList[index][order] != false
+              ? multiple.correct != false
                   ? Border.all(
                       color: const Color(0xff6FCF97),
                       width: 4,
@@ -815,6 +638,7 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
   }
 
   Column customRadioButtonList(int index, List<String> options, String correctAnswers) {
+    final multiple = ref.watch<MultipleChoice>(multipleChoiceProvider);
     return Column(
       children: [
         Row(
@@ -822,13 +646,13 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
           children: [
             InkWell(
               onTap: () {
-                checher(index, 0, options, correctAnswers);
+                multiple.checher(index, 0, options, correctAnswers);
               },
               child: customRadioButton(index, options, 0),
             ),
             InkWell(
               onTap: () {
-                checher(index, 1, options, correctAnswers);
+                multiple.checher(index, 1, options, correctAnswers);
               },
               child: customRadioButton(index, options, 1),
             ),
@@ -839,13 +663,13 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
           children: [
             InkWell(
               onTap: () {
-                checher(index, 2, options, correctAnswers);
+                multiple.checher(index, 2, options, correctAnswers);
               },
               child: customRadioButton(index, options, 2),
             ),
             InkWell(
               onTap: () {
-                checher(index, 3, options, correctAnswers);
+                multiple.checher(index, 3, options, correctAnswers);
               },
               child: customRadioButton(index, options, 3),
             ),
@@ -853,25 +677,5 @@ class _MultipleChoicePage extends State<MultipleChoicePage> {
         )
       ],
     );
-  }
-
-  void checher(index, order, options, correctAnswers) {
-    if (clickControl[index] == false) {
-      clickControl[index] = true;
-
-      setState(() {
-        clickControlList[index][order] = true;
-        clicked = clickControlList[index][order];
-      });
-      if (options[order] == correctAnswers) {
-        correctCount++;
-        correct = true;
-      } else {
-        wrongCount++;
-      }
-      if ((correctCount + wrongCount) == _words.length) {
-        toastMessage("Test Bitti");
-      }
-    }
   }
 }

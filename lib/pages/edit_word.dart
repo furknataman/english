@@ -1,111 +1,35 @@
-// ignore_for_file: prefer_is_not_empty
-
 import 'package:flutter/material.dart';
-import '../db/db/db.dart';
-import '../db/models/words.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../global_widget/app_bar.dart';
 import '../global_widget/text_filed.dart';
-import '../global_widget/toast_message.dart';
+import '../provider/edit_word.dart';
 
-class AddWordPage extends StatefulWidget {
+final editList = ChangeNotifierProvider((ref) => EditListWord());
+
+class EditWordPage extends ConsumerStatefulWidget {
   final int? listID;
   final String? listName;
-  const AddWordPage(this.listID, this.listName, {Key? key}) : super(key: key);
+  const EditWordPage(this.listID, this.listName, {Key? key}) : super(key: key);
 
   @override
-  State<AddWordPage> createState() =>
-      _AddWordPageState(listID: listID, listName: listName);
+  ConsumerState<EditWordPage> createState() =>
+      _EditWordPageState(listID: listID, listName: listName);
 }
 
-class _AddWordPageState extends State<AddWordPage> {
+class _EditWordPageState extends ConsumerState<EditWordPage> {
   int? listID;
   String? listName;
-  _AddWordPageState({@required this.listID, @required this.listName});
-
-  List<TextEditingController> wordTextEditingList = [];
-  List<Row> wordListField = [];
-  List<Word> _wordlist = [];
-  int dbcount = 0;
-  List<bool> selectIndexList = [];
-  bool editController = false;
-  int listItem = 0;
-
-  void getWordByList() async {
-    wordTextEditingList = [];
-    _wordlist = await DB.instance.readWordByList(listID);
-    dbcount = _wordlist.length;
-
-    for (int i = 0; i < _wordlist.length; i++) {
-      selectIndexList.add(false);
-    }
-    for (int i = 0; i < _wordlist.length * 2; ++i) {
-      wordTextEditingList.add(TextEditingController());
-    }
-    setState(() {
-      listItem = _wordlist.length;
-      _wordlist;
-      wordTextEditingList;
-      wordListField;
-    });
-  }
-
-  void learn() async {
-    List<int> learnIndexList = [];
-    for (int i = 0; i < selectIndexList.length; i++) {
-      if (selectIndexList[i] == true) {
-        learnIndexList.add(i);
-      }
-    }
-    for (int i = learnIndexList.length - 1; i >= 0; i--) {
-      _wordlist[learnIndexList[i]] = _wordlist[learnIndexList[i]].copy(status: true);
-      await DB.instance.markAslearned(true, _wordlist[learnIndexList[i]].id as int);
-      //print(_wordlist[i].word_eng);
-    }
-    for (int i = 0; i < selectIndexList.length; i++) {
-      selectIndexList[i] = false;
-    }
-
-    setState(() {
-      selectIndexList;
-      learnIndexList;
-      _wordlist;
-    });
-
-    toastMessage("Seçili Kelimeler Öğrenildi olara işaretlendi");
-  }
-
-  void unlearn() async {
-    List<int> learnIndexList = [];
-    for (int i = 0; i < selectIndexList.length; i++) {
-      if (selectIndexList[i] == true) {
-        learnIndexList.add(i);
-      }
-    }
-    for (int i = learnIndexList.length - 1; i >= 0; i--) {
-      _wordlist[learnIndexList[i]] = _wordlist[learnIndexList[i]].copy(status: false);
-      await DB.instance.markAslearned(false, _wordlist[learnIndexList[i]].id as int);
-      //print(_wordlist[i].word_eng);
-    }
-    for (int i = 0; i < selectIndexList.length; i++) {
-      selectIndexList[i] = false;
-    }
-
-    setState(() {
-      selectIndexList;
-      learnIndexList;
-      _wordlist;
-    });
-    toastMessage("Seçili Kelimeler Öğrenilmedi olara işaretlendi");
-  }
+  _EditWordPageState({@required this.listID, @required this.listName});
 
   @override
   void initState() {
     super.initState();
-    getWordByList();
+    ref.read<EditListWord>(editList).getWordByList(listID);
   }
 
   @override
   Widget build(BuildContext context) {
+    final editListProvider = ref.watch<EditListWord>(editList);
     return Scaffold(
       backgroundColor: const Color(0xff3574C3),
       appBar: appbar(context,
@@ -119,7 +43,7 @@ class _AddWordPageState extends State<AddWordPage> {
             style: const TextStyle(
                 color: Color(0xffF3FBF8), fontSize: 20, fontWeight: FontWeight.w600),
           ),
-          leftWidgetOnClik: () => Navigator.pop(context)),
+          leftWidgetOnClik: () => {Navigator.pop(context), editListProvider.close()}),
       body: Column(
         children: [
           SizedBox(
@@ -127,15 +51,11 @@ class _AddWordPageState extends State<AddWordPage> {
             width: MediaQuery.of(context).size.width,
             child: Padding(
               padding: const EdgeInsets.only(left: 14),
-              child: editController == false
+              child: editListProvider.editController == false
                   ? Row(children: [
                       InkWell(
                         onTap: () {
-                          editController = true;
-
-                          setState(() {
-                            editController;
-                          });
+                          editListProvider.editchange();
                         },
                         child: card(
                             icon: Icons.create_outlined,
@@ -154,15 +74,14 @@ class _AddWordPageState extends State<AddWordPage> {
                               cardColor: 0xffE0E0E0),
                           InkWell(
                             onTap: () {
-                              editController = false;
-                              for (int i = 0; i < selectIndexList.length; i++) {
-                                selectIndexList[i] = false;
+                              editListProvider.editchange();
+                              for (int i = 0;
+                                  i < editListProvider.selectIndexList.length;
+                                  i++) {
+                                editListProvider.selectIndexList[i] = false;
                               }
 
-                              selectIndexList;
-                              setState(() {
-                                editController;
-                              });
+                              editListProvider.selectIndexList;
                             },
                             child: card(
                                 icon: Icons.close,
@@ -171,7 +90,7 @@ class _AddWordPageState extends State<AddWordPage> {
                           ),
                           InkWell(
                             onTap: () {
-                              addRow();
+                              editListProvider.addRow(listID);
                             },
                             child: card(
                                 icon: Icons.add_circle_outline,
@@ -185,7 +104,7 @@ class _AddWordPageState extends State<AddWordPage> {
                         alignment: Alignment.center,
                         child: InkWell(
                           onTap: () {
-                            save();
+                            editListProvider.save(listID);
                           },
                           child: card(
                               icon: Icons.save_rounded,
@@ -203,7 +122,7 @@ class _AddWordPageState extends State<AddWordPage> {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20), topRight: Radius.circular(20))),
               child: Column(children: [
-                if (editController == true)
+                if (editListProvider.editController == true)
                   Container(
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     height: 70,
@@ -222,9 +141,12 @@ class _AddWordPageState extends State<AddWordPage> {
                         ),
                         Row(
                           children: [
-                            editingButton(text: "Öğren", width: 71, click: learn),
-                            editingButton(text: "Unut", width: 64, click: unlearn),
-                            editingButton(text: "Sil", width: 48, click: delete),
+                            editingButton(
+                                text: "Öğren", width: 71, click: editListProvider.learn),
+                            editingButton(
+                                text: "Unut", width: 64, click: editListProvider.unlearn),
+                            editingButton(
+                                text: "Sil", width: 48, click: editListProvider.delete),
                           ],
                         )
                       ],
@@ -273,11 +195,11 @@ class _AddWordPageState extends State<AddWordPage> {
                           child: ListView.builder(
                               itemBuilder: (context, index) {
                                 return list(index,
-                                    wordTr: _wordlist[index].word_tr,
-                                    wordEng: _wordlist[index].word_eng,
-                                    learn: _wordlist[index].status);
+                                    wordTr: editListProvider.wordlist[index].word_tr,
+                                    wordEng: editListProvider.wordlist[index].word_eng,
+                                    learn: editListProvider.wordlist[index].status);
                               },
-                              itemCount: _wordlist.length),
+                              itemCount: editListProvider.wordlist.length),
                         ),
                       ),
                     ]),
@@ -297,8 +219,9 @@ class _AddWordPageState extends State<AddWordPage> {
     @required String? wordEng,
     @required bool? learn,
   }) {
-    wordTextEditingList[2 * index + 1].text = wordTr!;
-    wordTextEditingList[2 * index].text = wordEng!;
+    final editListProvider = ref.watch<EditListWord>(editList);
+    editListProvider.wordTextEditingList[2 * index + 1].text = wordTr!;
+    editListProvider.wordTextEditingList[2 * index].text = wordEng!;
 
     return Row(
       children: [
@@ -307,18 +230,19 @@ class _AddWordPageState extends State<AddWordPage> {
                 borderColor: learn!
                     ? const Color.fromARGB(255, 102, 210, 147)
                     : const Color(0xff3574C3),
-                editting: editController,
+                editting: editListProvider.editController,
                 padding: const EdgeInsets.only(left: 4),
-                textEditingController: wordTextEditingList[2 * index])),
+                textEditingController: editListProvider.wordTextEditingList[2 * index])),
         Expanded(
             child: textFieldBuilder(
                 borderColor: learn
                     ? const Color.fromARGB(255, 102, 210, 147)
                     : const Color(0xff3574C3),
-                editting: editController,
+                editting: editListProvider.editController,
                 padding: const EdgeInsets.only(right: 4),
-                textEditingController: wordTextEditingList[2 * index + 1])),
-        editController
+                textEditingController:
+                    editListProvider.wordTextEditingList[2 * index + 1])),
+        editListProvider.editController
             ? Container(
                 padding: const EdgeInsets.only(top: 10),
                 margin: const EdgeInsets.only(
@@ -333,101 +257,15 @@ class _AddWordPageState extends State<AddWordPage> {
                   checkColor: Colors.white,
                   activeColor: const Color(0xff3574C3),
                   hoverColor: Colors.blueAccent,
-                  value: selectIndexList[index],
+                  value: editListProvider.selectIndexList[index],
                   onChanged: (bool? value) {
-                    if (selectIndexList[index]) {
-                      selectIndexList[index] = false;
-                    } else {
-                      selectIndexList[index] = true;
-                    }
-                    setState(() {
-                      selectIndexList[index];
-                    });
+                    editListProvider.selectIndexEdit(index);
                   },
                 ),
               )
             : Container(),
       ],
     );
-  }
-
-  void addRow() async {
-    wordTextEditingList.add(TextEditingController());
-    wordTextEditingList.add(TextEditingController());
-    selectIndexList.add(false);
-    Word word = (Word(list_id: listID, word_eng: " ", word_tr: "", status: false));
-    _wordlist.add(word);
-    setState(() {
-      wordListField;
-      selectIndexList;
-      _wordlist;
-    });
-  }
-
-  void delete() async {
-    List<int> removeIndexLits = [];
-    //print(selectIndexList);
-    for (int i = 0; i < selectIndexList.length; i++) {
-      if (selectIndexList[i] == true) {
-        removeIndexLits.add(i);
-      }
-    }
-
-    for (int i = removeIndexLits.length - 1; i >= 0; i--) {
-      _wordlist.removeAt(removeIndexLits[i]);
-      selectIndexList.removeAt(removeIndexLits[i]);
-      wordTextEditingList.length--;
-      wordTextEditingList.length--;
-    }
-    setState(() {
-      wordTextEditingList;
-      _wordlist;
-      selectIndexList;
-    });
-    toastMessage(
-        "Seçili kelimeler silindi, değişiklikleri kaydetmek için lütfen KAYDET tuşuna basınız.",
-        time: 2);
-  }
-
-  void save() async {
-    bool notEmptyPair = false;
-    for (int i = 0; i < wordTextEditingList.length / 2; i++) {
-      String eng = wordTextEditingList[2 * i].text;
-      String tr = wordTextEditingList[2 * i + 1].text;
-      if (!eng.isEmpty && !tr.isEmpty) {
-      } else {
-        notEmptyPair = true;
-      }
-    }
-
-    if (!notEmptyPair) {
-      DB.instance.deleteTableWord(listID!);
-
-      for (int i = 0; i < wordTextEditingList.length / 2; i++) {
-        String eng = wordTextEditingList[2 * i].text;
-        String tr = wordTextEditingList[2 * i + 1].text;
-        Word word = await DB.instance
-            .insertWord(Word(list_id: listID, word_eng: eng, word_tr: tr, status: false));
-        //debugPrint(
-        //  "${word.id} ${word.list_id}  ${word.word_eng} ${word.word_tr} ${word.status}");
-      }
-
-      toastMessage("Kelime listesi güncellendi");
-      for (var element in wordTextEditingList) {
-        element.clear();
-      }
-      getWordByList();
-    } else {
-      toastMessage("Alanlar boş bırakılamaz. Silin veya doldurun.");
-    }
-  }
-
-  void deleteRow() {
-    if (wordListField.length > _wordlist.length) {
-      setState(() => wordListField);
-    } else {
-      toastMessage("Kayıtlı Kelimeleri silmek için lütfen menüyü kullanın");
-    }
   }
 
   Container card({IconData? icon, @required int? iconColor, @required int? cardColor}) {
@@ -467,3 +305,7 @@ class _AddWordPageState extends State<AddWordPage> {
     );
   }
 }
+
+
+
+
