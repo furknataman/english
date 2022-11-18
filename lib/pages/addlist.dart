@@ -17,7 +17,10 @@ class _AddListState extends ConsumerState<AddList> {
   @override
   void initState() {
     super.initState();
-    ref.read<AddListProvider>(addListConfig).getField();
+
+    Future.delayed(Duration.zero, () async {
+      ref.read<AddListProvider>(addListConfig).getField();
+    });
   }
 
   @override

@@ -9,25 +9,30 @@ class AddListProvider extends ChangeNotifier {
   final listName = TextEditingController();
   List<TextEditingController> wordTextEditingList = [];
   List<Row> wordListField = [];
+  bool start = false;
 
   void getField() {
-    for (int i = 0; i < 10; ++i) {
-      wordTextEditingList.add(TextEditingController());
-    }
+    if (!start) {
+      wordTextEditingList = [];
+      wordListField = [];
+      for (int i = 0; i < 10; ++i) {
+        wordTextEditingList.add(TextEditingController());
+      }
 
-    for (int i = 0; i < 5; ++i) {
-      wordListField.add(Row(
-        children: [
-          Expanded(
-              child: textFieldBuilder(
-                  padding: const EdgeInsets.only(left: 3),
-                  textEditingController: wordTextEditingList[2 * i])),
-          Expanded(
-              child: textFieldBuilder(
-                  padding: const EdgeInsets.only(right: 4),
-                  textEditingController: wordTextEditingList[2 * i + 1])),
-        ],
-      ));
+      for (int i = 0; i < 5; ++i) {
+        wordListField.add(Row(
+          children: [
+            Expanded(
+                child: textFieldBuilder(
+                    padding: const EdgeInsets.only(left: 3),
+                    textEditingController: wordTextEditingList[2 * i])),
+            Expanded(
+                child: textFieldBuilder(
+                    padding: const EdgeInsets.only(right: 4),
+                    textEditingController: wordTextEditingList[2 * i + 1])),
+          ],
+        ));
+      }
     }
     notifyListeners();
   }
