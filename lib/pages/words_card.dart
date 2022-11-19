@@ -356,11 +356,7 @@ class _WordCardspageState extends ConsumerState<WordCardspage> {
                                     FlipCard(
                                       direction: FlipDirection.VERTICAL,
                                       onFlip: () {
-                                        if (wordCard.changeLand[itemIndex] == true) {
-                                          wordCard.changeLand[itemIndex] = false;
-                                        } else {
-                                          wordCard.changeLand[itemIndex] = true;
-                                        }
+                                        wordCard.changLand(itemIndex);
                                       },
                                       front: Stack(children: [
                                         Container(

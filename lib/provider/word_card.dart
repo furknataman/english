@@ -28,6 +28,15 @@ class WordCard extends ChangeNotifier {
     notifyListeners();
   }
 
+  void changLand(item) {
+    if (changeLand[item] == true) {
+      changeLand[item] = false;
+    } else {
+      changeLand[item] = true;
+    }
+    notifyListeners();
+  }
+
   void changelearn() {
     if (learn) {
       learn = false;
