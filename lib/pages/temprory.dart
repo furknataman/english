@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:english/db/db/default_word.dart';
-import 'package:english/db/models/info_state.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/pages/main_page/main.dart';
 import 'package:firebase_core/firebase_core.dart';

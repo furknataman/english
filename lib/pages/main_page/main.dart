@@ -16,6 +16,7 @@ import '../../global_variable.dart';
 import 'info_card.dart';
 import 'main_cards.dart';
 
+
 final getListWord = ChangeNotifierProvider((ref) => InfoProvider());
 
 class MainPage extends ConsumerStatefulWidget {
@@ -27,6 +28,7 @@ class MainPage extends ConsumerStatefulWidget {
 
 class _MainPageState extends ConsumerState<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(
     BuildContext context,
@@ -147,13 +149,9 @@ class _MainPageState extends ConsumerState<MainPage> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    infoWord(
-                                      
-                                        "Toplam Kelime",
-                                        info.totalWord.toString(),
+                                    infoWord("Toplam Kelime", info.totalWord.toString(),
                                         const Color(0xffCC3366)),
                                     infoWord(
-                                       
                                         "Öğrenilen Kelime",
                                         info.learnedWord.toString(),
                                         const Color.fromARGB(255, 83, 27, 46)),
