@@ -1,3 +1,4 @@
+import 'package:english/global_widget/alert_dialog.dart';
 import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/addlist.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import '../global_variable.dart';
 import '../global_widget/toast_message.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'edit_word.dart';
-
 
 final getListWord = ChangeNotifierProvider((ref) => ListWord());
 
@@ -104,8 +104,11 @@ class _ListPageState extends ConsumerState<ListPage> {
                         ),
                         InkWell(
                           onTap: () {
-                            wordList.delete();
-                            editController.editchange();
+                            alertDialog(context, () => Navigator.pop(context), () {
+                              wordList.delete();
+                              editController.editchange();
+                              Navigator.pop(context);
+                            }, "Dikakt!", "Seçili listeler silinecek");
                           },
                           child: card(
                               icon: Icons.delete_outlined,
@@ -333,8 +336,6 @@ class ListWord extends ChangeNotifier {
     }
   }
 
-  
-
   void delete() async {
     List<int> removeIndexList = [];
 
@@ -353,5 +354,3 @@ class ListWord extends ChangeNotifier {
     toastMessage("Seçili listeler silindi.");
   }
 }
-
-
