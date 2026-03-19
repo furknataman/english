@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import '../core/app_icons.dart';
 import '../global_widget/app_bar.dart';
 import '../global_widget/text_filed.dart';
 import '../provider/edit_word.dart';
@@ -33,11 +35,7 @@ class _EditWordPageState extends ConsumerState<EditWordPage> {
     return Scaffold(
       backgroundColor: const Color(0xff3574C3),
       appBar: appbar(context,
-          left: const Icon(
-            Icons.arrow_back_ios,
-            color: Color(0xffF3FBF8),
-            size: 22,
-          ),
+          left: AppIcons.svg(AppIcons.arrowLeft, size: 22, color: Color(0xffF3FBF8)),
           center: Text(
             listName!,
             style: const TextStyle(
@@ -58,8 +56,7 @@ class _EditWordPageState extends ConsumerState<EditWordPage> {
                           editListProvider.editchange();
                         },
                         child: card(
-                            icon: Icons.create_outlined,
-                            iconColor: 0xffF2C94C,
+                            iconWidget: AppIcons.svg(AppIcons.pen, size: 32, color: Color(0xffF2C94C)),
                             cardColor: 0xffF3FBF8),
                       ),
                     ])
@@ -69,8 +66,7 @@ class _EditWordPageState extends ConsumerState<EditWordPage> {
                         alignment: Alignment.centerLeft,
                         child: Row(children: [
                           card(
-                              icon: Icons.create_outlined,
-                              iconColor: 0xff828282,
+                              iconWidget: AppIcons.svg(AppIcons.pen, size: 32, color: Color(0xff828282)),
                               cardColor: 0xffE0E0E0),
                           InkWell(
                             onTap: () {
@@ -84,8 +80,7 @@ class _EditWordPageState extends ConsumerState<EditWordPage> {
                               editListProvider.selectIndexList;
                             },
                             child: card(
-                                icon: Icons.close,
-                                iconColor: 0xff4F4F4F,
+                                iconWidget: AppIcons.svg(AppIcons.xmark, size: 32, color: Color(0xff4F4F4F)),
                                 cardColor: 0xffF3FBF8),
                           ),
                           InkWell(
@@ -93,8 +88,7 @@ class _EditWordPageState extends ConsumerState<EditWordPage> {
                               editListProvider.addRow(listID);
                             },
                             child: card(
-                                icon: Icons.add_circle_outline,
-                                iconColor: 0xff6FCF97,
+                                iconWidget: AppIcons.svg(AppIcons.circlePlus, size: 32, color: Color(0xff6FCF97)),
                                 cardColor: 0xffF3FBF8),
                           ),
                         ]),
@@ -107,8 +101,7 @@ class _EditWordPageState extends ConsumerState<EditWordPage> {
                             editListProvider.save(listID);
                           },
                           child: card(
-                              icon: Icons.save_rounded,
-                              iconColor: 0xff6FCF97,
+                              iconWidget: AppIcons.svg(AppIcons.floppyDisk, size: 32, color: Color(0xff6FCF97)),
                               cardColor: 0xffF3FBF8),
                         ),
                       ),
@@ -268,7 +261,7 @@ class _EditWordPageState extends ConsumerState<EditWordPage> {
     );
   }
 
-  Container card({IconData? icon, @required int? iconColor, @required int? cardColor}) {
+  Container card({@required Widget? iconWidget, @required int? cardColor}) {
     return Container(
       margin: const EdgeInsets.only(left: 6),
       alignment: Alignment.center,
@@ -277,11 +270,7 @@ class _EditWordPageState extends ConsumerState<EditWordPage> {
           borderRadius: const BorderRadius.all(Radius.circular(10))),
       width: 38,
       height: 38,
-      child: Icon(
-        icon,
-        color: Color(iconColor!),
-        size: 32,
-      ),
+      child: iconWidget,
     );
   }
 

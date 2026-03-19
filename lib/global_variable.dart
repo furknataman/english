@@ -23,4 +23,4 @@ int totalWord = 0;
 int learnedWord = 0;
 
 final Widget svgLogoIcon = SvgPicture.asset('assets/svg/logo.svg',
-color: const Color(0xffF3FBF8), semanticsLabel: 'A red up arrow');
+colorFilter: const ColorFilter.mode(Color(0xffF3FBF8), BlendMode.srcIn), semanticsLabel: 'A red up arrow');

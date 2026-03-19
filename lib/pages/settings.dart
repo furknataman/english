@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-
+import '../core/app_icons.dart';
 import '../global_widget/app_bar.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -16,12 +16,8 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: appbar(
         context,
-        left: const Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
-          size: 22,
-        ),
-        right: const Icon(Icons.settings, size: 40, color: Colors.black),
+        left: AppIcons.svg(AppIcons.arrowLeft, size: 22, color: Colors.black),
+        right: AppIcons.svg(AppIcons.gear, size: 40, color: Colors.black),
         center: const Text(
           "Ayarlar",
           style: TextStyle(

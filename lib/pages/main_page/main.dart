@@ -3,11 +3,13 @@ import 'package:english/pages/about.dart';
 import 'package:english/pages/addlist.dart';
 import 'package:english/pages/list.dart';
 import 'package:english/pages/multiple_choice.dart';
+import 'package:english/pages/support_page.dart';
 import 'package:english/pages/words_card.dart';
 import 'package:english/provider/word_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import '../../core/app_icons.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
 import '../../admob/admob_main.dart';
@@ -48,11 +50,7 @@ class _MainPageState extends ConsumerState<MainPage> {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => AbaoutPage()));
             },
-            child: const Icon(
-              Icons.info_outline,
-              size: 24,
-              color: Color(0xffF3FBF8),
-            )),
+            child: AppIcons.svg(AppIcons.circleInfo, size: 24, color: Color(0xffF3FBF8))),
         leftWidgetOnClik: () {},
       ),
       body: Column(
@@ -111,9 +109,11 @@ class _MainPageState extends ConsumerState<MainPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 16),
                           child: Row(
@@ -121,18 +121,18 @@ class _MainPageState extends ConsumerState<MainPage> {
                             children: [
                               card(context,
                                   text: "Kelimelerim",
-                                  icon: FontAwesomeIcons.book,
+                                  icon: AppIcons.book,
                                   page: const ListPage(),
                                   cardInfo: false),
                               card(context,
                                   text: "Kart Oluştur",
-                                  icon: FontAwesomeIcons.creditCard,
+                                  icon: AppIcons.creditCard,
                                   page: const WordCardspage(),
                                   cardInfo: false),
                               card(
                                 context,
                                 text: "Test",
-                                icon: FontAwesomeIcons.clockRotateLeft,
+                                icon: AppIcons.clockRotateLeft,
                                 page: const MultipleChoicePage(),
                                 cardInfo: false,
                               )
@@ -158,17 +158,71 @@ class _MainPageState extends ConsumerState<MainPage> {
                                   ],
                                 ),
                               ),
-                              card(
-                                context,
-                                text: "Liste Oluştur",
-                                icon: FontAwesomeIcons.plus,
-                                page: const AddList(),
-                                cardInfo: true,
-                              )
+                              SizedBox(
+                                height: 120,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    card(
+                                      context,
+                                      text: "Liste Oluştur",
+                                      icon: AppIcons.plus,
+                                      page: const AddList(),
+                                      cardInfo: true,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const SupportPage()));
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xff3574C3), Color(0xff2A5FA0)],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xff3574C3).withValues(alpha: 0.3),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  AppIcons.svg(AppIcons.heart, size: 22, color: Colors.white),
+                                  const SizedBox(width: 12),
+                                  const Expanded(
+                                    child: Text(
+                                      "Bizi Destekle",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                  AppIcons.svg(AppIcons.chevronRight, size: 16, color: Colors.white70),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
+                    ),
+                      ),
                     ),
                     adMob.when(
                       loading: () => const CircularProgressIndicator(),

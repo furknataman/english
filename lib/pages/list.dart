@@ -3,11 +3,12 @@ import 'package:english/global_widget/app_bar.dart';
 import 'package:english/pages/addlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:pie_chart/pie_chart.dart';
+import '../core/app_icons.dart';
 import '../db/db/db.dart';
 import '../global_variable.dart';
 import '../global_widget/toast_message.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'edit_word.dart';
 
 final getListWord = ChangeNotifierProvider((ref) => ListWord());
@@ -31,11 +32,7 @@ class _ListPageState extends ConsumerState<ListPage> {
     wordList.getLists();
     return Scaffold(
       appBar: appbar(context,
-          left: const Icon(
-            Icons.arrow_back_ios,
-            color: Color(0xffF3FBF8),
-            size: 22,
-          ),
+          left: AppIcons.svg(AppIcons.arrowLeft, size: 22, color: Color(0xffF3FBF8)),
           center: const Text(
             "Listelerim",
             style: TextStyle(
@@ -67,8 +64,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                                     builder: ((context) => const AddList())));
                           },
                           child: card(
-                              icon: Icons.add_circle_outline,
-                              iconColor: 0xff6FCF97,
+                              iconWidget: AppIcons.svg(AppIcons.circlePlus, size: 32, color: Color(0xff6FCF97)),
                               cardColor: 0xffF3FBF8),
                         ),
                         InkWell(
@@ -76,8 +72,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                             editController.editchange();
                           },
                           child: card(
-                              icon: Icons.create_outlined,
-                              iconColor: 0xffF2C94C,
+                              iconWidget: AppIcons.svg(AppIcons.pen, size: 32, color: Color(0xffF2C94C)),
                               cardColor: 0xffF3FBF8),
                         ),
                       ])
@@ -85,21 +80,18 @@ class _ListPageState extends ConsumerState<ListPage> {
                         InkWell(
                           onTap: () {},
                           child: card(
-                              icon: Icons.add_circle_outline,
-                              iconColor: 0xff6FCF97,
+                              iconWidget: AppIcons.svg(AppIcons.circlePlus, size: 32, color: Color(0xff6FCF97)),
                               cardColor: 0xffF3FBF8),
                         ),
                         card(
-                            icon: Icons.create_outlined,
-                            iconColor: 0xff828282,
+                            iconWidget: AppIcons.svg(AppIcons.pen, size: 32, color: Color(0xff828282)),
                             cardColor: 0xffE0E0E0),
                         InkWell(
                           onTap: () {
                             editController.editchange();
                           },
                           child: card(
-                              icon: Icons.close,
-                              iconColor: 0xff4F4F4F,
+                              iconWidget: AppIcons.svg(AppIcons.xmark, size: 32, color: Color(0xff4F4F4F)),
                               cardColor: 0xffF3FBF8),
                         ),
                         InkWell(
@@ -111,8 +103,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                             }, "Dikakt!", "Seçili listeler silinecek");
                           },
                           child: card(
-                              icon: Icons.delete_outlined,
-                              iconColor: 0xffEB5757,
+                              iconWidget: AppIcons.svg(AppIcons.trash, size: 32, color: Color(0xffEB5757)),
                               cardColor: 0xffF3FBF8),
                         ),
                       ]),
@@ -222,11 +213,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                         children: [
                           Container(
                             margin: const EdgeInsets.only(left: 10, right: 5),
-                            child: const FaIcon(
-                              FontAwesomeIcons.grip,
-                              color: Color(0xff3574C3),
-                              size: 15,
-                            ),
+                            child: AppIcons.svg(AppIcons.grip, size: 15, color: Color(0xff3574C3)),
                           ),
                           Text(
                             "$sumWords ",
@@ -237,11 +224,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                           ),
                           Container(
                             margin: const EdgeInsets.only(left: 10, right: 5),
-                            child: const FaIcon(
-                              FontAwesomeIcons.circleCheck,
-                              color: Color(0xff3574C3),
-                              size: 15,
-                            ),
+                            child: AppIcons.svg(AppIcons.circleCheck, size: 15, color: Color(0xff3574C3)),
                           ),
                           Text(
                             "${int.parse(sumWords) - int.parse(sumUnloearned)} ",
@@ -276,13 +259,9 @@ class _ListPageState extends ConsumerState<ListPage> {
                         }
                       },
                     )
-                  : const Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: Color(0xff3574C3),
-                        size: 22,
-                      ),
+                  : Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: AppIcons.svg(AppIcons.chevronRight, size: 22, color: Color(0xff3574C3)),
                     ),
             ]),
       ),
@@ -290,7 +269,7 @@ class _ListPageState extends ConsumerState<ListPage> {
   }
 
   Container card(
-      {@required IconData? icon, @required int? iconColor, @required int? cardColor}) {
+      {@required Widget? iconWidget, @required int? cardColor}) {
     return Container(
       margin: const EdgeInsets.only(
         left: 8,
@@ -301,11 +280,7 @@ class _ListPageState extends ConsumerState<ListPage> {
           borderRadius: const BorderRadius.all(Radius.circular(10))),
       width: 38,
       height: 38,
-      child: Icon(
-        icon,
-        color: Color(iconColor!),
-        size: 32,
-      ),
+      child: iconWidget,
     );
   }
 }

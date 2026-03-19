@@ -6,8 +6,9 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../core/app_icons.dart';
 import '../provider/word_card.dart';
 
 final wordCardChoiceProvider = ChangeNotifierProvider((ref) => WordCard());
@@ -26,7 +27,7 @@ class _WordCardspageState extends ConsumerState<WordCardspage> {
     ref.read<WordCard>(wordCardChoiceProvider).getLists();
   }
 
-  CarouselController buttonCarouselController = CarouselController();
+  CarouselSliderController buttonCarouselController = CarouselSliderController();
   @override
   Widget build(BuildContext context) {
     final wordCard = ref.watch<WordCard>(wordCardChoiceProvider);
@@ -36,16 +37,8 @@ class _WordCardspageState extends ConsumerState<WordCardspage> {
       appBar: appbar(
         context,
         left: !wordCard.start
-            ? const Icon(
-                Icons.arrow_back_ios,
-                color: Color(0xffF3FBF8),
-                size: 22,
-              )
-            : const Icon(
-                Icons.highlight_off_outlined,
-                color: Color(0xffF3FBF8),
-                size: 31,
-              ),
+            ? AppIcons.svg(AppIcons.arrowLeft, size: 22, color: const Color(0xffF3FBF8))
+            : AppIcons.svg(AppIcons.circleXmark, size: 31, color: const Color(0xffF3FBF8)),
         center: !wordCard.start
             ? const Text(
                 "Yeni Kart Destesi",
@@ -413,11 +406,9 @@ class _WordCardspageState extends ConsumerState<WordCardspage> {
                                                   borderRadius: BorderRadius.only(
                                                       topLeft: Radius.circular(10),
                                                       topRight: Radius.circular(10))),
-                                              child: const Icon(
-                                                Icons.remove_red_eye_outlined,
+                                              child: AppIcons.svg(AppIcons.eye,
                                                 size: 40,
-                                                color: Colors.white,
-                                              )),
+                                                color: Colors.white)),
                                         ),
                                       ]),
                                       back: Stack(children: [
@@ -474,11 +465,9 @@ class _WordCardspageState extends ConsumerState<WordCardspage> {
                                                   borderRadius: BorderRadius.only(
                                                       topLeft: Radius.circular(10),
                                                       topRight: Radius.circular(10))),
-                                              child: const FaIcon(
-                                                FontAwesomeIcons.eyeSlash,
+                                              child: AppIcons.svg(AppIcons.eyeSlash,
                                                 size: 32,
-                                                color: Colors.black,
-                                              )),
+                                                color: Colors.black)),
                                         ),
                                       ]),
                                     ),

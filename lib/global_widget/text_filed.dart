@@ -6,7 +6,7 @@ Column textFieldBuilder(
     bool editting = true,
     EdgeInsets? padding,
     @required TextEditingController? textEditingController,
-    Icon? icon,
+    Widget? icon,
     String? hindText,
     TextAlign textAlign = TextAlign.center}) {
   return Column(

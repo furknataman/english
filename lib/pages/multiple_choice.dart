@@ -5,8 +5,9 @@ import 'package:english/provider/multiple_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../core/app_icons.dart';
 import '../admob/admob_multiple_page.dart';
 
 final multipleChoiceProvider = ChangeNotifierProvider((ref) => MultipleChoice());
@@ -26,7 +27,7 @@ class _MultipleChoicePage extends ConsumerState<MultipleChoicePage> {
     ref.read<MultipleChoice>(multipleChoiceProvider).getLists();
   }
 
-  CarouselController buttonCarouselController = CarouselController();
+  CarouselSliderController buttonCarouselController = CarouselSliderController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +38,8 @@ class _MultipleChoicePage extends ConsumerState<MultipleChoicePage> {
       appBar: appbar(
         context,
         left: multiple.start == false
-            ? const Icon(
-                Icons.arrow_back_ios,
-                color: Color(0xffF3FBF8),
-                size: 22,
-              )
-            : const Icon(
-                Icons.highlight_off_outlined,
-                color: Color(0xffF3FBF8),
-                size: 31,
-              ),
+            ? AppIcons.svg(AppIcons.arrowLeft, size: 22, color: const Color(0xffF3FBF8))
+            : AppIcons.svg(AppIcons.circleXmark, size: 31, color: const Color(0xffF3FBF8)),
         center: !multiple.start
             ? const Text(
                 "Çoktan Seçmeli",
@@ -389,17 +382,12 @@ class _MultipleChoicePage extends ConsumerState<MultipleChoicePage> {
                                           right: 30,
                                           top: 30,
                                           child: multiple.correct
-                                              ? const FaIcon(
-                                                  FontAwesomeIcons.circleCheck,
-                                                  color:
-                                                      Color.fromARGB(255, 102, 210, 147),
+                                              ? AppIcons.svg(AppIcons.circleCheck,
                                                   size: 60,
-                                                )
-                                              : const Icon(
-                                                  Icons.close,
-                                                  color: Colors.red,
+                                                  color: const Color.fromARGB(255, 102, 210, 147))
+                                              : AppIcons.svg(AppIcons.xmark,
                                                   size: 60,
-                                                )),
+                                                  color: Colors.red)),
                                     Positioned(
                                         left: 30,
                                         child: Container(

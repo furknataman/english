@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../core/app_icons.dart';
 import '../global_widget/app_bar.dart';
 import '../provider/version.dart';
 
@@ -28,11 +29,7 @@ class AbaoutPage extends ConsumerWidget {
     String? version = ref.watch(versionProvider).value;
     return Scaffold(
       appBar: appbar(context,
-          left: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-            size: 22,
-          ),
+          left: AppIcons.svg(AppIcons.arrowLeft, size: 22, color: Colors.white),
           center: const Text(
             "Hakkında",
             style: TextStyle(

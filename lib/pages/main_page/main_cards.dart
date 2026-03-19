@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 InkWell card(
     BuildContext context, {
     @required String? text,
-    @required IconData? icon,
+    @required String? icon,
     @required Widget? page,
     @required bool? cardInfo,
   }) {
@@ -41,12 +41,16 @@ InkWell card(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        FaIcon(
-                          icon,
-                          color: cardInfo != true
-                              ? const Color(0xffFFFFFF)
-                              : const Color(0xff3574C3),
-                          size: 40,
+                        SvgPicture.asset(
+                          icon!,
+                          width: 40,
+                          height: 40,
+                          colorFilter: ColorFilter.mode(
+                            cardInfo != true
+                                ? const Color(0xffFFFFFF)
+                                : const Color(0xff3574C3),
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ],
                     ),

@@ -1,10 +1,8 @@
-import 'dart:async';
 import 'package:english/db/db/default_word.dart';
 import 'package:english/global_variable.dart';
 import 'package:english/pages/main_page/main.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import '../db/db/shared_preferences.dart';
 
 class TemproryPage extends StatefulWidget {
@@ -29,21 +27,6 @@ class _TemproryPageState extends State<TemproryPage> {
 
   void setFiravase() async {
     await Firebase.initializeApp();
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    await FirebaseMessaging.instance.getToken();
-    await FirebaseMessaging.instance.setAutoInitEnabled(true);
-
-    NotificationSettings settings = await messaging.requestPermission(
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        criticalAlert: false,
-        provisional: false,
-        sound: true);
-
-    //print('fcmToken ${fcmToken}');
-    //print('User granted permission ${settings.authorizationStatus}');
   }
 
   void sPRead() async {
