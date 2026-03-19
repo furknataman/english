@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../core/app_icons.dart';
-import '../global_widget/text_filed.dart';
+import '../core/theme/app_colors.dart';
+import '../core/theme/app_typography.dart';
+import '../core/theme/app_spacing.dart';
 import '../provider/add_list.dart';
 
 final addListConfig = ChangeNotifierProvider((ref) => AddListProvider());
 
 class AddList extends ConsumerStatefulWidget {
-  const AddList({Key? key}) : super(key: key);
+  const AddList({super.key});
 
   @override
   ConsumerState<AddList> createState() => _AddListState();
@@ -29,75 +31,156 @@ class _AddListState extends ConsumerState<AddList> {
   Widget build(BuildContext context) {
     final addList = ref.watch<AddListProvider>(addListConfig);
     return Scaffold(
+      backgroundColor: AppColors.backgroundDark,
       appBar: appbar(
         context,
-        left: AppIcons.svg(AppIcons.arrowLeft, size: 22, color: const Color(0xffF3FBF8)),
-        center: const Text("Liste Oluştur",
-            style: TextStyle(
-                color: Color(0xffF3FBF8), fontSize: 22, fontWeight: FontWeight.w600)),
+        left: AppIcons.svg(AppIcons.arrowLeft,
+            size: 22, color: AppColors.textPrimaryDark),
+        center: Text("Liste Oluştur",
+            style: AppTypography.headlineSmall.copyWith(
+              color: AppColors.textPrimaryDark,
+            )),
         leftWidgetOnClik: () => {Navigator.pop(context)},
       ),
       body: SafeArea(
-        child: Container(
-          color: const Color(0xffF3FBF8),
-          child: Column(children: [
-            textFieldBuilder(
-                padding: const EdgeInsets.only(left: 4, right: 4),
-                icon: AppIcons.svg(AppIcons.list, size: 18),
-                hindText: "Liste Adı",
-                textEditingController: addList.listName,
-                textAlign: TextAlign.left),
-            Container(
-              margin: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  Text(
-                    "İngilizce",
-                    style: TextStyle(
-                        color: Color(0xff4F4F4F),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600),
+        child: Column(children: [
+          // List name input
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.cardDark,
+                borderRadius: AppSpacing.borderRadiusMd,
+                border: Border.all(color: AppColors.borderDark, width: 1),
+              ),
+              child: TextField(
+                controller: addList.listName,
+                style: AppTypography.bodyLarge.copyWith(
+                  color: AppColors.textPrimaryDark,
+                ),
+                decoration: InputDecoration(
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 12, right: 8),
+                    child:
+                        AppIcons.svg(AppIcons.list, size: 18, color: AppColors.primary),
                   ),
-                  Text(
-                    "Türkçe",
-                    style: TextStyle(
-                        color: Color(0xff4F4F4F),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600),
-                  )
-                ],
+                  prefixIconConstraints:
+                      const BoxConstraints(minWidth: 0, minHeight: 0),
+                  hintText: "Liste Adı",
+                  hintStyle: AppTypography.bodyLarge.copyWith(
+                    color: AppColors.textTertiaryDark,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+                ),
               ),
             ),
-            Expanded(
-              child: SingleChildScrollView(
-                  child: Column(
-                children: addList.wordListField,
-              )),
-            ),
-            Row(
+          ),
+
+          // Column headers
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.xl, vertical: AppSpacing.lg),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                actionsbutons(addList.addRow, AppIcons.svg(AppIcons.plus, size: 28, color: Colors.white), 0xffF2C94C),
-                actionsbutons(addList.save, AppIcons.svg(AppIcons.floppyDisk, size: 28, color: Colors.white), 0xff6FCF97),
-                actionsbutons(addList.deleteRow, AppIcons.svg(AppIcons.minus, size: 28, color: Colors.white), 0xffEB5757)
+                Text(
+                  "İngilizce",
+                  style: AppTypography.titleMedium.copyWith(
+                    color: AppColors.textSecondaryDark,
+                  ),
+                ),
+                Text(
+                  "Türkçe",
+                  style: AppTypography.titleMedium.copyWith(
+                    color: AppColors.textSecondaryDark,
+                  ),
+                ),
               ],
-            )
-          ]),
-        ),
+            ),
+          ),
+
+          // Word list rows (from provider)
+          Expanded(
+            child: SingleChildScrollView(
+                child: Column(
+              children: addList.wordListField,
+            )),
+          ),
+
+          // Action buttons
+          Container(
+            padding: const EdgeInsets.symmetric(
+                vertical: AppSpacing.lg, horizontal: AppSpacing.xl),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceDark,
+              border: Border(
+                top: BorderSide(color: AppColors.borderDark, width: 1),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _actionButton(
+                  onTap: addList.addRow,
+                  icon: AppIcons.plus,
+                  color: AppColors.warning,
+                  label: "Ekle",
+                ),
+                _actionButton(
+                  onTap: addList.save,
+                  icon: AppIcons.floppyDisk,
+                  color: AppColors.success,
+                  label: "Kaydet",
+                ),
+                _actionButton(
+                  onTap: addList.deleteRow,
+                  icon: AppIcons.minus,
+                  color: AppColors.error,
+                  label: "Sil",
+                ),
+              ],
+            ),
+          ),
+        ]),
       ),
     );
   }
 
-  InkWell actionsbutons(Function() click, Widget iconWidget, int? color) {
+  Widget _actionButton({
+    required VoidCallback onTap,
+    required String icon,
+    required Color color,
+    required String label,
+  }) {
     return InkWell(
-      onTap: () => click(),
-      child: Container(
-        height: 40,
-        width: 40,
-        margin: const EdgeInsets.only(bottom: 15),
-        decoration: BoxDecoration(color: Color(color!), shape: BoxShape.circle),
-        child: Center(child: iconWidget),
+      onTap: onTap,
+      borderRadius: AppSpacing.borderRadiusMd,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+              border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+            ),
+            child: Center(
+              child: AppIcons.svg(icon, size: 22, color: color),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            label,
+            style: AppTypography.labelSmall.copyWith(
+              color: color,
+            ),
+          ),
+        ],
       ),
     );
   }

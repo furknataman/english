@@ -4,10 +4,11 @@ import 'package:english/pages/addlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:pie_chart/pie_chart.dart';
 import '../core/app_icons.dart';
+import '../core/theme/app_colors.dart';
+import '../core/theme/app_typography.dart';
+import '../core/theme/app_spacing.dart';
 import '../db/db/db.dart';
-import '../global_variable.dart';
 import '../global_widget/toast_message.dart';
 import 'edit_word.dart';
 
@@ -16,7 +17,8 @@ final getListWord = ChangeNotifierProvider((ref) => ListWord());
 final editProvider = ChangeNotifierProvider((ref) => EditController());
 
 class ListPage extends ConsumerStatefulWidget {
-  const ListPage({super.key});
+  final bool isTab;
+  const ListPage({super.key, this.isTab = false});
 
   @override
   ConsumerState<ListPage> createState() => _ListPageState();
@@ -24,111 +26,156 @@ class ListPage extends ConsumerStatefulWidget {
 
 class _ListPageState extends ConsumerState<ListPage> {
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(getListWord).getLists());
+  }
+
+  @override
   Widget build(
     BuildContext context,
   ) {
     final editController = ref.watch<EditController>(editProvider);
     final wordList = ref.watch<ListWord>(getListWord);
-    wordList.getLists();
     return Scaffold(
+      backgroundColor: AppColors.backgroundDark,
       appBar: appbar(context,
-          left: AppIcons.svg(AppIcons.arrowLeft, size: 22, color: Color(0xffF3FBF8)),
-          center: const Text(
+          left: widget.isTab
+              ? const SizedBox(width: 22)
+              : AppIcons.svg(AppIcons.arrowLeft,
+                  size: 22, color: AppColors.textPrimaryDark),
+          center: Text(
             "Listelerim",
-            style: TextStyle(
-                color: Color(0xffF3FBF8), fontSize: 22, fontWeight: FontWeight.w600),
-          ),
-          right: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: svgLogoIcon,
-          ),
-          leftWidgetOnClik: () => {Navigator.pop(context)}),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xff3574C3),
-        ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 70,
-              width: MediaQuery.of(context).size.width,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 14),
-                child: !editController.value
-                    ? Row(children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: ((context) => const AddList())));
-                          },
-                          child: card(
-                              iconWidget: AppIcons.svg(AppIcons.circlePlus, size: 32, color: Color(0xff6FCF97)),
-                              cardColor: 0xffF3FBF8),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            editController.editchange();
-                          },
-                          child: card(
-                              iconWidget: AppIcons.svg(AppIcons.pen, size: 32, color: Color(0xffF2C94C)),
-                              cardColor: 0xffF3FBF8),
-                        ),
-                      ])
-                    : Row(children: [
-                        InkWell(
-                          onTap: () {},
-                          child: card(
-                              iconWidget: AppIcons.svg(AppIcons.circlePlus, size: 32, color: Color(0xff6FCF97)),
-                              cardColor: 0xffF3FBF8),
-                        ),
-                        card(
-                            iconWidget: AppIcons.svg(AppIcons.pen, size: 32, color: Color(0xff828282)),
-                            cardColor: 0xffE0E0E0),
-                        InkWell(
-                          onTap: () {
-                            editController.editchange();
-                          },
-                          child: card(
-                              iconWidget: AppIcons.svg(AppIcons.xmark, size: 32, color: Color(0xff4F4F4F)),
-                              cardColor: 0xffF3FBF8),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            alertDialog(context, () => Navigator.pop(context), () {
-                              wordList.delete();
-                              editController.editchange();
-                              Navigator.pop(context);
-                            }, "Dikakt!", "Seçili listeler silinecek");
-                          },
-                          child: card(
-                              iconWidget: AppIcons.svg(AppIcons.trash, size: 32, color: Color(0xffEB5757)),
-                              cardColor: 0xffF3FBF8),
-                        ),
-                      ]),
-              ),
+            style: AppTypography.headlineSmall.copyWith(
+              color: AppColors.textPrimaryDark,
             ),
-            Expanded(
-              child: Container(
-                decoration: const BoxDecoration(
-                    color: Color(0xffF3FBF8),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    context;
-                    return listItem(wordList._lists[index]['list_id'] as int, index,
-                        listname: wordList._lists[index]['name'].toString(),
-                        sumWords: wordList._lists[index]['sum_word'].toString(),
-                        sumUnloearned: wordList._lists[index]['sum_unlearned'].toString());
-                  },
-                  itemCount: wordList._lists.length,
-                ),
-              ),
-            ),
-          ],
+          ),
+          right: const SizedBox(width: 24),
+          leftWidgetOnClik: () => widget.isTab ? null : Navigator.pop(context)),
+      body: Column(
+        children: [
+          // Action bar
+          Container(
+            height: 64,
+            width: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: !editController.value
+                ? Row(children: [
+                    _actionButton(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => const AddList())));
+                      },
+                      icon: AppIcons.circlePlus,
+                      iconColor: AppColors.success,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    _actionButton(
+                      onTap: () {
+                        editController.editchange();
+                      },
+                      icon: AppIcons.pen,
+                      iconColor: AppColors.warning,
+                    ),
+                  ])
+                : Row(children: [
+                    _actionButton(
+                      onTap: () {},
+                      icon: AppIcons.circlePlus,
+                      iconColor: AppColors.success,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    _actionButton(
+                      onTap: null,
+                      icon: AppIcons.pen,
+                      iconColor: AppColors.textTertiaryDark,
+                      bgColor: AppColors.cardDarkElevated,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    _actionButton(
+                      onTap: () {
+                        editController.editchange();
+                      },
+                      icon: AppIcons.xmark,
+                      iconColor: AppColors.textSecondaryDark,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    _actionButton(
+                      onTap: () {
+                        alertDialog(context, () => Navigator.pop(context), () {
+                          wordList.delete();
+                          editController.editchange();
+                          Navigator.pop(context);
+                        }, "Dikkat!", "Seçili listeler silinecek");
+                      },
+                      icon: AppIcons.trash,
+                      iconColor: AppColors.error,
+                    ),
+                  ]),
+          ),
+
+          // List
+          Expanded(
+            child: wordList._lists.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AppIcons.svg(AppIcons.book,
+                            size: 48, color: AppColors.textTertiaryDark),
+                        const SizedBox(height: AppSpacing.lg),
+                        Text(
+                          "Henüz liste yok",
+                          style: AppTypography.bodyLarge.copyWith(
+                            color: AppColors.textTertiaryDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.only(
+                        top: AppSpacing.sm, bottom: AppSpacing.xxl),
+                    itemBuilder: (context, index) {
+                      return listItem(
+                          wordList._lists[index]['list_id'] as int, index,
+                          listname:
+                              wordList._lists[index]['name'].toString(),
+                          sumWords:
+                              wordList._lists[index]['sum_word'].toString(),
+                          sumUnloearned: wordList._lists[index]
+                                  ['sum_unlearned']
+                              .toString());
+                    },
+                    itemCount: wordList._lists.length,
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _actionButton({
+    VoidCallback? onTap,
+    required String icon,
+    required Color iconColor,
+    Color? bgColor,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppSpacing.borderRadiusSm,
+      child: Container(
+        width: 42,
+        height: 42,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: bgColor ?? AppColors.cardDark,
+          borderRadius: AppSpacing.borderRadiusSm,
+          border: Border.all(color: AppColors.borderDark, width: 1),
         ),
+        child: AppIcons.svg(icon, size: 20, color: iconColor),
       ),
     );
   }
@@ -139,150 +186,114 @@ class _ListPageState extends ConsumerState<ListPage> {
       @required String? sumUnloearned}) {
     final editController = ref.watch<EditController>(editProvider);
     final wordList = ref.watch<ListWord>(getListWord);
+
+    final int total = int.tryParse(sumWords ?? '0') ?? 0;
+    final int unlearned = int.tryParse(sumUnloearned ?? '0') ?? 0;
+    final int learned = total - unlearned;
+    final double progress = total > 0 ? (learned / total).clamp(0.0, 1.0) : 0.0;
+
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => EditWordPage(id, listname)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EditWordPage(id, listname)));
       },
       child: Container(
-        width: 370,
-        height: 75,
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(
-              Radius.circular(20),
-            )),
-        margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 55,
-                    height: 55,
-                    margin: const EdgeInsets.only(top: 12, bottom: 12, left: 10),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xff3574C3),
-                          width: 4.0,
-                        )),
-                    child: PieChart(
-                      colorList: const [
-                        Color(0xff3574C3),
-                      ],
-                      dataMap: {
-                        "Learn": double.parse(sumWords!) - double.parse(sumUnloearned!),
-                      },
-                      ringStrokeWidth: 1,
-                      chartLegendSpacing: 90,
-                      initialAngleInDegree: 270,
-                      animationDuration: const Duration(milliseconds: 1600),
-                      chartRadius: MediaQuery.of(context).size.width / 11.2,
-                      chartType: ChartType.disc,
-                      chartValuesOptions: const ChartValuesOptions(
-                        showChartValues: false,
-                        showChartValuesOutside: false,
-                        showChartValueBackground: false,
-                      ),
-                      legendOptions: const LegendOptions(
-                          showLegends: false,
-                          showLegendsInRow: false,
-                          legendShape: BoxShape.rectangle),
-                      totalValue: double.parse(sumWords),
+        margin: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg, vertical: AppSpacing.xs + 2),
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: AppColors.cardDark,
+          borderRadius: AppSpacing.borderRadiusMd,
+          border: Border.all(color: AppColors.borderDark, width: 1),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    listname!,
+                    style: AppTypography.titleLarge.copyWith(
+                      color: AppColors.textPrimaryDark,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 10, bottom: 5),
-                        child: Text(
-                          listname!,
-                          style: const TextStyle(
-                            color: Color(0xff4F4F4F),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
+                ),
+                editController.value
+                    ? SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: Checkbox(
+                          side: BorderSide(
+                              color: AppColors.textTertiaryDark, width: 1.5),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4)),
+                          checkColor: Colors.white,
+                          activeColor: AppColors.primary,
+                          value: wordList.deleteIndexList[index],
+                          onChanged: (bool? value) {
+                            wordList.deleteIndexList[index] = value!;
+                            bool deleteProcessController = false;
+                            for (var element in wordList.deleteIndexList) {
+                              if (element == true) {
+                                deleteProcessController = true;
+                              }
+                            }
+                            if (!deleteProcessController) {
+                              editController._editCont = false;
+                            }
+                          },
                         ),
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(left: 10, right: 5),
-                            child: AppIcons.svg(AppIcons.grip, size: 15, color: Color(0xff3574C3)),
-                          ),
-                          Text(
-                            "$sumWords ",
-                            style: const TextStyle(
-                                color: Color(0xff828282),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 10, right: 5),
-                            child: AppIcons.svg(AppIcons.circleCheck, size: 15, color: Color(0xff3574C3)),
-                          ),
-                          Text(
-                            "${int.parse(sumWords) - int.parse(sumUnloearned)} ",
-                            style: const TextStyle(
-                                color: Color(0xff828282),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ],
                       )
-                    ],
-                  ),
-                ],
+                    : AppIcons.svg(AppIcons.chevronRight,
+                        size: 18, color: AppColors.textTertiaryDark),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            // Progress bar
+            ClipRRect(
+              borderRadius: AppSpacing.borderRadiusSm,
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 6,
+                backgroundColor: AppColors.borderDark,
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(AppColors.primary),
               ),
-              editController.value
-                  ? Checkbox(
-                      side: const BorderSide(color: Color(0xff3574C3)),
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                      checkColor: Colors.white,
-                      activeColor: const Color(0xff3574C3),
-                      hoverColor: Colors.blueAccent,
-                      value: wordList.deleteIndexList[index],
-                      onChanged: (bool? value) {
-                        wordList.deleteIndexList[index] = value!;
-                        bool deleteProcessController = false;
-                        for (var element in wordList.deleteIndexList) {
-                          if (element == true) deleteProcessController = true;
-                        }
-                        if (!deleteProcessController) {
-                          editController._editCont = false;
-                        }
-                      },
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: AppIcons.svg(AppIcons.chevronRight, size: 22, color: Color(0xff3574C3)),
-                    ),
-            ]),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            // Stats row
+            Row(
+              children: [
+                AppIcons.svg(AppIcons.grip,
+                    size: 13, color: AppColors.textTertiaryDark),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  "$sumWords kelime",
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.textSecondaryDark,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.lg),
+                AppIcons.svg(AppIcons.circleCheck,
+                    size: 13, color: AppColors.success),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  "$learned öğrenildi",
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.success,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Container card(
-      {@required Widget? iconWidget, @required int? cardColor}) {
-    return Container(
-      margin: const EdgeInsets.only(
-        left: 8,
-      ),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          color: Color(cardColor!),
-          borderRadius: const BorderRadius.all(Radius.circular(10))),
-      width: 38,
-      height: 38,
-      child: iconWidget,
-    );
-  }
 }
 
 class EditController extends ChangeNotifier {
@@ -305,10 +316,8 @@ class ListWord extends ChangeNotifier {
 
   void getLists() async {
     _lists = await DB.instance.readListAll();
-    for (int i = 0; i < _lists.length; i++) {
-      deleteIndexList.add(false);
-      notifyListeners();
-    }
+    deleteIndexList = List.filled(_lists.length, false);
+    notifyListeners();
   }
 
   void delete() async {
@@ -318,7 +327,8 @@ class ListWord extends ChangeNotifier {
       if (deleteIndexList[i] == true) removeIndexList.add(i);
     }
     for (int i = removeIndexList.length - 1; i >= 0; i--) {
-      DB.instance.deleteListsAndWordByList(_lists[removeIndexList[i]]['list_id'] as int);
+      DB.instance.deleteListsAndWordByList(
+          _lists[removeIndexList[i]]['list_id'] as int);
       _lists.removeAt(removeIndexList[i]);
       deleteIndexList.removeAt(removeIndexList[i]);
     }

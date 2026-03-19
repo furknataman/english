@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:english/core/theme/app_colors.dart';
 
-void toastMessage(String message, {int time=1}) {
+void toastMessage(String message, {int time = 1}) {
   Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: time,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      fontSize: 16.0);
+      backgroundColor: AppColors.cardDarkElevated,
+      textColor: AppColors.textPrimaryDark,
+      fontSize: 14.0);
 }

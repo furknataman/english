@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../core/app_icons.dart';
+import '../core/theme/app_colors.dart';
+import '../core/theme/app_typography.dart';
+import '../core/theme/app_spacing.dart';
 import '../global_widget/app_bar.dart';
 import '../global_widget/text_filed.dart';
 import '../provider/edit_word.dart';
@@ -33,180 +36,217 @@ class _EditWordPageState extends ConsumerState<EditWordPage> {
   Widget build(BuildContext context) {
     final editListProvider = ref.watch<EditListWord>(editList);
     return Scaffold(
-      backgroundColor: const Color(0xff3574C3),
+      backgroundColor: AppColors.backgroundDark,
       appBar: appbar(context,
-          left: AppIcons.svg(AppIcons.arrowLeft, size: 22, color: Color(0xffF3FBF8)),
+          left: AppIcons.svg(AppIcons.arrowLeft,
+              size: 22, color: AppColors.textPrimaryDark),
           center: Text(
             listName!,
-            style: const TextStyle(
-                color: Color(0xffF3FBF8), fontSize: 20, fontWeight: FontWeight.w600),
+            style: AppTypography.headlineSmall.copyWith(
+              color: AppColors.textPrimaryDark,
+            ),
           ),
-          leftWidgetOnClik: () => {Navigator.pop(context), editListProvider.close()}),
+          leftWidgetOnClik: () =>
+              {Navigator.pop(context), editListProvider.close()}),
       body: Column(
         children: [
-          SizedBox(
-            height: 70,
+          // Action bar
+          Container(
+            height: 64,
             width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 14),
-              child: editListProvider.editController == false
-                  ? Row(children: [
-                      InkWell(
-                        onTap: () {
-                          editListProvider.editchange();
-                        },
-                        child: card(
-                            iconWidget: AppIcons.svg(AppIcons.pen, size: 32, color: Color(0xffF2C94C)),
-                            cardColor: 0xffF3FBF8),
-                      ),
-                    ])
-                  : Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.7,
-                        alignment: Alignment.centerLeft,
-                        child: Row(children: [
-                          card(
-                              iconWidget: AppIcons.svg(AppIcons.pen, size: 32, color: Color(0xff828282)),
-                              cardColor: 0xffE0E0E0),
-                          InkWell(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: editListProvider.editController == false
+                ? Row(children: [
+                    _actionButton(
+                      onTap: () {
+                        editListProvider.editchange();
+                      },
+                      icon: AppIcons.pen,
+                      iconColor: AppColors.warning,
+                    ),
+                  ])
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                        Row(children: [
+                          _actionButton(
+                            onTap: null,
+                            icon: AppIcons.pen,
+                            iconColor: AppColors.textTertiaryDark,
+                            bgColor: AppColors.cardDarkElevated,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          _actionButton(
                             onTap: () {
                               editListProvider.editchange();
                               for (int i = 0;
-                                  i < editListProvider.selectIndexList.length;
+                                  i <
+                                      editListProvider
+                                          .selectIndexList.length;
                                   i++) {
-                                editListProvider.selectIndexList[i] = false;
+                                editListProvider.selectIndexList[i] =
+                                    false;
                               }
-
                               editListProvider.selectIndexList;
                             },
-                            child: card(
-                                iconWidget: AppIcons.svg(AppIcons.xmark, size: 32, color: Color(0xff4F4F4F)),
-                                cardColor: 0xffF3FBF8),
+                            icon: AppIcons.xmark,
+                            iconColor: AppColors.textSecondaryDark,
                           ),
-                          InkWell(
+                          const SizedBox(width: AppSpacing.sm),
+                          _actionButton(
                             onTap: () {
                               editListProvider.addRow(listID);
                             },
-                            child: card(
-                                iconWidget: AppIcons.svg(AppIcons.circlePlus, size: 32, color: Color(0xff6FCF97)),
-                                cardColor: 0xffF3FBF8),
+                            icon: AppIcons.circlePlus,
+                            iconColor: AppColors.success,
                           ),
                         ]),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.2,
-                        alignment: Alignment.center,
-                        child: InkWell(
+                        _actionButton(
                           onTap: () {
                             editListProvider.save(listID);
                           },
-                          child: card(
-                              iconWidget: AppIcons.svg(AppIcons.floppyDisk, size: 32, color: Color(0xff6FCF97)),
-                              cardColor: 0xffF3FBF8),
+                          icon: AppIcons.floppyDisk,
+                          iconColor: AppColors.success,
                         ),
-                      ),
-                    ]),
-            ),
+                      ]),
           ),
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                  color: Color(0xff002250),
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-              child: Column(children: [
-                if (editListProvider.editController == true)
-                  Container(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    height: 70,
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text(
-                          "Seçilen Kelimeleri...",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        Row(
-                          children: [
-                            editingButton(
-                                text: "Öğren", width: 71, click: editListProvider.learn),
-                            editingButton(
-                                text: "Unut", width: 64, click: editListProvider.unlearn),
-                            editingButton(
-                                text: "Sil", width: 48, click: editListProvider.delete),
-                          ],
-                        )
-                      ],
+
+          // Edit actions bar (when in edit mode)
+          if (editListProvider.editController == true)
+            Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceDark,
+                border: Border(
+                  bottom: BorderSide(color: AppColors.borderDark, width: 1),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Seçilen Kelimeleri...",
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.textSecondaryDark,
                     ),
                   ),
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        color: Color(0xffF3FBF8),
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                    child: Column(children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 15),
-                        padding: const EdgeInsets.only(right: 30),
-                        height: 40,
-                        decoration: const BoxDecoration(
-                            color: Color(0xffF3FBF8),
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20))),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: const [
-                            Text(
-                              "İngilizce",
-                              style: TextStyle(
-                                  color: Color(0xff4F4F4F),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              "Türkçe",
-                              style: TextStyle(
-                                color: Color(0xff4F4F4F),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 18,
-                              ),
-                            )
-                          ],
-                        ),
+                  Row(
+                    children: [
+                      _editActionChip(
+                        text: "Öğren",
+                        color: AppColors.success,
+                        onTap: editListProvider.learn,
                       ),
-                      Expanded(
-                        child: Container(
-                          color: const Color(0xffF3FBF8),
-                          child: ListView.builder(
-                              itemBuilder: (context, index) {
-                                return list(index,
-                                    wordTr: editListProvider.wordlist[index].word_tr,
-                                    wordEng: editListProvider.wordlist[index].word_eng,
-                                    learn: editListProvider.wordlist[index].status);
-                              },
-                              itemCount: editListProvider.wordlist.length),
-                        ),
+                      const SizedBox(width: AppSpacing.sm),
+                      _editActionChip(
+                        text: "Unut",
+                        color: AppColors.warning,
+                        onTap: editListProvider.unlearn,
                       ),
-                    ]),
+                      const SizedBox(width: AppSpacing.sm),
+                      _editActionChip(
+                        text: "Sil",
+                        color: AppColors.error,
+                        onTap: editListProvider.delete,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+          // Column headers
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.xl, vertical: AppSpacing.md),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  "İngilizce",
+                  style: AppTypography.titleMedium.copyWith(
+                    color: AppColors.textSecondaryDark,
                   ),
                 ),
-              ]),
+                Text(
+                  "Türkçe",
+                  style: AppTypography.titleMedium.copyWith(
+                    color: AppColors.textSecondaryDark,
+                  ),
+                ),
+              ],
             ),
+          ),
+
+          // Word list
+          Expanded(
+            child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+                itemBuilder: (context, index) {
+                  return list(index,
+                      wordTr: editListProvider.wordlist[index].word_tr,
+                      wordEng: editListProvider.wordlist[index].word_eng,
+                      learn: editListProvider.wordlist[index].status);
+                },
+                itemCount: editListProvider.wordlist.length),
           ),
         ],
       ),
     );
   }
 
-  Row list(
+  Widget _actionButton({
+    VoidCallback? onTap,
+    required String icon,
+    required Color iconColor,
+    Color? bgColor,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppSpacing.borderRadiusSm,
+      child: Container(
+        width: 42,
+        height: 42,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: bgColor ?? AppColors.cardDark,
+          borderRadius: AppSpacing.borderRadiusSm,
+          border: Border.all(color: AppColors.borderDark, width: 1),
+        ),
+        child: AppIcons.svg(icon, size: 20, color: iconColor),
+      ),
+    );
+  }
+
+  Widget _editActionChip({
+    required String text,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppSpacing.borderRadiusSm,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md, vertical: AppSpacing.xs + 2),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: AppSpacing.borderRadiusSm,
+          border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+        ),
+        child: Text(
+          text,
+          style: AppTypography.labelMedium.copyWith(
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget list(
     int index, {
     @required String? wordTr,
     @required String? wordEng,
@@ -216,85 +256,57 @@ class _EditWordPageState extends ConsumerState<EditWordPage> {
     editListProvider.wordTextEditingList[2 * index + 1].text = wordTr!;
     editListProvider.wordTextEditingList[2 * index].text = wordEng!;
 
-    return Row(
-      children: [
-        Expanded(
-            child: textFieldBuilder(
-                borderColor: learn!
-                    ? const Color.fromARGB(255, 102, 210, 147)
-                    : const Color(0xff3574C3),
-                editting: editListProvider.editController,
-                padding: const EdgeInsets.only(left: 4),
-                textEditingController: editListProvider.wordTextEditingList[2 * index])),
-        Expanded(
-            child: textFieldBuilder(
-                borderColor: learn
-                    ? const Color.fromARGB(255, 102, 210, 147)
-                    : const Color(0xff3574C3),
-                editting: editListProvider.editController,
-                padding: const EdgeInsets.only(right: 4),
-                textEditingController:
-                    editListProvider.wordTextEditingList[2 * index + 1])),
-        editListProvider.editController
-            ? Container(
-                padding: const EdgeInsets.only(top: 10),
-                margin: const EdgeInsets.only(
-                  right: 10,
-                ),
-                width: 20,
-                height: 30,
-                child: Checkbox(
-                  side: const BorderSide(color: Colors.black),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  checkColor: Colors.white,
-                  activeColor: const Color(0xff3574C3),
-                  hoverColor: Colors.blueAccent,
-                  value: editListProvider.selectIndexList[index],
-                  onChanged: (bool? value) {
-                    editListProvider.selectIndexEdit(index);
-                  },
-                ),
-              )
-            : Container(),
-      ],
-    );
-  }
+    final Color statusColor = learn! ? AppColors.success : AppColors.primary;
 
-  Container card({@required Widget? iconWidget, @required int? cardColor}) {
     return Container(
-      margin: const EdgeInsets.only(left: 6),
-      alignment: Alignment.center,
+      margin: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
-          color: Color(cardColor!),
-          borderRadius: const BorderRadius.all(Radius.circular(10))),
-      width: 38,
-      height: 38,
-      child: iconWidget,
-    );
-  }
-
-  InkWell editingButton(
-      {@required Function()? click, @required String? text, @required double? width}) {
-    return InkWell(
-      onTap: () => click!(),
-      child: Container(
-        margin: const EdgeInsets.only(left: 8),
-        alignment: Alignment.center,
-        width: width,
-        height: 38,
-        decoration: const BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Text(
-          text!,
-          style: const TextStyle(
-              color: Color(0xff4F4F4F), fontSize: 16, fontWeight: FontWeight.w600),
+        color: AppColors.cardDark,
+        borderRadius: AppSpacing.borderRadiusSm,
+        border: Border(
+          left: BorderSide(color: statusColor, width: 3),
         ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+              child: textFieldBuilder(
+                  borderColor: statusColor,
+                  editting: editListProvider.editController,
+                  padding: const EdgeInsets.only(left: 4),
+                  textEditingController:
+                      editListProvider.wordTextEditingList[2 * index])),
+          Expanded(
+              child: textFieldBuilder(
+                  borderColor: statusColor,
+                  editting: editListProvider.editController,
+                  padding: const EdgeInsets.only(right: 4),
+                  textEditingController:
+                      editListProvider.wordTextEditingList[2 * index + 1])),
+          editListProvider.editController
+              ? Container(
+                  padding: const EdgeInsets.only(top: 10),
+                  margin: const EdgeInsets.only(right: 10),
+                  width: 20,
+                  height: 30,
+                  child: Checkbox(
+                    side: BorderSide(
+                        color: AppColors.textTertiaryDark, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4)),
+                    checkColor: Colors.white,
+                    activeColor: AppColors.primary,
+                    value: editListProvider.selectIndexList[index],
+                    onChanged: (bool? value) {
+                      editListProvider.selectIndexEdit(index);
+                    },
+                  ),
+                )
+              : Container(),
+        ],
       ),
     );
   }
+
 }
-
-
-
-

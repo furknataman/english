@@ -3,6 +3,10 @@ import 'package:english/global_variable.dart';
 import 'package:english/pages/main_page/main.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import '../core/theme/app_colors.dart';
+import '../core/theme/app_typography.dart';
+import '../core/theme/app_spacing.dart';
+import '../core/review_helper.dart';
 import '../db/db/shared_preferences.dart';
 
 class TemproryPage extends StatefulWidget {
@@ -12,10 +16,25 @@ class TemproryPage extends StatefulWidget {
   State<TemproryPage> createState() => _TemproryPageState();
 }
 
-class _TemproryPageState extends State<TemproryPage> {
+class _TemproryPageState extends State<TemproryPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+
   @override
   void initState() {
     super.initState();
+
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeIn,
+    );
+    _fadeController.forward();
+
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const MainPage()));
@@ -23,6 +42,13 @@ class _TemproryPageState extends State<TemproryPage> {
     sPRead();
     setFiravase();
     defaultWord();
+    ReviewHelper.incrementAndCheck();
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    super.dispose();
   }
 
   void setFiravase() async {
@@ -53,49 +79,55 @@ class _TemproryPageState extends State<TemproryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xffF3FBF8),
-      child: SafeArea(
-          child: Scaffold(
-        body: Center(
+    return Scaffold(
+      backgroundColor: AppColors.backgroundDark,
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 60),
-                    child: Image.asset(
-                      "assets/images/logo.png",
-                      width: 140,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Text(
-                      "Learn",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 40),
-                    ),
-                  ),
-                ],
+              const Spacer(flex: 3),
+              // Logo
+              ColorFiltered(
+                colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                child: Image.asset("assets/images/logo.png", width: 120),
               ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 50, left: 15, right: 15),
-                child: Text(
-                  " What You Want",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 25),
+              const SizedBox(height: AppSpacing.xxl),
+              // App name
+              Text(
+                "VocApp",
+                style: AppTypography.displayLarge.copyWith(
+                  color: AppColors.textPrimaryDark,
+                  fontSize: 38,
+                  letterSpacing: 1.0,
                 ),
-              )
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              // Subtitle
+              Text(
+                "İngilizce Kelime Öğrenme",
+                style: AppTypography.bodyLarge.copyWith(
+                  color: AppColors.textSecondaryDark,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const Spacer(flex: 3),
+              // Loading indicator
+              SizedBox(
+                width: 28,
+                height: 28,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(AppColors.primary.withValues(alpha: 0.7)),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.huge),
             ],
           ),
         ),
-      )),
+      ),
     );
   }
 }

@@ -62,7 +62,7 @@ class EditListWord extends ChangeNotifier {
 
     notifyListeners();
 
-    toastMessage("Seçili Kelimeler Öğrenildi olara işaretlendi");
+    toastMessage("Seçili Kelimeler Öğrenildi olarak işaretlendi");
   }
 
   void unlearn() async {
@@ -82,7 +82,7 @@ class EditListWord extends ChangeNotifier {
     }
 
     notifyListeners();
-    toastMessage("Seçili Kelimeler Öğrenilmedi olara işaretlendi");
+    toastMessage("Seçili Kelimeler Öğrenilmedi olarak işaretlendi");
   }
 
   void addRow(listID) async {

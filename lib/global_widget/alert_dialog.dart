@@ -1,88 +1,127 @@
 import 'package:flutter/material.dart';
+import 'package:english/core/theme/app_colors.dart';
+import 'package:english/core/theme/app_typography.dart';
+import 'package:english/core/theme/app_spacing.dart';
 
 void alertDialog(BuildContext context, Function functionLeft, Function functionRight,
     String titleText, String bodyText) {
   showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(25.0),
+          top: Radius.circular(20),
         ),
       ),
       builder: (context) {
         return Container(
-          height: 233,
-          decoration: const BoxDecoration(
-              color: Color(0xffF3FBF8),
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+          height: 240,
+          decoration: BoxDecoration(
+            color: AppColors.cardDark,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            border: Border.all(
+              color: AppColors.borderDark,
+              width: 1,
+            ),
+          ),
           child: Padding(
-            padding: const EdgeInsets.only(left: 18.0),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 FractionallySizedBox(
                   widthFactor: 0.25,
                   child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 12.0,
-                    ),
+                    margin: const EdgeInsets.symmetric(vertical: 12.0),
                     child: Container(
                       height: 5.0,
-                      decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(2.5)),
-                          color: Color(0xff828282)),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(2.5),
+                        ),
+                        color: AppColors.textTertiaryDark,
+                      ),
                     ),
                   ),
                 ),
                 Container(
                   alignment: Alignment.topLeft,
-                  child: Text(titleText,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20,
-                          color: Color(0xff828282))),
+                  child: Text(
+                    titleText,
+                    style: AppTypography.headlineMedium.copyWith(
+                      color: AppColors.textPrimaryDark,
+                    ),
+                  ),
                 ),
                 Container(
                   alignment: Alignment.topLeft,
-                  child: Text(bodyText,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Color(0xff4F4F4F))),
+                  child: Text(
+                    bodyText,
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.textSecondaryDark,
+                    ),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FloatingActionButton.extended(
-                      backgroundColor: const Color(0xffE0E0E0),
-                      onPressed: () {
-                        functionLeft();
-                      },
-                      label: const Text(
-                        "İptal ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700, color: Color(0xff4F4F4F)),
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.textSecondaryDark,
+                            side: const BorderSide(
+                              color: AppColors.borderDark,
+                              width: 1.5,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: AppSpacing.borderRadiusMd,
+                            ),
+                          ),
+                          onPressed: () {
+                            functionLeft();
+                          },
+                          child: Text(
+                            'İptal',
+                            style: AppTypography.labelLarge.copyWith(
+                              color: AppColors.textSecondaryDark,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    FloatingActionButton.extended(
-                      backgroundColor: const Color(0xffEB5757),
-                      onPressed: () {
-                        functionRight();
-                      },
-                      label: const Text(
-                        "Onayla",
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                    const SizedBox(width: AppSpacing.lg),
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.error,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: AppSpacing.borderRadiusMd,
+                            ),
+                          ),
+                          onPressed: () {
+                            functionRight();
+                          },
+                          child: Text(
+                            'Onayla',
+                            style: AppTypography.labelLarge.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                const SizedBox(
-                  height: 20,
-                )
+                const SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),
